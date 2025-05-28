@@ -7,6 +7,7 @@ import axios from 'axios';
 
 // Base API configuration
 const API_BASE_URL ='http://13.51.171.153:9000';
+// const API_BASE_URL ='http://localhost:9000';
 
 
 const api = axios.create({

@@ -231,9 +231,7 @@ class SafetySummarizationEngine:
         """Create speed-optimized analysis prompt"""
 
         prompt = f"""
-FAST {module.upper()} SAFETY ANALYSIS
-
-Analyze this {module} safety data and provide comprehensive insights as bullet points:
+Analyze this {module} safety data and provide comprehensive insights as simple bullet points only:
 
 OVERVIEW: {compressed_data.get('overview', {})}
 STATISTICS: {compressed_data.get('key_stats', {})}
@@ -241,14 +239,8 @@ PERFORMANCE: {compressed_data.get('performance', {})}
 RISKS: {compressed_data.get('risks', {})}
 TRENDS: {compressed_data.get('trends', {})}
 
-Provide insights as bullet points covering:
-• Key performance findings
-• Critical risk areas
-• Trend analysis
-• Compliance status
-• Urgent recommendations
-• Strategic improvements
-
+Return only bullet points starting with "•" - no headings, categories, or formatting.
+Each bullet point should contain specific, actionable insights about performance, risks, trends, compliance, recommendations, and strategic improvements.
 Focus on actionable insights and safety implications.
 """
 
@@ -599,41 +591,39 @@ Focus on actionable insights and safety implications.
         """Create comprehensive analysis prompt for single OpenAI call"""
 
         prompt = f"""
-COMPREHENSIVE {module.upper()} SAFETY ANALYSIS REQUEST
+Analyze ALL the following {module} safety data and provide complete insights as simple bullet points only.
 
-Analyze ALL the following safety data and provide complete insights as bullet points only.
-
-SECTION 1 - DATA OVERVIEW:
+DATA OVERVIEW:
 {json.dumps(compressed_data.get('data_overview', {}), indent=2, default=str)}
 
-SECTION 2 - STATISTICAL SUMMARY:
+STATISTICAL SUMMARY:
 {json.dumps(compressed_data.get('statistical_summary', {}), indent=2, default=str)}
 
-SECTION 3 - PERFORMANCE ANALYSIS:
+PERFORMANCE ANALYSIS:
 {json.dumps(compressed_data.get('performance_analysis', {}), indent=2, default=str)}
 
-SECTION 4 - TREND ANALYSIS:
+TREND ANALYSIS:
 {json.dumps(compressed_data.get('trend_analysis', {}), indent=2, default=str)}
 
-SECTION 5 - RISK ASSESSMENT:
+RISK ASSESSMENT:
 {json.dumps(compressed_data.get('risk_assessment', {}), indent=2, default=str)}
 
-SECTION 6 - COMPLIANCE ANALYSIS:
+COMPLIANCE ANALYSIS:
 {json.dumps(compressed_data.get('compliance_analysis', {}), indent=2, default=str)}
 
-SECTION 7 - USER PERFORMANCE:
+USER PERFORMANCE:
 {json.dumps(compressed_data.get('user_performance', {}), indent=2, default=str)}
 
-SECTION 8 - TEMPORAL PATTERNS:
+TEMPORAL PATTERNS:
 {json.dumps(compressed_data.get('temporal_patterns', {}), indent=2, default=str)}
 
-SECTION 9 - OUTLIER ANALYSIS:
+OUTLIER ANALYSIS:
 {json.dumps(compressed_data.get('outlier_analysis', {}), indent=2, default=str)}
 
-SECTION 10 - CORRELATION INSIGHTS:
+CORRELATION INSIGHTS:
 {json.dumps(compressed_data.get('correlation_insights', {}), indent=2, default=str)}
 
-ANALYSIS REQUIREMENTS:
+REQUIREMENTS:
 1. Analyze EVERY section thoroughly - miss nothing
 2. Identify cross-section patterns and relationships
 3. Highlight critical issues from ANY section
@@ -641,24 +631,10 @@ ANALYSIS REQUIREMENTS:
 5. Focus on safety implications and business impact
 6. Ensure comprehensive coverage of all data points
 
-RESPONSE FORMAT (bullet points only):
-• [OVERVIEW] - Key insights from data overview
-• [STATISTICS] - Critical statistical findings
-• [PERFORMANCE] - Performance analysis insights
-• [TRENDS] - Trend analysis findings
-• [RISK] - Risk assessment conclusions
-• [COMPLIANCE] - Compliance status insights
-• [USERS] - User performance patterns
-• [TEMPORAL] - Time-based pattern insights
-• [OUTLIERS] - Anomaly and outlier findings
-• [CORRELATIONS] - Cross-data correlations
-• [CRITICAL] - Most urgent items requiring immediate attention
-• [RECOMMENDATIONS] - Specific action items and improvements
-• [STRATEGIC] - Strategic insights for long-term improvement
+Return only bullet points starting with "•" - no headings, categories, labels, or formatting.
+Each bullet point should contain specific insights covering data overview, statistics, performance, trends, risks, compliance, user patterns, temporal patterns, outliers, correlations, critical issues, recommendations, and strategic improvements.
 
-Total Records Analyzed: {compressed_data.get('data_overview', {}).get('total_records', 0)}
-Analysis Period: {compressed_data.get('data_overview', {}).get('summary_period', {}).get('days_covered', 'N/A')} days
-Data Completeness: {compressed_data.get('data_overview', {}).get('data_completeness', '100%')}
+Total Records: {compressed_data.get('data_overview', {}).get('total_records', 0)} | Period: {compressed_data.get('data_overview', {}).get('summary_period', {}).get('days_covered', 'N/A')} days | Completeness: {compressed_data.get('data_overview', {}).get('data_completeness', '100%')}
 """
 
         return prompt
