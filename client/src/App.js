@@ -28,6 +28,7 @@ import {
   Divider,
   Switch,
   FormControlLabel,
+  Button,
 } from '@mui/material';
 import {
   Menu as MenuIcon,
@@ -64,12 +65,6 @@ function App() {
 
   const drawer = (
     <Box>
-      <Toolbar>
-        <Typography variant="h6" noWrap component="div">
-          AI Safety Summarizer
-        </Typography>
-      </Toolbar>
-      <Divider />
       <List>
         {navigationItems.map((item) => (
           <ListItem key={item.text} disablePadding>
@@ -84,20 +79,6 @@ function App() {
           </ListItem>
         ))}
       </List>
-      <Divider />
-      <Box sx={{ p: 2 }}>
-        <FormControlLabel
-          control={
-            <Switch
-              checked={darkMode}
-              onChange={(e) => setDarkMode(e.target.checked)}
-              icon={<Brightness7 />}
-              checkedIcon={<Brightness4 />}
-            />
-          }
-          label="Dark Mode"
-        />
-      </Box>
     </Box>
   );
 
@@ -106,11 +87,12 @@ function App() {
       <CssBaseline />
       <Router>
         <Box sx={{ display: 'flex' }}>
+          {/* Full Width Top Navigation Bar */}
           <AppBar
             position="fixed"
             sx={{
-              width: { sm: `calc(100% - ${drawerWidth}px)` },
-              ml: { sm: `${drawerWidth}px` },
+              width: '100%',
+              zIndex: (theme) => theme.zIndex.drawer + 1
             }}
           >
             <Toolbar>
@@ -123,12 +105,20 @@ function App() {
               >
                 <MenuIcon />
               </IconButton>
-              <Typography variant="h6" noWrap component="div">
-                AI Safety Management System
+              <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
+                SafetyConnect
               </Typography>
+              <IconButton
+                color="inherit"
+                onClick={() => setDarkMode(!darkMode)}
+                sx={{ ml: 1 }}
+              >
+                {darkMode ? <Brightness7 /> : <Brightness4 />}
+              </IconButton>
             </Toolbar>
           </AppBar>
 
+          {/* Sidebar Navigation */}
           <Box
             component="nav"
             sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
@@ -145,6 +135,7 @@ function App() {
                 '& .MuiDrawer-paper': {
                   boxSizing: 'border-box',
                   width: drawerWidth,
+                  mt: 8, // Add margin top to account for AppBar
                 },
               }}
             >
@@ -157,6 +148,7 @@ function App() {
                 '& .MuiDrawer-paper': {
                   boxSizing: 'border-box',
                   width: drawerWidth,
+                  mt: 8, // Add margin top to account for AppBar
                 },
               }}
               open
@@ -165,14 +157,15 @@ function App() {
             </Drawer>
           </Box>
 
+          {/* Main Content Area */}
           <Box
             component="main"
             sx={{
               flexGrow: 1,
               width: { sm: `calc(100% - ${drawerWidth}px)` },
+              mt: 8, // Add margin top to account for AppBar
             }}
           >
-            <Toolbar />
             <Routes>
               <Route path="/" element={<Navigate to="/permits" replace />} />
               <Route

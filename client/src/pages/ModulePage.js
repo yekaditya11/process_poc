@@ -726,8 +726,8 @@ const ModulePage = ({
           {description}
         </Typography>
 
-        {/* View Toggle */}
-        <Box display="flex" justifyContent="center" mt={3} mb={2}>
+        {/* View Toggle - Moved to Right */}
+        <Box display="flex" justifyContent="flex-end" mt={3} mb={2}>
           <Paper elevation={1} sx={{ p: 1, borderRadius: 2 }}>
             <ToggleButtonGroup
               value={currentView}
