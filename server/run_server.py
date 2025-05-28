@@ -17,7 +17,7 @@ def main():
     
     # Configuration
     host = os.getenv("API_HOST", "0.0.0.0")
-    port = int(os.getenv("API_PORT", "8000"))
+    port = int(os.getenv("API_PORT", "9000"))
     reload = os.getenv("API_RELOAD", "true").lower() == "true"
     log_level = os.getenv("LOG_LEVEL", "info").lower()
     
