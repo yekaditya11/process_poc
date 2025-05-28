@@ -1,0 +1,4601 @@
+[
+  {
+    "table": "OtherSettings",
+    "columns": [
+      "id",
+      "customerId",
+      "entity",
+      "web",
+      "mobile",
+      "createdAt",
+      "updatedAt",
+      "createdBy",
+      "updatedBy",
+      "isDeleted"
+    ],
+    "description": "Table `OtherSettings` has columns: `id` (UUID), `customerId` (UUID), `entity` (VARCHAR(255)), `web` (BOOLEAN), `mobile` (BOOLEAN), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `createdBy` (UUID), `updatedBy` (UUID), `isDeleted` (BOOLEAN).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "createdBy",
+        "description": "Each OtherSettings belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerId",
+        "description": "Each OtherSettings belongs to a single Customers."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "updatedBy",
+        "description": "Each OtherSettings belongs to a single Users."
+      }
+    ]
+  },
+  {
+    "table": "spatial_ref_sys",
+    "columns": [
+      "srid",
+      "auth_name",
+      "auth_srid",
+      "srtext",
+      "proj4text"
+    ],
+    "description": "Table `spatial_ref_sys` has columns: `srid` (INTEGER), `auth_name` (VARCHAR(256)), `auth_srid` (INTEGER), `srtext` (VARCHAR(2048)), `proj4text` (VARCHAR(2048)).",
+    "relationships": []
+  },
+  {
+    "table": "SequelizeMeta",
+    "columns": [
+      "name"
+    ],
+    "description": "Table `SequelizeMeta` has columns: `name` (VARCHAR(255)).",
+    "relationships": []
+  },
+  {
+    "table": "ChecklistQuestions",
+    "columns": [
+      "id",
+      "text",
+      "description",
+      "isConditional",
+      "type",
+      "options",
+      "category",
+      "startTime",
+      "endTime",
+      "hierarchy",
+      "isDisabled",
+      "checklistId",
+      "createdBy",
+      "updatedBy",
+      "createdAt",
+      "updatedAt",
+      "isDeleted",
+      "deletedBy",
+      "questionId",
+      "mandatory",
+      "remark",
+      "isActive",
+      "sortOrderId",
+      "imageDetails",
+      "isEvidenceRequired"
+    ],
+    "description": "Table `ChecklistQuestions` has columns: `id` (UUID), `text` (VARCHAR(2000)), `description` (VARCHAR(2000)), `isConditional` (BOOLEAN), `type` (VARCHAR(8)), `options` (JSON), `category` (VARCHAR(255)), `startTime` (TIMESTAMP), `endTime` (TIMESTAMP), `hierarchy` (JSON), `isDisabled` (BOOLEAN), `checklistId` (UUID), `createdBy` (UUID), `updatedBy` (UUID), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `isDeleted` (BOOLEAN), `deletedBy` (UUID), `questionId` (INTEGER), `mandatory` (BOOLEAN), `remark` (BOOLEAN), `isActive` (BOOLEAN), `sortOrderId` (INTEGER), `imageDetails` (JSONB), `isEvidenceRequired` (BOOLEAN).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "CheckLists",
+        "foreign_key": "checklistId",
+        "description": "Each ChecklistQuestions belongs to a single CheckLists."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "createdBy",
+        "description": "Each ChecklistQuestions belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "deletedBy",
+        "description": "Each ChecklistQuestions belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "updatedBy",
+        "description": "Each ChecklistQuestions belongs to a single Users."
+      },
+      {
+        "type": "has_many",
+        "table": "ChecklistAnswers",
+        "foreign_key": "question",
+        "description": "Each ChecklistQuestions can have multiple ChecklistAnswers."
+      }
+    ]
+  },
+  {
+    "table": "Users",
+    "columns": [
+      "id",
+      "contact",
+      "email",
+      "createdAt",
+      "updatedAt",
+      "createdBy",
+      "updatedBy",
+      "isDeleted",
+      "deletedBy",
+      "customerId",
+      "mobileNotificationId",
+      "isActive",
+      "remark",
+      "allowUseApp",
+      "insightsPreferences",
+      "sdkIdDeleted",
+      "userLocale",
+      "webNotificationId",
+      "safetyConnectId",
+      "faceData",
+      "isValidEmail",
+      "rememberMe",
+      "communicationPreferences",
+      "lms_userId",
+      "lms_cohortId"
+    ],
+    "description": "Table `Users` has columns: `id` (UUID), `contact` (JSONB), `email` (VARCHAR(255)), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `createdBy` (UUID), `updatedBy` (UUID), `isDeleted` (BOOLEAN), `deletedBy` (UUID), `customerId` (UUID), `mobileNotificationId` (VARCHAR(255)), `isActive` (BOOLEAN), `remark` (VARCHAR(255)), `allowUseApp` (BOOLEAN), `insightsPreferences` (JSONB), `sdkIdDeleted` (BOOLEAN), `userLocale` (JSON), `webNotificationId` (VARCHAR(255)), `safetyConnectId` (INTEGER), `faceData` (JSONB), `isValidEmail` (BOOLEAN), `rememberMe` (BOOLEAN), `communicationPreferences` (JSONB), `lms_userId` (INTEGER), `lms_cohortId` (INTEGER).",
+    "relationships": [
+      {
+        "type": "has_many",
+        "table": "OtherSettings",
+        "foreign_key": "createdBy",
+        "description": "Each Users can have multiple OtherSettings."
+      },
+      {
+        "type": "has_many",
+        "table": "OtherSettings",
+        "foreign_key": "updatedBy",
+        "description": "Each Users can have multiple OtherSettings."
+      },
+      {
+        "type": "has_many",
+        "table": "ChecklistQuestions",
+        "foreign_key": "createdBy",
+        "description": "Each Users can have multiple ChecklistQuestions."
+      },
+      {
+        "type": "has_many",
+        "table": "ChecklistQuestions",
+        "foreign_key": "deletedBy",
+        "description": "Each Users can have multiple ChecklistQuestions."
+      },
+      {
+        "type": "has_many",
+        "table": "ChecklistQuestions",
+        "foreign_key": "updatedBy",
+        "description": "Each Users can have multiple ChecklistQuestions."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerId",
+        "description": "Each Users belongs to a single Customers."
+      },
+      {
+        "type": "has_many",
+        "table": "UserReviews",
+        "foreign_key": "userId",
+        "description": "Each Users can have multiple UserReviews."
+      },
+      {
+        "type": "has_many",
+        "table": "BulkUserUploadStatus",
+        "foreign_key": "createdBy",
+        "description": "Each Users can have multiple BulkUserUploadStatus."
+      },
+      {
+        "type": "has_many",
+        "table": "BulkUserUploadStatus",
+        "foreign_key": "deletedBy",
+        "description": "Each Users can have multiple BulkUserUploadStatus."
+      },
+      {
+        "type": "has_many",
+        "table": "BulkUserUploadStatus",
+        "foreign_key": "updatedBy",
+        "description": "Each Users can have multiple BulkUserUploadStatus."
+      },
+      {
+        "type": "has_many",
+        "table": "PackageConfigs",
+        "foreign_key": "createdBy",
+        "description": "Each Users can have multiple PackageConfigs."
+      },
+      {
+        "type": "has_many",
+        "table": "PackageConfigs",
+        "foreign_key": "deletedBy",
+        "description": "Each Users can have multiple PackageConfigs."
+      },
+      {
+        "type": "has_many",
+        "table": "PackageConfigs",
+        "foreign_key": "updatedBy",
+        "description": "Each Users can have multiple PackageConfigs."
+      },
+      {
+        "type": "has_many",
+        "table": "KnowledgeCentres",
+        "foreign_key": "createdBy",
+        "description": "Each Users can have multiple KnowledgeCentres."
+      },
+      {
+        "type": "has_many",
+        "table": "KnowledgeCentres",
+        "foreign_key": "deletedBy",
+        "description": "Each Users can have multiple KnowledgeCentres."
+      },
+      {
+        "type": "has_many",
+        "table": "KnowledgeCentres",
+        "foreign_key": "updatedBy",
+        "description": "Each Users can have multiple KnowledgeCentres."
+      },
+      {
+        "type": "has_many",
+        "table": "Hierarchies",
+        "foreign_key": "createdBy",
+        "description": "Each Users can have multiple Hierarchies."
+      },
+      {
+        "type": "has_many",
+        "table": "Hierarchies",
+        "foreign_key": "deletedBy",
+        "description": "Each Users can have multiple Hierarchies."
+      },
+      {
+        "type": "has_many",
+        "table": "Hierarchies",
+        "foreign_key": "updatedBy",
+        "description": "Each Users can have multiple Hierarchies."
+      },
+      {
+        "type": "has_many",
+        "table": "Broadcasts",
+        "foreign_key": "createdBy",
+        "description": "Each Users can have multiple Broadcasts."
+      },
+      {
+        "type": "has_many",
+        "table": "Broadcasts",
+        "foreign_key": "deletedBy",
+        "description": "Each Users can have multiple Broadcasts."
+      },
+      {
+        "type": "has_many",
+        "table": "Broadcasts",
+        "foreign_key": "updatedBy",
+        "description": "Each Users can have multiple Broadcasts."
+      },
+      {
+        "type": "has_many",
+        "table": "RoutePermissions",
+        "foreign_key": "updatedBy",
+        "description": "Each Users can have multiple RoutePermissions."
+      },
+      {
+        "type": "has_many",
+        "table": "SystemAdminCustomerMappings",
+        "foreign_key": "userId",
+        "description": "Each Users can have multiple SystemAdminCustomerMappings."
+      },
+      {
+        "type": "has_many",
+        "table": "Reminders",
+        "foreign_key": "userId",
+        "description": "Each Users can have multiple Reminders."
+      },
+      {
+        "type": "has_many",
+        "table": "UserOTPs",
+        "foreign_key": "user",
+        "description": "Each Users can have multiple UserOTPs."
+      },
+      {
+        "type": "has_many",
+        "table": "ActionSettings",
+        "foreign_key": "createdBy",
+        "description": "Each Users can have multiple ActionSettings."
+      },
+      {
+        "type": "has_many",
+        "table": "ActionSettings",
+        "foreign_key": "deletedBy",
+        "description": "Each Users can have multiple ActionSettings."
+      },
+      {
+        "type": "has_many",
+        "table": "ActionSettings",
+        "foreign_key": "updatedBy",
+        "description": "Each Users can have multiple ActionSettings."
+      },
+      {
+        "type": "has_many",
+        "table": "Geofences",
+        "foreign_key": "createdBy",
+        "description": "Each Users can have multiple Geofences."
+      },
+      {
+        "type": "has_many",
+        "table": "Geofences",
+        "foreign_key": "deletedBy",
+        "description": "Each Users can have multiple Geofences."
+      },
+      {
+        "type": "has_many",
+        "table": "Geofences",
+        "foreign_key": "updatedBy",
+        "description": "Each Users can have multiple Geofences."
+      },
+      {
+        "type": "has_many",
+        "table": "NotificationSettings",
+        "foreign_key": "createdBy",
+        "description": "Each Users can have multiple NotificationSettings."
+      },
+      {
+        "type": "has_many",
+        "table": "NotificationSettings",
+        "foreign_key": "updatedBy",
+        "description": "Each Users can have multiple NotificationSettings."
+      },
+      {
+        "type": "has_many",
+        "table": "AppInstalls",
+        "foreign_key": "createdBy",
+        "description": "Each Users can have multiple AppInstalls."
+      },
+      {
+        "type": "has_many",
+        "table": "AppInstalls",
+        "foreign_key": "updatedBy",
+        "description": "Each Users can have multiple AppInstalls."
+      },
+      {
+        "type": "has_many",
+        "table": "AppInstalls",
+        "foreign_key": "userId",
+        "description": "Each Users can have multiple AppInstalls."
+      },
+      {
+        "type": "has_many",
+        "table": "ChecklistAnswers",
+        "foreign_key": "answeredBy",
+        "description": "Each Users can have multiple ChecklistAnswers."
+      },
+      {
+        "type": "has_many",
+        "table": "DefaultPermissions",
+        "foreign_key": "updatedBy",
+        "description": "Each Users can have multiple DefaultPermissions."
+      },
+      {
+        "type": "has_many",
+        "table": "ChecklistSummaries",
+        "foreign_key": "answeredBy",
+        "description": "Each Users can have multiple ChecklistSummaries."
+      },
+      {
+        "type": "has_many",
+        "table": "Thresholds",
+        "foreign_key": "createdBy",
+        "description": "Each Users can have multiple Thresholds."
+      },
+      {
+        "type": "has_many",
+        "table": "Thresholds",
+        "foreign_key": "updatedBy",
+        "description": "Each Users can have multiple Thresholds."
+      },
+      {
+        "type": "has_many",
+        "table": "Notifications",
+        "foreign_key": "createdBy",
+        "description": "Each Users can have multiple Notifications."
+      },
+      {
+        "type": "has_many",
+        "table": "Notifications",
+        "foreign_key": "updatedBy",
+        "description": "Each Users can have multiple Notifications."
+      },
+      {
+        "type": "has_many",
+        "table": "Notifications",
+        "foreign_key": "userId",
+        "description": "Each Users can have multiple Notifications."
+      },
+      {
+        "type": "has_many",
+        "table": "Roles",
+        "foreign_key": "createdBy",
+        "description": "Each Users can have multiple Roles."
+      },
+      {
+        "type": "has_many",
+        "table": "Roles",
+        "foreign_key": "createdBy",
+        "description": "Each Users can have multiple Roles."
+      },
+      {
+        "type": "has_many",
+        "table": "Roles",
+        "foreign_key": "createdBy",
+        "description": "Each Users can have multiple Roles."
+      },
+      {
+        "type": "has_many",
+        "table": "Roles",
+        "foreign_key": "deletedBy",
+        "description": "Each Users can have multiple Roles."
+      },
+      {
+        "type": "has_many",
+        "table": "Roles",
+        "foreign_key": "updatedBy",
+        "description": "Each Users can have multiple Roles."
+      },
+      {
+        "type": "has_many",
+        "table": "Roles",
+        "foreign_key": "updatedBy",
+        "description": "Each Users can have multiple Roles."
+      },
+      {
+        "type": "has_many",
+        "table": "Roles",
+        "foreign_key": "updatedBy",
+        "description": "Each Users can have multiple Roles."
+      },
+      {
+        "type": "has_many",
+        "table": "Roles",
+        "foreign_key": "userId",
+        "description": "Each Users can have multiple Roles."
+      },
+      {
+        "type": "has_many",
+        "table": "ActiveVehicles",
+        "foreign_key": "createdBy",
+        "description": "Each Users can have multiple ActiveVehicles."
+      },
+      {
+        "type": "has_many",
+        "table": "ActiveVehicles",
+        "foreign_key": "updatedBy",
+        "description": "Each Users can have multiple ActiveVehicles."
+      },
+      {
+        "type": "has_many",
+        "table": "ActiveVehicles",
+        "foreign_key": "userId",
+        "description": "Each Users can have multiple ActiveVehicles."
+      },
+      {
+        "type": "has_many",
+        "table": "UserProfiles",
+        "foreign_key": "reportingManagerId",
+        "description": "Each Users can have multiple UserProfiles."
+      },
+      {
+        "type": "has_many",
+        "table": "UserProfiles",
+        "foreign_key": "userId",
+        "description": "Each Users can have multiple UserProfiles."
+      },
+      {
+        "type": "has_many",
+        "table": "Vehicles",
+        "foreign_key": "createdBy",
+        "description": "Each Users can have multiple Vehicles."
+      },
+      {
+        "type": "has_many",
+        "table": "Vehicles",
+        "foreign_key": "updatedBy",
+        "description": "Each Users can have multiple Vehicles."
+      },
+      {
+        "type": "has_many",
+        "table": "Vehicles",
+        "foreign_key": "userId",
+        "description": "Each Users can have multiple Vehicles."
+      },
+      {
+        "type": "has_many",
+        "table": "Feeds",
+        "foreign_key": "createdBy",
+        "description": "Each Users can have multiple Feeds."
+      },
+      {
+        "type": "has_many",
+        "table": "Feeds",
+        "foreign_key": "deletedBy",
+        "description": "Each Users can have multiple Feeds."
+      },
+      {
+        "type": "has_many",
+        "table": "Feeds",
+        "foreign_key": "updatedBy",
+        "description": "Each Users can have multiple Feeds."
+      },
+      {
+        "type": "has_many",
+        "table": "PeerToPeerAssignments",
+        "foreign_key": "assignedUserId",
+        "description": "Each Users can have multiple PeerToPeerAssignments."
+      },
+      {
+        "type": "has_many",
+        "table": "ReportingManagers",
+        "foreign_key": "createdBy",
+        "description": "Each Users can have multiple ReportingManagers."
+      },
+      {
+        "type": "has_many",
+        "table": "ReportingManagers",
+        "foreign_key": "updatedBy",
+        "description": "Each Users can have multiple ReportingManagers."
+      },
+      {
+        "type": "has_many",
+        "table": "ReportingManagers",
+        "foreign_key": "userId",
+        "description": "Each Users can have multiple ReportingManagers."
+      },
+      {
+        "type": "has_many",
+        "table": "PeerToPeerChallenges",
+        "foreign_key": "userId",
+        "description": "Each Users can have multiple PeerToPeerChallenges."
+      },
+      {
+        "type": "has_many",
+        "table": "CheckLists",
+        "foreign_key": "createdBy",
+        "description": "Each Users can have multiple CheckLists."
+      },
+      {
+        "type": "has_many",
+        "table": "CheckLists",
+        "foreign_key": "deletedBy",
+        "description": "Each Users can have multiple CheckLists."
+      },
+      {
+        "type": "has_many",
+        "table": "CheckLists",
+        "foreign_key": "updatedBy",
+        "description": "Each Users can have multiple CheckLists."
+      },
+      {
+        "type": "has_many",
+        "table": "ScheduledReportSettings",
+        "foreign_key": "createdBy",
+        "description": "Each Users can have multiple ScheduledReportSettings."
+      },
+      {
+        "type": "has_many",
+        "table": "ScheduledReportSettings",
+        "foreign_key": "updatedBy",
+        "description": "Each Users can have multiple ScheduledReportSettings."
+      },
+      {
+        "type": "has_many",
+        "table": "ScheduledReportSettings",
+        "foreign_key": "userId",
+        "description": "Each Users can have multiple ScheduledReportSettings."
+      },
+      {
+        "type": "has_many",
+        "table": "DashboardReports",
+        "foreign_key": "userId",
+        "description": "Each Users can have multiple DashboardReports."
+      },
+      {
+        "type": "has_many",
+        "table": "Incidents",
+        "foreign_key": "createdBy",
+        "description": "Each Users can have multiple Incidents."
+      },
+      {
+        "type": "has_many",
+        "table": "Incidents",
+        "foreign_key": "updatedBy",
+        "description": "Each Users can have multiple Incidents."
+      },
+      {
+        "type": "has_many",
+        "table": "UserGeofenceMappings",
+        "foreign_key": "createdBy",
+        "description": "Each Users can have multiple UserGeofenceMappings."
+      },
+      {
+        "type": "has_many",
+        "table": "UserGeofenceMappings",
+        "foreign_key": "updatedBy",
+        "description": "Each Users can have multiple UserGeofenceMappings."
+      },
+      {
+        "type": "has_many",
+        "table": "UserGeofenceMappings",
+        "foreign_key": "userId",
+        "description": "Each Users can have multiple UserGeofenceMappings."
+      },
+      {
+        "type": "has_many",
+        "table": "AdminAccessFields",
+        "foreign_key": "userId",
+        "description": "Each Users can have multiple AdminAccessFields."
+      },
+      {
+        "type": "has_many",
+        "table": "MobileHealth",
+        "foreign_key": "createdBy",
+        "description": "Each Users can have multiple MobileHealth."
+      },
+      {
+        "type": "has_many",
+        "table": "MobileHealth",
+        "foreign_key": "updatedBy",
+        "description": "Each Users can have multiple MobileHealth."
+      },
+      {
+        "type": "has_many",
+        "table": "MobileHealth",
+        "foreign_key": "userId",
+        "description": "Each Users can have multiple MobileHealth."
+      },
+      {
+        "type": "has_many",
+        "table": "InspectionTrackings",
+        "foreign_key": "createdBy",
+        "description": "Each Users can have multiple InspectionTrackings."
+      },
+      {
+        "type": "has_many",
+        "table": "InspectionTrackings",
+        "foreign_key": "deletedBy",
+        "description": "Each Users can have multiple InspectionTrackings."
+      },
+      {
+        "type": "has_many",
+        "table": "InspectionTrackings",
+        "foreign_key": "updatedBy",
+        "description": "Each Users can have multiple InspectionTrackings."
+      },
+      {
+        "type": "has_many",
+        "table": "CalendarRoutines",
+        "foreign_key": "createdBy",
+        "description": "Each Users can have multiple CalendarRoutines."
+      },
+      {
+        "type": "has_many",
+        "table": "CalendarRoutines",
+        "foreign_key": "updatedBy",
+        "description": "Each Users can have multiple CalendarRoutines."
+      },
+      {
+        "type": "has_many",
+        "table": "InspectionSettings",
+        "foreign_key": "createdBy",
+        "description": "Each Users can have multiple InspectionSettings."
+      },
+      {
+        "type": "has_many",
+        "table": "InspectionSettings",
+        "foreign_key": "deletedBy",
+        "description": "Each Users can have multiple InspectionSettings."
+      },
+      {
+        "type": "has_many",
+        "table": "InspectionSettings",
+        "foreign_key": "updatedBy",
+        "description": "Each Users can have multiple InspectionSettings."
+      },
+      {
+        "type": "has_many",
+        "table": "InspectionStandards",
+        "foreign_key": "createdBy",
+        "description": "Each Users can have multiple InspectionStandards."
+      },
+      {
+        "type": "has_many",
+        "table": "InspectionStandards",
+        "foreign_key": "deletedBy",
+        "description": "Each Users can have multiple InspectionStandards."
+      },
+      {
+        "type": "has_many",
+        "table": "InspectionStandards",
+        "foreign_key": "updatedBy",
+        "description": "Each Users can have multiple InspectionStandards."
+      },
+      {
+        "type": "has_many",
+        "table": "InspectionSubStandards",
+        "foreign_key": "createdBy",
+        "description": "Each Users can have multiple InspectionSubStandards."
+      },
+      {
+        "type": "has_many",
+        "table": "InspectionSubStandards",
+        "foreign_key": "deletedBy",
+        "description": "Each Users can have multiple InspectionSubStandards."
+      },
+      {
+        "type": "has_many",
+        "table": "InspectionSubStandards",
+        "foreign_key": "updatedBy",
+        "description": "Each Users can have multiple InspectionSubStandards."
+      },
+      {
+        "type": "has_many",
+        "table": "Attendance",
+        "foreign_key": "createdBy",
+        "description": "Each Users can have multiple Attendance."
+      },
+      {
+        "type": "has_many",
+        "table": "Attendance",
+        "foreign_key": "updatedBy",
+        "description": "Each Users can have multiple Attendance."
+      },
+      {
+        "type": "has_many",
+        "table": "Attendance",
+        "foreign_key": "userId",
+        "description": "Each Users can have multiple Attendance."
+      },
+      {
+        "type": "has_many",
+        "table": "Location",
+        "foreign_key": "createdBy",
+        "description": "Each Users can have multiple Location."
+      },
+      {
+        "type": "has_many",
+        "table": "Location",
+        "foreign_key": "updatedBy",
+        "description": "Each Users can have multiple Location."
+      },
+      {
+        "type": "has_many",
+        "table": "Location",
+        "foreign_key": "userId",
+        "description": "Each Users can have multiple Location."
+      },
+      {
+        "type": "has_many",
+        "table": "DashboardLayouts",
+        "foreign_key": "createdBy",
+        "description": "Each Users can have multiple DashboardLayouts."
+      },
+      {
+        "type": "has_many",
+        "table": "DashboardLayouts",
+        "foreign_key": "updatedBy",
+        "description": "Each Users can have multiple DashboardLayouts."
+      },
+      {
+        "type": "has_many",
+        "table": "DashboardLayouts",
+        "foreign_key": "userId",
+        "description": "Each Users can have multiple DashboardLayouts."
+      },
+      {
+        "type": "has_many",
+        "table": "MobileLoginStatuses",
+        "foreign_key": "createdBy",
+        "description": "Each Users can have multiple MobileLoginStatuses."
+      },
+      {
+        "type": "has_many",
+        "table": "MobileLoginStatuses",
+        "foreign_key": "updatedBy",
+        "description": "Each Users can have multiple MobileLoginStatuses."
+      },
+      {
+        "type": "has_many",
+        "table": "MobileLoginStatuses",
+        "foreign_key": "userId",
+        "description": "Each Users can have multiple MobileLoginStatuses."
+      },
+      {
+        "type": "has_many",
+        "table": "ActionTrackings",
+        "foreign_key": "actionOwner",
+        "description": "Each Users can have multiple ActionTrackings."
+      },
+      {
+        "type": "has_many",
+        "table": "ActionTrackings",
+        "foreign_key": "createdBy",
+        "description": "Each Users can have multiple ActionTrackings."
+      },
+      {
+        "type": "has_many",
+        "table": "ActionTrackings",
+        "foreign_key": "deletedBy",
+        "description": "Each Users can have multiple ActionTrackings."
+      },
+      {
+        "type": "has_many",
+        "table": "ActionTrackings",
+        "foreign_key": "reportingManager",
+        "description": "Each Users can have multiple ActionTrackings."
+      },
+      {
+        "type": "has_many",
+        "table": "ActionTrackings",
+        "foreign_key": "updatedBy",
+        "description": "Each Users can have multiple ActionTrackings."
+      },
+      {
+        "type": "has_many",
+        "table": "Counsellings",
+        "foreign_key": "createdBy",
+        "description": "Each Users can have multiple Counsellings."
+      },
+      {
+        "type": "has_many",
+        "table": "Counsellings",
+        "foreign_key": "deletedBy",
+        "description": "Each Users can have multiple Counsellings."
+      },
+      {
+        "type": "has_many",
+        "table": "Counsellings",
+        "foreign_key": "updatedBy",
+        "description": "Each Users can have multiple Counsellings."
+      },
+      {
+        "type": "has_many",
+        "table": "Counsellings",
+        "foreign_key": "userId",
+        "description": "Each Users can have multiple Counsellings."
+      },
+      {
+        "type": "has_many",
+        "table": "PrivacyPolicies",
+        "foreign_key": "userId",
+        "description": "Each Users can have multiple PrivacyPolicies."
+      },
+      {
+        "type": "has_many",
+        "table": "AppVersions",
+        "foreign_key": "userId",
+        "description": "Each Users can have multiple AppVersions."
+      },
+      {
+        "type": "has_many",
+        "table": "UserInsights",
+        "foreign_key": "userId",
+        "description": "Each Users can have multiple UserInsights."
+      },
+      {
+        "type": "has_many",
+        "table": "AdditionalSettings",
+        "foreign_key": "createdBy",
+        "description": "Each Users can have multiple AdditionalSettings."
+      },
+      {
+        "type": "has_many",
+        "table": "AdditionalSettings",
+        "foreign_key": "deletedBy",
+        "description": "Each Users can have multiple AdditionalSettings."
+      },
+      {
+        "type": "has_many",
+        "table": "AdditionalSettings",
+        "foreign_key": "updatedBy",
+        "description": "Each Users can have multiple AdditionalSettings."
+      },
+      {
+        "type": "has_many",
+        "table": "ModeAndJourneyTypeToggles",
+        "foreign_key": "userId",
+        "description": "Each Users can have multiple ModeAndJourneyTypeToggles."
+      },
+      {
+        "type": "has_many",
+        "table": "UserEngagementNotifications",
+        "foreign_key": "userId",
+        "description": "Each Users can have multiple UserEngagementNotifications."
+      },
+      {
+        "type": "has_many",
+        "table": "MobileHealthLatest",
+        "foreign_key": "createdBy",
+        "description": "Each Users can have multiple MobileHealthLatest."
+      },
+      {
+        "type": "has_many",
+        "table": "MobileHealthLatest",
+        "foreign_key": "updatedBy",
+        "description": "Each Users can have multiple MobileHealthLatest."
+      },
+      {
+        "type": "has_many",
+        "table": "MobileHealthLatest",
+        "foreign_key": "userId",
+        "description": "Each Users can have multiple MobileHealthLatest."
+      },
+      {
+        "type": "has_many",
+        "table": "BadgesAssignments",
+        "foreign_key": "userId",
+        "description": "Each Users can have multiple BadgesAssignments."
+      },
+      {
+        "type": "has_many",
+        "table": "Assets",
+        "foreign_key": "createdBy",
+        "description": "Each Users can have multiple Assets."
+      },
+      {
+        "type": "has_many",
+        "table": "Assets",
+        "foreign_key": "updatedBy",
+        "description": "Each Users can have multiple Assets."
+      },
+      {
+        "type": "has_many",
+        "table": "InspectionAssignments",
+        "foreign_key": "createdBy",
+        "description": "Each Users can have multiple InspectionAssignments."
+      },
+      {
+        "type": "has_many",
+        "table": "InspectionAssignments",
+        "foreign_key": "updatedBy",
+        "description": "Each Users can have multiple InspectionAssignments."
+      },
+      {
+        "type": "has_many",
+        "table": "InspectionAssignments",
+        "foreign_key": "userId",
+        "description": "Each Users can have multiple InspectionAssignments."
+      },
+      {
+        "type": "has_many",
+        "table": "UserRemainderCalls",
+        "foreign_key": "userId",
+        "description": "Each Users can have multiple UserRemainderCalls."
+      },
+      {
+        "type": "has_many",
+        "table": "ForkliftTabs",
+        "foreign_key": "updatedBy",
+        "description": "Each Users can have multiple ForkliftTabs."
+      },
+      {
+        "type": "has_many",
+        "table": "FaceLoginAttempts",
+        "foreign_key": "userId",
+        "description": "Each Users can have multiple FaceLoginAttempts."
+      },
+      {
+        "type": "has_many",
+        "table": "UserIdentifierMappings",
+        "foreign_key": "userId",
+        "description": "Each Users can have multiple UserIdentifierMappings."
+      },
+      {
+        "type": "has_many",
+        "table": "ProcessSafetySchedules",
+        "foreign_key": "userId",
+        "description": "Each Users can have multiple ProcessSafetySchedules."
+      },
+      {
+        "type": "has_many",
+        "table": "ProcessSafetyAssignments",
+        "foreign_key": "associatedUserId",
+        "description": "Each Users can have multiple ProcessSafetyAssignments."
+      },
+      {
+        "type": "has_many",
+        "table": "ProcessSafetyTemplatesCollections",
+        "foreign_key": "createdBy",
+        "description": "Each Users can have multiple ProcessSafetyTemplatesCollections."
+      },
+      {
+        "type": "has_many",
+        "table": "ProcessSafetyTemplatesCollections",
+        "foreign_key": "updatedBy",
+        "description": "Each Users can have multiple ProcessSafetyTemplatesCollections."
+      },
+      {
+        "type": "has_many",
+        "table": "ProcessSafetyHistoriesAccess",
+        "foreign_key": "userId",
+        "description": "Each Users can have multiple ProcessSafetyHistoriesAccess."
+      },
+      {
+        "type": "has_many",
+        "table": "ChecklistAssignments",
+        "foreign_key": "userId",
+        "description": "Each Users can have multiple ChecklistAssignments."
+      }
+    ]
+  },
+  {
+    "table": "Features",
+    "columns": [
+      "id",
+      "name",
+      "configuration",
+      "createdAt",
+      "updatedAt",
+      "createdBy",
+      "updatedBy",
+      "isDeleted",
+      "deletedBy",
+      "description"
+    ],
+    "description": "Table `Features` has columns: `id` (UUID), `name` (VARCHAR(255)), `configuration` (JSON), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `createdBy` (UUID), `updatedBy` (UUID), `isDeleted` (BOOLEAN), `deletedBy` (UUID), `description` (TEXT).",
+    "relationships": [
+      {
+        "type": "has_many",
+        "table": "PackageConfigs",
+        "foreign_key": "featureId",
+        "description": "Each Features can have multiple PackageConfigs."
+      }
+    ]
+  },
+  {
+    "table": "Packages",
+    "columns": [
+      "id",
+      "name",
+      "fee",
+      "createdAt",
+      "updatedAt",
+      "createdBy",
+      "updatedBy",
+      "isDeleted",
+      "deletedBy"
+    ],
+    "description": "Table `Packages` has columns: `id` (UUID), `name` (VARCHAR(255)), `fee` (VARCHAR(255)), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `createdBy` (UUID), `updatedBy` (UUID), `isDeleted` (BOOLEAN), `deletedBy` (UUID).",
+    "relationships": [
+      {
+        "type": "has_many",
+        "table": "PackageConfigs",
+        "foreign_key": "packageId",
+        "description": "Each Packages can have multiple PackageConfigs."
+      },
+      {
+        "type": "has_many",
+        "table": "Customers",
+        "foreign_key": "packageId",
+        "description": "Each Packages can have multiple Customers."
+      }
+    ]
+  },
+  {
+    "table": "UserReviews",
+    "columns": [
+      "id",
+      "userId",
+      "customerId",
+      "reviewSubmitted",
+      "comment",
+      "ratingInStars",
+      "reviewDeclinedCount",
+      "createdAt",
+      "updatedAt",
+      "frequencyCount"
+    ],
+    "description": "Table `UserReviews` has columns: `id` (UUID), `userId` (UUID), `customerId` (UUID), `reviewSubmitted` (BOOLEAN), `comment` (TEXT), `ratingInStars` (INTEGER), `reviewDeclinedCount` (INTEGER), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `frequencyCount` (INTEGER).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerId",
+        "description": "Each UserReviews belongs to a single Customers."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "userId",
+        "description": "Each UserReviews belongs to a single Users."
+      }
+    ]
+  },
+  {
+    "table": "BulkUserUploadStatus",
+    "columns": [
+      "id",
+      "customerId",
+      "customerName",
+      "result",
+      "status",
+      "uploadType",
+      "usersCount",
+      "startTime",
+      "endTime",
+      "createdAt",
+      "updatedAt",
+      "createdBy",
+      "updatedBy",
+      "isDeleted",
+      "deletedBy"
+    ],
+    "description": "Table `BulkUserUploadStatus` has columns: `id` (UUID), `customerId` (UUID), `customerName` (VARCHAR(255)), `result` (JSONB), `status` (VARCHAR(255)), `uploadType` (VARCHAR(255)), `usersCount` (VARCHAR(255)), `startTime` (TIMESTAMP), `endTime` (TIMESTAMP), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `createdBy` (UUID), `updatedBy` (UUID), `isDeleted` (BOOLEAN), `deletedBy` (UUID).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "createdBy",
+        "description": "Each BulkUserUploadStatus belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerId",
+        "description": "Each BulkUserUploadStatus belongs to a single Customers."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "deletedBy",
+        "description": "Each BulkUserUploadStatus belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "updatedBy",
+        "description": "Each BulkUserUploadStatus belongs to a single Users."
+      }
+    ]
+  },
+  {
+    "table": "PackageConfigs",
+    "columns": [
+      "id",
+      "packageId",
+      "featureId",
+      "configuration",
+      "createdAt",
+      "updatedAt",
+      "createdBy",
+      "updatedBy",
+      "isDeleted",
+      "deletedBy"
+    ],
+    "description": "Table `PackageConfigs` has columns: `id` (UUID), `packageId` (UUID), `featureId` (UUID), `configuration` (JSON), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `createdBy` (UUID), `updatedBy` (UUID), `isDeleted` (BOOLEAN), `deletedBy` (UUID).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "createdBy",
+        "description": "Each PackageConfigs belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "deletedBy",
+        "description": "Each PackageConfigs belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Features",
+        "foreign_key": "featureId",
+        "description": "Each PackageConfigs belongs to a single Features."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Packages",
+        "foreign_key": "packageId",
+        "description": "Each PackageConfigs belongs to a single Packages."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "updatedBy",
+        "description": "Each PackageConfigs belongs to a single Users."
+      }
+    ]
+  },
+  {
+    "table": "KnowledgeCentres",
+    "columns": [
+      "id",
+      "customerId",
+      "title",
+      "description",
+      "category",
+      "documents",
+      "isActive",
+      "createdBy",
+      "updatedBy",
+      "createdAt",
+      "updatedAt",
+      "isDeleted",
+      "deletedBy",
+      "thumbnail",
+      "link",
+      "hierarchy"
+    ],
+    "description": "Table `KnowledgeCentres` has columns: `id` (UUID), `customerId` (UUID), `title` (VARCHAR(255)), `description` (VARCHAR(2000)), `category` (VARCHAR(255)), `documents` (VARCHAR(255)), `isActive` (BOOLEAN), `createdBy` (UUID), `updatedBy` (UUID), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `isDeleted` (BOOLEAN), `deletedBy` (UUID), `thumbnail` (VARCHAR(255)), `link` (VARCHAR(255)), `hierarchy` (ARRAY).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "createdBy",
+        "description": "Each KnowledgeCentres belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerId",
+        "description": "Each KnowledgeCentres belongs to a single Customers."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "deletedBy",
+        "description": "Each KnowledgeCentres belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "updatedBy",
+        "description": "Each KnowledgeCentres belongs to a single Users."
+      }
+    ]
+  },
+  {
+    "table": "Hierarchies",
+    "columns": [
+      "id",
+      "customerId",
+      "tree",
+      "createdAt",
+      "updatedAt",
+      "createdBy",
+      "updatedBy",
+      "isDeleted",
+      "deletedBy"
+    ],
+    "description": "Table `Hierarchies` has columns: `id` (UUID), `customerId` (UUID), `tree` (JSON), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `createdBy` (UUID), `updatedBy` (UUID), `isDeleted` (BOOLEAN), `deletedBy` (UUID).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "createdBy",
+        "description": "Each Hierarchies belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerId",
+        "description": "Each Hierarchies belongs to a single Customers."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "deletedBy",
+        "description": "Each Hierarchies belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "updatedBy",
+        "description": "Each Hierarchies belongs to a single Users."
+      }
+    ]
+  },
+  {
+    "table": "Customers",
+    "columns": [
+      "id",
+      "packageId",
+      "companyName",
+      "address",
+      "timeZone",
+      "language",
+      "customerStatus",
+      "domainName",
+      "startDate",
+      "duration",
+      "logo",
+      "createdAt",
+      "updatedAt",
+      "createdBy",
+      "updatedBy",
+      "isDeleted",
+      "deletedBy",
+      "userInactiveDuration",
+      "otpType",
+      "totalLicences",
+      "offsetTwentyFourHourCycleInMins",
+      "totalAdmins",
+      "totalUsers",
+      "workingHoursPerDay",
+      "uniqueIdentifier",
+      "industryType",
+      "region",
+      "country"
+    ],
+    "description": "Table `Customers` has columns: `id` (UUID), `packageId` (UUID), `companyName` (VARCHAR(255)), `address` (VARCHAR(255)), `timeZone` (VARCHAR(255)), `language` (VARCHAR(255)), `customerStatus` (BOOLEAN), `domainName` (VARCHAR(255)), `startDate` (TIMESTAMP), `duration` (JSON), `logo` (VARCHAR(255)), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `createdBy` (UUID), `updatedBy` (UUID), `isDeleted` (BOOLEAN), `deletedBy` (UUID), `userInactiveDuration` (INTEGER), `otpType` (VARCHAR(255)), `totalLicences` (INTEGER), `offsetTwentyFourHourCycleInMins` (INTEGER), `totalAdmins` (INTEGER), `totalUsers` (INTEGER), `workingHoursPerDay` (INTEGER), `uniqueIdentifier` (VARCHAR(255)), `industryType` (VARCHAR(255)), `region` (VARCHAR(255)), `country` (VARCHAR(255)).",
+    "relationships": [
+      {
+        "type": "has_many",
+        "table": "OtherSettings",
+        "foreign_key": "customerId",
+        "description": "Each Customers can have multiple OtherSettings."
+      },
+      {
+        "type": "has_many",
+        "table": "Users",
+        "foreign_key": "customerId",
+        "description": "Each Customers can have multiple Users."
+      },
+      {
+        "type": "has_many",
+        "table": "UserReviews",
+        "foreign_key": "customerId",
+        "description": "Each Customers can have multiple UserReviews."
+      },
+      {
+        "type": "has_many",
+        "table": "BulkUserUploadStatus",
+        "foreign_key": "customerId",
+        "description": "Each Customers can have multiple BulkUserUploadStatus."
+      },
+      {
+        "type": "has_many",
+        "table": "KnowledgeCentres",
+        "foreign_key": "customerId",
+        "description": "Each Customers can have multiple KnowledgeCentres."
+      },
+      {
+        "type": "has_many",
+        "table": "Hierarchies",
+        "foreign_key": "customerId",
+        "description": "Each Customers can have multiple Hierarchies."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Packages",
+        "foreign_key": "packageId",
+        "description": "Each Customers belongs to a single Packages."
+      },
+      {
+        "type": "has_many",
+        "table": "SystemAdminCustomerMappings",
+        "foreign_key": "customerId",
+        "description": "Each Customers can have multiple SystemAdminCustomerMappings."
+      },
+      {
+        "type": "has_many",
+        "table": "Reminders",
+        "foreign_key": "customerId",
+        "description": "Each Customers can have multiple Reminders."
+      },
+      {
+        "type": "has_many",
+        "table": "ActionSettings",
+        "foreign_key": "customerId",
+        "description": "Each Customers can have multiple ActionSettings."
+      },
+      {
+        "type": "has_many",
+        "table": "Geofences",
+        "foreign_key": "customerId",
+        "description": "Each Customers can have multiple Geofences."
+      },
+      {
+        "type": "has_many",
+        "table": "NotificationSettings",
+        "foreign_key": "customerId",
+        "description": "Each Customers can have multiple NotificationSettings."
+      },
+      {
+        "type": "has_many",
+        "table": "ChecklistSummaries",
+        "foreign_key": "customerID",
+        "description": "Each Customers can have multiple ChecklistSummaries."
+      },
+      {
+        "type": "has_many",
+        "table": "Thresholds",
+        "foreign_key": "customerId",
+        "description": "Each Customers can have multiple Thresholds."
+      },
+      {
+        "type": "has_many",
+        "table": "Notifications",
+        "foreign_key": "customerId",
+        "description": "Each Customers can have multiple Notifications."
+      },
+      {
+        "type": "has_many",
+        "table": "Vehicles",
+        "foreign_key": "customerId",
+        "description": "Each Customers can have multiple Vehicles."
+      },
+      {
+        "type": "has_many",
+        "table": "PeerToPeerAssignments",
+        "foreign_key": "customerId",
+        "description": "Each Customers can have multiple PeerToPeerAssignments."
+      },
+      {
+        "type": "has_many",
+        "table": "ReportingManagers",
+        "foreign_key": "customerId",
+        "description": "Each Customers can have multiple ReportingManagers."
+      },
+      {
+        "type": "has_many",
+        "table": "PeerToPeerChallenges",
+        "foreign_key": "customerId",
+        "description": "Each Customers can have multiple PeerToPeerChallenges."
+      },
+      {
+        "type": "has_many",
+        "table": "CheckLists",
+        "foreign_key": "customerId",
+        "description": "Each Customers can have multiple CheckLists."
+      },
+      {
+        "type": "has_many",
+        "table": "ScheduledReportSettings",
+        "foreign_key": "customerId",
+        "description": "Each Customers can have multiple ScheduledReportSettings."
+      },
+      {
+        "type": "has_many",
+        "table": "DashboardReports",
+        "foreign_key": "customerId",
+        "description": "Each Customers can have multiple DashboardReports."
+      },
+      {
+        "type": "has_many",
+        "table": "Incidents",
+        "foreign_key": "customerId",
+        "description": "Each Customers can have multiple Incidents."
+      },
+      {
+        "type": "has_many",
+        "table": "ChecklistSchedules",
+        "foreign_key": "customerId",
+        "description": "Each Customers can have multiple ChecklistSchedules."
+      },
+      {
+        "type": "has_many",
+        "table": "AdminAccessFields",
+        "foreign_key": "customerId",
+        "description": "Each Customers can have multiple AdminAccessFields."
+      },
+      {
+        "type": "has_many",
+        "table": "MobileHealth",
+        "foreign_key": "customerId",
+        "description": "Each Customers can have multiple MobileHealth."
+      },
+      {
+        "type": "has_many",
+        "table": "InspectionTrackings",
+        "foreign_key": "customerId",
+        "description": "Each Customers can have multiple InspectionTrackings."
+      },
+      {
+        "type": "has_many",
+        "table": "CalendarRoutines",
+        "foreign_key": "customerId",
+        "description": "Each Customers can have multiple CalendarRoutines."
+      },
+      {
+        "type": "has_many",
+        "table": "InspectionSettings",
+        "foreign_key": "customerId",
+        "description": "Each Customers can have multiple InspectionSettings."
+      },
+      {
+        "type": "has_many",
+        "table": "InspectionStandards",
+        "foreign_key": "customerId",
+        "description": "Each Customers can have multiple InspectionStandards."
+      },
+      {
+        "type": "has_many",
+        "table": "InspectionSubStandards",
+        "foreign_key": "customerId",
+        "description": "Each Customers can have multiple InspectionSubStandards."
+      },
+      {
+        "type": "has_many",
+        "table": "Attendance",
+        "foreign_key": "customerId",
+        "description": "Each Customers can have multiple Attendance."
+      },
+      {
+        "type": "has_many",
+        "table": "Location",
+        "foreign_key": "customerId",
+        "description": "Each Customers can have multiple Location."
+      },
+      {
+        "type": "has_many",
+        "table": "DashboardLayouts",
+        "foreign_key": "customerId",
+        "description": "Each Customers can have multiple DashboardLayouts."
+      },
+      {
+        "type": "has_many",
+        "table": "ActionTrackings",
+        "foreign_key": "customerId",
+        "description": "Each Customers can have multiple ActionTrackings."
+      },
+      {
+        "type": "has_many",
+        "table": "Counsellings",
+        "foreign_key": "customerId",
+        "description": "Each Customers can have multiple Counsellings."
+      },
+      {
+        "type": "has_many",
+        "table": "AppVersions",
+        "foreign_key": "customerId",
+        "description": "Each Customers can have multiple AppVersions."
+      },
+      {
+        "type": "has_many",
+        "table": "UserInsights",
+        "foreign_key": "customerId",
+        "description": "Each Customers can have multiple UserInsights."
+      },
+      {
+        "type": "has_many",
+        "table": "AdditionalSettings",
+        "foreign_key": "customerId",
+        "description": "Each Customers can have multiple AdditionalSettings."
+      },
+      {
+        "type": "has_many",
+        "table": "UserEngagementNotifications",
+        "foreign_key": "customerId",
+        "description": "Each Customers can have multiple UserEngagementNotifications."
+      },
+      {
+        "type": "has_many",
+        "table": "MobileHealthLatest",
+        "foreign_key": "customerId",
+        "description": "Each Customers can have multiple MobileHealthLatest."
+      },
+      {
+        "type": "has_many",
+        "table": "Assets",
+        "foreign_key": "customerId",
+        "description": "Each Customers can have multiple Assets."
+      },
+      {
+        "type": "has_many",
+        "table": "InspectionAssignments",
+        "foreign_key": "customerId",
+        "description": "Each Customers can have multiple InspectionAssignments."
+      },
+      {
+        "type": "has_many",
+        "table": "UserRemainderCalls",
+        "foreign_key": "customerId",
+        "description": "Each Customers can have multiple UserRemainderCalls."
+      },
+      {
+        "type": "has_many",
+        "table": "ForkliftTabs",
+        "foreign_key": "customerId",
+        "description": "Each Customers can have multiple ForkliftTabs."
+      },
+      {
+        "type": "has_many",
+        "table": "FaceLoginAttempts",
+        "foreign_key": "customerId",
+        "description": "Each Customers can have multiple FaceLoginAttempts."
+      },
+      {
+        "type": "has_many",
+        "table": "UserIdentifierMappings",
+        "foreign_key": "customerId",
+        "description": "Each Customers can have multiple UserIdentifierMappings."
+      },
+      {
+        "type": "has_many",
+        "table": "ProcessSafetySchedules",
+        "foreign_key": "customerId",
+        "description": "Each Customers can have multiple ProcessSafetySchedules."
+      },
+      {
+        "type": "has_many",
+        "table": "OpenApiKeys",
+        "foreign_key": "customerId",
+        "description": "Each Customers can have multiple OpenApiKeys."
+      },
+      {
+        "type": "has_many",
+        "table": "ProcessSafetyAssignments",
+        "foreign_key": "customerId",
+        "description": "Each Customers can have multiple ProcessSafetyAssignments."
+      },
+      {
+        "type": "has_many",
+        "table": "ProcessSafetyHistories",
+        "foreign_key": "customerId",
+        "description": "Each Customers can have multiple ProcessSafetyHistories."
+      },
+      {
+        "type": "has_many",
+        "table": "ProcessSafetyTemplatesCollections",
+        "foreign_key": "customerId",
+        "description": "Each Customers can have multiple ProcessSafetyTemplatesCollections."
+      },
+      {
+        "type": "has_many",
+        "table": "ChecklistAssignments",
+        "foreign_key": "customerId",
+        "description": "Each Customers can have multiple ChecklistAssignments."
+      }
+    ]
+  },
+  {
+    "table": "Broadcasts",
+    "columns": [
+      "id",
+      "title",
+      "scheduledDate",
+      "message",
+      "createdAt",
+      "updatedAt",
+      "createdBy",
+      "updatedBy",
+      "isDeleted",
+      "deletedBy",
+      "customerId",
+      "hierarchy"
+    ],
+    "description": "Table `Broadcasts` has columns: `id` (UUID), `title` (VARCHAR(255)), `scheduledDate` (TIMESTAMP), `message` (VARCHAR(2000)), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `createdBy` (UUID), `updatedBy` (UUID), `isDeleted` (BOOLEAN), `deletedBy` (UUID), `customerId` (UUID), `hierarchy` (ARRAY).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "createdBy",
+        "description": "Each Broadcasts belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "deletedBy",
+        "description": "Each Broadcasts belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "updatedBy",
+        "description": "Each Broadcasts belongs to a single Users."
+      }
+    ]
+  },
+  {
+    "table": "RoutePermissions",
+    "columns": [
+      "id",
+      "method",
+      "route",
+      "permission",
+      "createdAt",
+      "updatedAt",
+      "updatedBy",
+      "isDeleted"
+    ],
+    "description": "Table `RoutePermissions` has columns: `id` (UUID), `method` (VARCHAR(255)), `route` (VARCHAR(255)), `permission` (VARCHAR(255)), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `updatedBy` (UUID), `isDeleted` (BOOLEAN).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "updatedBy",
+        "description": "Each RoutePermissions belongs to a single Users."
+      }
+    ]
+  },
+  {
+    "table": "SystemAdminCustomerMappings",
+    "columns": [
+      "id",
+      "userId",
+      "customerId",
+      "createdAt",
+      "updatedAt"
+    ],
+    "description": "Table `SystemAdminCustomerMappings` has columns: `id` (UUID), `userId` (UUID), `customerId` (UUID), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerId",
+        "description": "Each SystemAdminCustomerMappings belongs to a single Customers."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "userId",
+        "description": "Each SystemAdminCustomerMappings belongs to a single Users."
+      }
+    ]
+  },
+  {
+    "table": "Reminders",
+    "columns": [
+      "id",
+      "title",
+      "isActive",
+      "description",
+      "datetime",
+      "userId",
+      "customerId",
+      "createdAt",
+      "updatedAt"
+    ],
+    "description": "Table `Reminders` has columns: `id` (UUID), `title` (VARCHAR(255)), `isActive` (VARCHAR(255)), `description` (VARCHAR(2000)), `datetime` (TIMESTAMP), `userId` (UUID), `customerId` (UUID), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerId",
+        "description": "Each Reminders belongs to a single Customers."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "userId",
+        "description": "Each Reminders belongs to a single Users."
+      }
+    ]
+  },
+  {
+    "table": "UserOTPs",
+    "columns": [
+      "id",
+      "otp_hash",
+      "expire_time",
+      "jwt_token",
+      "is_used",
+      "user",
+      "createdAt",
+      "updatedAt",
+      "loginAttempts",
+      "blockedAt",
+      "mobile_otp_hash",
+      "mobile_expire_time",
+      "mobile_jwt_token",
+      "mobile_is_Used",
+      "forgot_pass_token_hash",
+      "forgot_pass_is_used",
+      "forgot_pass_expire_time"
+    ],
+    "description": "Table `UserOTPs` has columns: `id` (UUID), `otp_hash` (VARCHAR(255)), `expire_time` (TIMESTAMP), `jwt_token` (VARCHAR(10000)), `is_used` (BOOLEAN), `user` (UUID), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `loginAttempts` (INTEGER), `blockedAt` (TIMESTAMP), `mobile_otp_hash` (VARCHAR(255)), `mobile_expire_time` (TIMESTAMP), `mobile_jwt_token` (VARCHAR(10000)), `mobile_is_Used` (BOOLEAN), `forgot_pass_token_hash` (VARCHAR(255)), `forgot_pass_is_used` (BOOLEAN), `forgot_pass_expire_time` (TIMESTAMP).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "user",
+        "description": "Each UserOTPs belongs to a single Users."
+      }
+    ]
+  },
+  {
+    "table": "ActionSettings",
+    "columns": [
+      "id",
+      "customerId",
+      "category",
+      "standard",
+      "location",
+      "alertDays",
+      "alertTime",
+      "mail",
+      "escalationMail",
+      "emailBody",
+      "createdAt",
+      "updatedAt",
+      "createdBy",
+      "updatedBy",
+      "isDeleted",
+      "deletedBy",
+      "dueSoonDuration",
+      "priority"
+    ],
+    "description": "Table `ActionSettings` has columns: `id` (UUID), `customerId` (UUID), `category` (JSON), `standard` (JSON), `location` (JSON), `alertDays` (JSON), `alertTime` (JSON), `mail` (JSON), `escalationMail` (JSON), `emailBody` (VARCHAR(2000)), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `createdBy` (UUID), `updatedBy` (UUID), `isDeleted` (BOOLEAN), `deletedBy` (UUID), `dueSoonDuration` (INTEGER), `priority` (JSON).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "createdBy",
+        "description": "Each ActionSettings belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerId",
+        "description": "Each ActionSettings belongs to a single Customers."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "deletedBy",
+        "description": "Each ActionSettings belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "updatedBy",
+        "description": "Each ActionSettings belongs to a single Users."
+      }
+    ]
+  },
+  {
+    "table": "Geofences",
+    "columns": [
+      "id",
+      "title",
+      "code",
+      "radius",
+      "coordinates",
+      "category",
+      "startTime",
+      "endTime",
+      "repeatDays",
+      "minimumDuration",
+      "isDisabled",
+      "createdBy",
+      "updatedBy",
+      "createdAt",
+      "updatedAt",
+      "isDeleted",
+      "deletedBy",
+      "hierarchy",
+      "region",
+      "customerId"
+    ],
+    "description": "Table `Geofences` has columns: `id` (UUID), `title` (VARCHAR(255)), `code` (VARCHAR(255)), `radius` (INTEGER), `coordinates` (JSON), `category` (VARCHAR(255)), `startTime` (VARCHAR(255)), `endTime` (VARCHAR(255)), `repeatDays` (JSON), `minimumDuration` (JSON), `isDisabled` (BOOLEAN), `createdBy` (UUID), `updatedBy` (UUID), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `isDeleted` (BOOLEAN), `deletedBy` (UUID), `hierarchy` (ARRAY), `region` (NULL), `customerId` (UUID).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "createdBy",
+        "description": "Each Geofences belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerId",
+        "description": "Each Geofences belongs to a single Customers."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "deletedBy",
+        "description": "Each Geofences belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "updatedBy",
+        "description": "Each Geofences belongs to a single Users."
+      },
+      {
+        "type": "has_many",
+        "table": "UserGeofenceMappings",
+        "foreign_key": "geofenceId",
+        "description": "Each Geofences can have multiple UserGeofenceMappings."
+      }
+    ]
+  },
+  {
+    "table": "NotificationSettings",
+    "columns": [
+      "id",
+      "customerId",
+      "type",
+      "webNotification",
+      "emailNotification",
+      "scheduledReports",
+      "schedule",
+      "emails",
+      "createdAt",
+      "updatedAt",
+      "createdBy",
+      "updatedBy",
+      "isDeleted"
+    ],
+    "description": "Table `NotificationSettings` has columns: `id` (UUID), `customerId` (UUID), `type` (VARCHAR(255)), `webNotification` (BOOLEAN), `emailNotification` (BOOLEAN), `scheduledReports` (BOOLEAN), `schedule` (JSON), `emails` (ARRAY), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `createdBy` (UUID), `updatedBy` (UUID), `isDeleted` (BOOLEAN).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "createdBy",
+        "description": "Each NotificationSettings belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerId",
+        "description": "Each NotificationSettings belongs to a single Customers."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "updatedBy",
+        "description": "Each NotificationSettings belongs to a single Users."
+      }
+    ]
+  },
+  {
+    "table": "AccountVerifications",
+    "columns": [
+      "id",
+      "email",
+      "otp_hash",
+      "expire_time",
+      "jwt_token",
+      "is_used",
+      "login_attempts",
+      "blockedAt",
+      "createdAt",
+      "updatedAt"
+    ],
+    "description": "Table `AccountVerifications` has columns: `id` (UUID), `email` (VARCHAR(255)), `otp_hash` (VARCHAR(255)), `expire_time` (TIMESTAMP), `jwt_token` (VARCHAR(10000)), `is_used` (BOOLEAN), `login_attempts` (INTEGER), `blockedAt` (TIMESTAMP), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP).",
+    "relationships": []
+  },
+  {
+    "table": "AppInstalls",
+    "columns": [
+      "id",
+      "userId",
+      "sentianceUserId",
+      "installId",
+      "createdAt",
+      "updatedAt",
+      "createdBy",
+      "updatedBy",
+      "isDeleted"
+    ],
+    "description": "Table `AppInstalls` has columns: `id` (UUID), `userId` (UUID), `sentianceUserId` (VARCHAR(255)), `installId` (VARCHAR(255)), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `createdBy` (UUID), `updatedBy` (UUID), `isDeleted` (BOOLEAN).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "createdBy",
+        "description": "Each AppInstalls belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "updatedBy",
+        "description": "Each AppInstalls belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "userId",
+        "description": "Each AppInstalls belongs to a single Users."
+      }
+    ]
+  },
+  {
+    "table": "ChecklistAnswers",
+    "columns": [
+      "id",
+      "text",
+      "date",
+      "time",
+      "isDraft",
+      "answeredBy",
+      "checklist",
+      "question",
+      "createdAt",
+      "updatedAt",
+      "type",
+      "ChecklistSummaryId",
+      "answer",
+      "ChecklistScheduleId",
+      "ChecklistAssignmentId",
+      "evidence"
+    ],
+    "description": "Table `ChecklistAnswers` has columns: `id` (UUID), `text` (VARCHAR(255)), `date` (VARCHAR(255)), `time` (VARCHAR(255)), `isDraft` (BOOLEAN), `answeredBy` (UUID), `checklist` (UUID), `question` (UUID), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `type` (VARCHAR(255)), `ChecklistSummaryId` (UUID), `answer` (JSONB), `ChecklistScheduleId` (UUID), `ChecklistAssignmentId` (UUID), `evidence` (JSONB).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "ChecklistAssignments",
+        "foreign_key": "ChecklistAssignmentId",
+        "description": "Each ChecklistAnswers belongs to a single ChecklistAssignments."
+      },
+      {
+        "type": "belongs_to",
+        "table": "ChecklistSchedules",
+        "foreign_key": "ChecklistScheduleId",
+        "description": "Each ChecklistAnswers belongs to a single ChecklistSchedules."
+      },
+      {
+        "type": "belongs_to",
+        "table": "ChecklistSummaries",
+        "foreign_key": "ChecklistSummaryId",
+        "description": "Each ChecklistAnswers belongs to a single ChecklistSummaries."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "answeredBy",
+        "description": "Each ChecklistAnswers belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "CheckLists",
+        "foreign_key": "checklist",
+        "description": "Each ChecklistAnswers belongs to a single CheckLists."
+      },
+      {
+        "type": "belongs_to",
+        "table": "ChecklistQuestions",
+        "foreign_key": "question",
+        "description": "Each ChecklistAnswers belongs to a single ChecklistQuestions."
+      }
+    ]
+  },
+  {
+    "table": "DefaultPermissions",
+    "columns": [
+      "id",
+      "role",
+      "permissions",
+      "createdAt",
+      "updatedAt",
+      "updatedBy",
+      "isDeleted"
+    ],
+    "description": "Table `DefaultPermissions` has columns: `id` (UUID), `role` (VARCHAR(255)), `permissions` (ARRAY), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `updatedBy` (UUID), `isDeleted` (BOOLEAN).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "updatedBy",
+        "description": "Each DefaultPermissions belongs to a single Users."
+      }
+    ]
+  },
+  {
+    "table": "ChecklistSummaries",
+    "columns": [
+      "id",
+      "date",
+      "time",
+      "isDraft",
+      "coordinates",
+      "address",
+      "answeredBy",
+      "checklistId",
+      "createdAt",
+      "updatedAt",
+      "customerID"
+    ],
+    "description": "Table `ChecklistSummaries` has columns: `id` (UUID), `date` (VARCHAR(255)), `time` (VARCHAR(255)), `isDraft` (BOOLEAN), `coordinates` (JSON), `address` (JSON), `answeredBy` (UUID), `checklistId` (UUID), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `customerID` (UUID).",
+    "relationships": [
+      {
+        "type": "has_many",
+        "table": "ChecklistAnswers",
+        "foreign_key": "ChecklistSummaryId",
+        "description": "Each ChecklistSummaries can have multiple ChecklistAnswers."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "answeredBy",
+        "description": "Each ChecklistSummaries belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "CheckLists",
+        "foreign_key": "checklistId",
+        "description": "Each ChecklistSummaries belongs to a single CheckLists."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerID",
+        "description": "Each ChecklistSummaries belongs to a single Customers."
+      }
+    ]
+  },
+  {
+    "table": "Thresholds",
+    "columns": [
+      "id",
+      "customerId",
+      "vehicleType",
+      "ha",
+      "hb",
+      "hc",
+      "createdAt",
+      "updatedAt",
+      "createdBy",
+      "updatedBy",
+      "isDeleted",
+      "minOs",
+      "maxOs",
+      "osThreshold"
+    ],
+    "description": "Table `Thresholds` has columns: `id` (UUID), `customerId` (UUID), `vehicleType` (VARCHAR(255)), `ha` (DOUBLE PRECISION), `hb` (DOUBLE PRECISION), `hc` (DOUBLE PRECISION), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `createdBy` (UUID), `updatedBy` (UUID), `isDeleted` (BOOLEAN), `minOs` (DOUBLE PRECISION), `maxOs` (DOUBLE PRECISION), `osThreshold` (DOUBLE PRECISION).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "createdBy",
+        "description": "Each Thresholds belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerId",
+        "description": "Each Thresholds belongs to a single Customers."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "updatedBy",
+        "description": "Each Thresholds belongs to a single Users."
+      }
+    ]
+  },
+  {
+    "table": "Notifications",
+    "columns": [
+      "id",
+      "userId",
+      "customerId",
+      "vehicleId",
+      "type",
+      "timestamp",
+      "description",
+      "createdAt",
+      "updatedAt",
+      "createdBy",
+      "updatedBy",
+      "isDeleted",
+      "documentId",
+      "onesignalNotificationId",
+      "title",
+      "isOpened"
+    ],
+    "description": "Table `Notifications` has columns: `id` (UUID), `userId` (UUID), `customerId` (UUID), `vehicleId` (UUID), `type` (VARCHAR(255)), `timestamp` (TIMESTAMP), `description` (VARCHAR(2000)), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `createdBy` (UUID), `updatedBy` (UUID), `isDeleted` (BOOLEAN), `documentId` (VARCHAR(255)), `onesignalNotificationId` (VARCHAR(255)), `title` (VARCHAR(255)), `isOpened` (BOOLEAN).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "createdBy",
+        "description": "Each Notifications belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerId",
+        "description": "Each Notifications belongs to a single Customers."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "updatedBy",
+        "description": "Each Notifications belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "userId",
+        "description": "Each Notifications belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Vehicles",
+        "foreign_key": "vehicleId",
+        "description": "Each Notifications belongs to a single Vehicles."
+      }
+    ]
+  },
+  {
+    "table": "Roles",
+    "columns": [
+      "id",
+      "userId",
+      "roles",
+      "permissions",
+      "createdAt",
+      "updatedAt",
+      "createdBy",
+      "updatedBy",
+      "isDeleted",
+      "deletedBy",
+      "baseHierarchy"
+    ],
+    "description": "Table `Roles` has columns: `id` (UUID), `userId` (UUID), `roles` (VARCHAR(255)), `permissions` (JSON), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `createdBy` (UUID), `updatedBy` (UUID), `isDeleted` (BOOLEAN), `deletedBy` (UUID), `baseHierarchy` (VARCHAR(255)).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "createdBy",
+        "description": "Each Roles belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "createdBy",
+        "description": "Each Roles belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "createdBy",
+        "description": "Each Roles belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "deletedBy",
+        "description": "Each Roles belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "updatedBy",
+        "description": "Each Roles belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "updatedBy",
+        "description": "Each Roles belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "updatedBy",
+        "description": "Each Roles belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "userId",
+        "description": "Each Roles belongs to a single Users."
+      }
+    ]
+  },
+  {
+    "table": "Translations",
+    "columns": [
+      "id",
+      "text",
+      "lang",
+      "translatedText",
+      "createdAt",
+      "updatedAt"
+    ],
+    "description": "Table `Translations` has columns: `id` (UUID), `text` (TEXT), `lang` (VARCHAR(255)), `translatedText` (TEXT), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP).",
+    "relationships": []
+  },
+  {
+    "table": "Badges",
+    "columns": [
+      "id",
+      "badgeName",
+      "badgeDescription",
+      "badgeUrl",
+      "badgeCategory",
+      "progressUnit",
+      "totalProgressValue",
+      "createdAt",
+      "updatedAt",
+      "isDeleted",
+      "isProgressShown"
+    ],
+    "description": "Table `Badges` has columns: `id` (UUID), `badgeName` (VARCHAR(255)), `badgeDescription` (TEXT), `badgeUrl` (TEXT), `badgeCategory` (VARCHAR(255)), `progressUnit` (VARCHAR(255)), `totalProgressValue` (INTEGER), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `isDeleted` (BOOLEAN), `isProgressShown` (BOOLEAN).",
+    "relationships": [
+      {
+        "type": "has_many",
+        "table": "BadgesAssignments",
+        "foreign_key": "badgeId",
+        "description": "Each Badges can have multiple BadgesAssignments."
+      }
+    ]
+  },
+  {
+    "table": "ActiveVehicles",
+    "columns": [
+      "id",
+      "userId",
+      "vehicleId",
+      "sentianceUserId",
+      "createdAt",
+      "updatedAt",
+      "createdBy",
+      "updatedBy",
+      "isDeleted",
+      "customerId",
+      "installId",
+      "mode",
+      "isPassengerMode"
+    ],
+    "description": "Table `ActiveVehicles` has columns: `id` (UUID), `userId` (UUID), `vehicleId` (UUID), `sentianceUserId` (VARCHAR(255)), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `createdBy` (UUID), `updatedBy` (UUID), `isDeleted` (BOOLEAN), `customerId` (UUID), `installId` (VARCHAR(255)), `mode` (VARCHAR(255)), `isPassengerMode` (BOOLEAN).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "createdBy",
+        "description": "Each ActiveVehicles belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "updatedBy",
+        "description": "Each ActiveVehicles belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "userId",
+        "description": "Each ActiveVehicles belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Vehicles",
+        "foreign_key": "vehicleId",
+        "description": "Each ActiveVehicles belongs to a single Vehicles."
+      }
+    ]
+  },
+  {
+    "table": "UserProfiles",
+    "columns": [
+      "id",
+      "userId",
+      "azureId",
+      "gender",
+      "age",
+      "designation",
+      "idNumber",
+      "department",
+      "address",
+      "reportingManager",
+      "emergencyContact",
+      "createdAt",
+      "updatedAt",
+      "createdBy",
+      "updatedBy",
+      "name",
+      "drivingExperience",
+      "profilePicture",
+      "deviceId",
+      "favReports",
+      "reportingManagerId"
+    ],
+    "description": "Table `UserProfiles` has columns: `id` (UUID), `userId` (UUID), `azureId` (VARCHAR(255)), `gender` (VARCHAR(255)), `age` (NUMERIC), `designation` (VARCHAR(255)), `idNumber` (VARCHAR(255)), `department` (VARCHAR(255)), `address` (VARCHAR(255)), `reportingManager` (JSON), `emergencyContact` (JSON), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `createdBy` (UUID), `updatedBy` (UUID), `name` (VARCHAR(255)), `drivingExperience` (JSON), `profilePicture` (VARCHAR(255)), `deviceId` (VARCHAR(255)), `favReports` (JSON), `reportingManagerId` (UUID).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "reportingManagerId",
+        "description": "Each UserProfiles belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "userId",
+        "description": "Each UserProfiles belongs to a single Users."
+      }
+    ]
+  },
+  {
+    "table": "Vehicles",
+    "columns": [
+      "id",
+      "userId",
+      "customerId",
+      "number",
+      "type",
+      "manufactureYear",
+      "createdAt",
+      "updatedAt",
+      "createdBy",
+      "updatedBy",
+      "isDeleted",
+      "vehicleType",
+      "make",
+      "model",
+      "fuelType",
+      "imei",
+      "baseHierarchy",
+      "shift",
+      "captureEngineStatus",
+      "singleDriver"
+    ],
+    "description": "Table `Vehicles` has columns: `id` (UUID), `userId` (UUID), `customerId` (UUID), `number` (VARCHAR(255)), `type` (VARCHAR(255)), `manufactureYear` (NUMERIC), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `createdBy` (UUID), `updatedBy` (UUID), `isDeleted` (BOOLEAN), `vehicleType` (VARCHAR(255)), `make` (VARCHAR(255)), `model` (VARCHAR(255)), `fuelType` (VARCHAR(255)), `imei` (VARCHAR(255)), `baseHierarchy` (TEXT), `shift` (VARCHAR(255)), `captureEngineStatus` (BOOLEAN), `singleDriver` (BOOLEAN).",
+    "relationships": [
+      {
+        "type": "has_many",
+        "table": "Notifications",
+        "foreign_key": "vehicleId",
+        "description": "Each Vehicles can have multiple Notifications."
+      },
+      {
+        "type": "has_many",
+        "table": "ActiveVehicles",
+        "foreign_key": "vehicleId",
+        "description": "Each Vehicles can have multiple ActiveVehicles."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "createdBy",
+        "description": "Each Vehicles belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerId",
+        "description": "Each Vehicles belongs to a single Customers."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "updatedBy",
+        "description": "Each Vehicles belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "userId",
+        "description": "Each Vehicles belongs to a single Users."
+      },
+      {
+        "type": "has_many",
+        "table": "ProactiveMaintenance",
+        "foreign_key": "vehicleId",
+        "description": "Each Vehicles can have multiple ProactiveMaintenance."
+      },
+      {
+        "type": "has_many",
+        "table": "Incidents",
+        "foreign_key": "vehicleId",
+        "description": "Each Vehicles can have multiple Incidents."
+      },
+      {
+        "type": "has_many",
+        "table": "ForkliftTabs",
+        "foreign_key": "vehicleId",
+        "description": "Each Vehicles can have multiple ForkliftTabs."
+      },
+      {
+        "type": "has_many",
+        "table": "FaceLoginAttempts",
+        "foreign_key": "vehicleId",
+        "description": "Each Vehicles can have multiple FaceLoginAttempts."
+      }
+    ]
+  },
+  {
+    "table": "Feeds",
+    "columns": [
+      "id",
+      "title",
+      "publishedDate",
+      "documentURL",
+      "thumbnailURL",
+      "description",
+      "createdAt",
+      "updatedAt",
+      "createdBy",
+      "updatedBy",
+      "isDeleted",
+      "deletedBy",
+      "isActive",
+      "customerId",
+      "hierarchy"
+    ],
+    "description": "Table `Feeds` has columns: `id` (UUID), `title` (VARCHAR(255)), `publishedDate` (TIMESTAMP), `documentURL` (VARCHAR(255)), `thumbnailURL` (VARCHAR(255)), `description` (VARCHAR(2000)), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `createdBy` (UUID), `updatedBy` (UUID), `isDeleted` (BOOLEAN), `deletedBy` (UUID), `isActive` (BOOLEAN), `customerId` (UUID), `hierarchy` (ARRAY).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "createdBy",
+        "description": "Each Feeds belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "deletedBy",
+        "description": "Each Feeds belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "updatedBy",
+        "description": "Each Feeds belongs to a single Users."
+      }
+    ]
+  },
+  {
+    "table": "PeerToPeerAssignments",
+    "columns": [
+      "id",
+      "peerId",
+      "assignedUserId",
+      "customerId",
+      "isAccepted",
+      "isCompleted",
+      "currentDistance",
+      "avgSpeed",
+      "createdAt",
+      "updatedAt"
+    ],
+    "description": "Table `PeerToPeerAssignments` has columns: `id` (UUID), `peerId` (UUID), `assignedUserId` (UUID), `customerId` (UUID), `isAccepted` (BOOLEAN), `isCompleted` (BOOLEAN), `currentDistance` (DOUBLE PRECISION), `avgSpeed` (DOUBLE PRECISION), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "assignedUserId",
+        "description": "Each PeerToPeerAssignments belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerId",
+        "description": "Each PeerToPeerAssignments belongs to a single Customers."
+      },
+      {
+        "type": "belongs_to",
+        "table": "PeerToPeerChallenges",
+        "foreign_key": "peerId",
+        "description": "Each PeerToPeerAssignments belongs to a single PeerToPeerChallenges."
+      }
+    ]
+  },
+  {
+    "table": "ReportingManagers",
+    "columns": [
+      "id",
+      "customerId",
+      "hierarchyId",
+      "userId",
+      "createdAt",
+      "updatedAt",
+      "createdBy",
+      "updatedBy"
+    ],
+    "description": "Table `ReportingManagers` has columns: `id` (UUID), `customerId` (UUID), `hierarchyId` (VARCHAR(255)), `userId` (UUID), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `createdBy` (UUID), `updatedBy` (UUID).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "createdBy",
+        "description": "Each ReportingManagers belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerId",
+        "description": "Each ReportingManagers belongs to a single Customers."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "updatedBy",
+        "description": "Each ReportingManagers belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "userId",
+        "description": "Each ReportingManagers belongs to a single Users."
+      }
+    ]
+  },
+  {
+    "table": "PeerToPeerChallenges",
+    "columns": [
+      "id",
+      "userId",
+      "customerId",
+      "isStarted",
+      "startedAt",
+      "endedAt",
+      "category",
+      "distance",
+      "harshEvent",
+      "duration",
+      "createdAt",
+      "updatedAt",
+      "hierarchyRootNode"
+    ],
+    "description": "Table `PeerToPeerChallenges` has columns: `id` (UUID), `userId` (UUID), `customerId` (UUID), `isStarted` (BOOLEAN), `startedAt` (TIMESTAMP), `endedAt` (TIMESTAMP), `category` (VARCHAR(255)), `distance` (DOUBLE PRECISION), `harshEvent` (VARCHAR(255)), `duration` (INTEGER), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `hierarchyRootNode` (VARCHAR(255)).",
+    "relationships": [
+      {
+        "type": "has_many",
+        "table": "PeerToPeerAssignments",
+        "foreign_key": "peerId",
+        "description": "Each PeerToPeerChallenges can have multiple PeerToPeerAssignments."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerId",
+        "description": "Each PeerToPeerChallenges belongs to a single Customers."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "userId",
+        "description": "Each PeerToPeerChallenges belongs to a single Users."
+      }
+    ]
+  },
+  {
+    "table": "UserUnsubscribedEmails",
+    "columns": [
+      "id",
+      "userId",
+      "customerId",
+      "emailTopic",
+      "createdAt",
+      "updatedAt"
+    ],
+    "description": "Table `UserUnsubscribedEmails` has columns: `id` (UUID), `userId` (UUID), `customerId` (UUID), `emailTopic` (VARCHAR(255)), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP).",
+    "relationships": []
+  },
+  {
+    "table": "ProactiveMaintenance",
+    "columns": [
+      "id",
+      "vehicleId",
+      "component",
+      "eventCount",
+      "calculatingFrom",
+      "calculatedTill",
+      "createdAt",
+      "updatedAt"
+    ],
+    "description": "Table `ProactiveMaintenance` has columns: `id` (UUID), `vehicleId` (UUID), `component` (VARCHAR(12)), `eventCount` (INTEGER), `calculatingFrom` (TIMESTAMP), `calculatedTill` (TIMESTAMP), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Vehicles",
+        "foreign_key": "vehicleId",
+        "description": "Each ProactiveMaintenance belongs to a single Vehicles."
+      }
+    ]
+  },
+  {
+    "table": "CheckLists",
+    "columns": [
+      "id",
+      "title",
+      "description",
+      "isConditional",
+      "canMarkAttendance",
+      "hasEmailNotification",
+      "hasMobileNotification",
+      "notificationTime",
+      "category",
+      "startTime",
+      "endTime",
+      "publishDate",
+      "frequencyType",
+      "repeatInterval",
+      "frequencyInterval",
+      "occuranceCount",
+      "timeOfDay",
+      "isDisabled",
+      "createdBy",
+      "customerId",
+      "updatedBy",
+      "createdAt",
+      "updatedAt",
+      "isDeleted",
+      "deletedBy",
+      "isForSchedule",
+      "schedule",
+      "cronExpression",
+      "occuranceType",
+      "isStandalone",
+      "hierarchy"
+    ],
+    "description": "Table `CheckLists` has columns: `id` (UUID), `title` (VARCHAR(255)), `description` (VARCHAR(2000)), `isConditional` (BOOLEAN), `canMarkAttendance` (BOOLEAN), `hasEmailNotification` (BOOLEAN), `hasMobileNotification` (BOOLEAN), `notificationTime` (VARCHAR(255)), `category` (VARCHAR(255)), `startTime` (TIMESTAMP), `endTime` (TIMESTAMP), `publishDate` (TIMESTAMP), `frequencyType` (VARCHAR(7)), `repeatInterval` (INTEGER), `frequencyInterval` (JSON), `occuranceCount` (INTEGER), `timeOfDay` (VARCHAR(255)), `isDisabled` (BOOLEAN), `createdBy` (UUID), `customerId` (UUID), `updatedBy` (UUID), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `isDeleted` (BOOLEAN), `deletedBy` (UUID), `isForSchedule` (BOOLEAN), `schedule` (JSONB), `cronExpression` (TEXT), `occuranceType` (VARCHAR(255)), `isStandalone` (BOOLEAN), `hierarchy` (ARRAY).",
+    "relationships": [
+      {
+        "type": "has_many",
+        "table": "ChecklistQuestions",
+        "foreign_key": "checklistId",
+        "description": "Each CheckLists can have multiple ChecklistQuestions."
+      },
+      {
+        "type": "has_many",
+        "table": "ChecklistAnswers",
+        "foreign_key": "checklist",
+        "description": "Each CheckLists can have multiple ChecklistAnswers."
+      },
+      {
+        "type": "has_many",
+        "table": "ChecklistSummaries",
+        "foreign_key": "checklistId",
+        "description": "Each CheckLists can have multiple ChecklistSummaries."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "createdBy",
+        "description": "Each CheckLists belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerId",
+        "description": "Each CheckLists belongs to a single Customers."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "deletedBy",
+        "description": "Each CheckLists belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "updatedBy",
+        "description": "Each CheckLists belongs to a single Users."
+      },
+      {
+        "type": "has_many",
+        "table": "ChecklistSchedules",
+        "foreign_key": "checklistId",
+        "description": "Each CheckLists can have multiple ChecklistSchedules."
+      },
+      {
+        "type": "has_many",
+        "table": "InspectionTrackings",
+        "foreign_key": "checklistId",
+        "description": "Each CheckLists can have multiple InspectionTrackings."
+      },
+      {
+        "type": "has_many",
+        "table": "InspectionSubStandards",
+        "foreign_key": "checklistId",
+        "description": "Each CheckLists can have multiple InspectionSubStandards."
+      },
+      {
+        "type": "has_many",
+        "table": "ChecklistAssignments",
+        "foreign_key": "checklistId",
+        "description": "Each CheckLists can have multiple ChecklistAssignments."
+      }
+    ]
+  },
+  {
+    "table": "ScheduledReportSettings",
+    "columns": [
+      "id",
+      "customerId",
+      "emailFrequency",
+      "createdAt",
+      "updatedAt",
+      "createdBy",
+      "updatedBy",
+      "mailTime",
+      "reportsUrl",
+      "reportType",
+      "userId",
+      "selectedTiles",
+      "selectedReports",
+      "reportColumns",
+      "customReports"
+    ],
+    "description": "Table `ScheduledReportSettings` has columns: `id` (UUID), `customerId` (UUID), `emailFrequency` (JSONB), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `createdBy` (UUID), `updatedBy` (UUID), `mailTime` (VARCHAR(255)), `reportsUrl` (JSONB), `reportType` (VARCHAR(255)), `userId` (UUID), `selectedTiles` (JSONB), `selectedReports` (JSONB), `reportColumns` (JSONB), `customReports` (JSONB).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "createdBy",
+        "description": "Each ScheduledReportSettings belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerId",
+        "description": "Each ScheduledReportSettings belongs to a single Customers."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "updatedBy",
+        "description": "Each ScheduledReportSettings belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "userId",
+        "description": "Each ScheduledReportSettings belongs to a single Users."
+      }
+    ]
+  },
+  {
+    "table": "DashboardReports",
+    "columns": [
+      "id",
+      "userId",
+      "customerId",
+      "dashboardId",
+      "name",
+      "type",
+      "config",
+      "layout",
+      "createdAt",
+      "updatedAt"
+    ],
+    "description": "Table `DashboardReports` has columns: `id` (UUID), `userId` (UUID), `customerId` (UUID), `dashboardId` (UUID), `name` (VARCHAR(255)), `type` (VARCHAR(255)), `config` (JSONB), `layout` (JSONB), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerId",
+        "description": "Each DashboardReports belongs to a single Customers."
+      },
+      {
+        "type": "belongs_to",
+        "table": "DashboardLayouts",
+        "foreign_key": "dashboardId",
+        "description": "Each DashboardReports belongs to a single DashboardLayouts."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "userId",
+        "description": "Each DashboardReports belongs to a single Users."
+      }
+    ]
+  },
+  {
+    "table": "Incidents",
+    "columns": [
+      "id",
+      "type",
+      "description",
+      "action",
+      "category",
+      "datetime",
+      "address",
+      "location",
+      "wasOnJob",
+      "createdBy",
+      "updatedBy",
+      "customerId",
+      "createdAt",
+      "updatedAt",
+      "images",
+      "vehicleId"
+    ],
+    "description": "Table `Incidents` has columns: `id` (UUID), `type` (TEXT), `description` (TEXT), `action` (TEXT), `category` (TEXT), `datetime` (TIMESTAMP), `address` (JSONB), `location` (NULL), `wasOnJob` (BOOLEAN), `createdBy` (UUID), `updatedBy` (UUID), `customerId` (UUID), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `images` (ARRAY), `vehicleId` (UUID).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "createdBy",
+        "description": "Each Incidents belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerId",
+        "description": "Each Incidents belongs to a single Customers."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "updatedBy",
+        "description": "Each Incidents belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Vehicles",
+        "foreign_key": "vehicleId",
+        "description": "Each Incidents belongs to a single Vehicles."
+      }
+    ]
+  },
+  {
+    "table": "UserGeofenceMappings",
+    "columns": [
+      "id",
+      "userId",
+      "geofenceId",
+      "createdAt",
+      "updatedAt",
+      "createdBy",
+      "updatedBy"
+    ],
+    "description": "Table `UserGeofenceMappings` has columns: `id` (UUID), `userId` (UUID), `geofenceId` (UUID), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `createdBy` (UUID), `updatedBy` (UUID).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "createdBy",
+        "description": "Each UserGeofenceMappings belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Geofences",
+        "foreign_key": "geofenceId",
+        "description": "Each UserGeofenceMappings belongs to a single Geofences."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "updatedBy",
+        "description": "Each UserGeofenceMappings belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "userId",
+        "description": "Each UserGeofenceMappings belongs to a single Users."
+      }
+    ]
+  },
+  {
+    "table": "ChecklistSchedules",
+    "columns": [
+      "id",
+      "date",
+      "time",
+      "checklistId",
+      "customerId",
+      "createdAt",
+      "updatedAt"
+    ],
+    "description": "Table `ChecklistSchedules` has columns: `id` (UUID), `date` (VARCHAR(255)), `time` (VARCHAR(255)), `checklistId` (UUID), `customerId` (UUID), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP).",
+    "relationships": [
+      {
+        "type": "has_many",
+        "table": "ChecklistAnswers",
+        "foreign_key": "ChecklistScheduleId",
+        "description": "Each ChecklistSchedules can have multiple ChecklistAnswers."
+      },
+      {
+        "type": "belongs_to",
+        "table": "CheckLists",
+        "foreign_key": "checklistId",
+        "description": "Each ChecklistSchedules belongs to a single CheckLists."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerId",
+        "description": "Each ChecklistSchedules belongs to a single Customers."
+      },
+      {
+        "type": "has_many",
+        "table": "ChecklistAssignments",
+        "foreign_key": "checklistScheduleId",
+        "description": "Each ChecklistSchedules can have multiple ChecklistAssignments."
+      }
+    ]
+  },
+  {
+    "table": "AdminAccessFields",
+    "columns": [
+      "id",
+      "customerId",
+      "userId",
+      "type",
+      "createdBy",
+      "updatedBy",
+      "createdAt",
+      "updatedAt"
+    ],
+    "description": "Table `AdminAccessFields` has columns: `id` (UUID), `customerId` (UUID), `userId` (UUID), `type` (VARCHAR(12)), `createdBy` (UUID), `updatedBy` (UUID), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerId",
+        "description": "Each AdminAccessFields belongs to a single Customers."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "userId",
+        "description": "Each AdminAccessFields belongs to a single Users."
+      }
+    ]
+  },
+  {
+    "table": "MobileHealth",
+    "columns": [
+      "id",
+      "customerId",
+      "userId",
+      "permissions",
+      "trackingStatus",
+      "phonePermissionDetails",
+      "createdBy",
+      "updatedBy",
+      "createdAt",
+      "updatedAt"
+    ],
+    "description": "Table `MobileHealth` has columns: `id` (UUID), `customerId` (UUID), `userId` (UUID), `permissions` (BOOLEAN), `trackingStatus` (VARCHAR(11)), `phonePermissionDetails` (JSONB), `createdBy` (UUID), `updatedBy` (UUID), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "createdBy",
+        "description": "Each MobileHealth belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerId",
+        "description": "Each MobileHealth belongs to a single Customers."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "updatedBy",
+        "description": "Each MobileHealth belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "userId",
+        "description": "Each MobileHealth belongs to a single Users."
+      }
+    ]
+  },
+  {
+    "table": "InspectionTrackings",
+    "columns": [
+      "id",
+      "customerId",
+      "title",
+      "dueDate",
+      "alertDays",
+      "alertTime",
+      "mail",
+      "escalationMail",
+      "emailBody",
+      "needApproval",
+      "createdAt",
+      "updatedAt",
+      "createdBy",
+      "updatedBy",
+      "isDeleted",
+      "deletedBy",
+      "description",
+      "cronType",
+      "occuranceType",
+      "hierarchy",
+      "checklistId",
+      "isAssetEnabled",
+      "cronExpression"
+    ],
+    "description": "Table `InspectionTrackings` has columns: `id` (UUID), `customerId` (UUID), `title` (VARCHAR(200)), `dueDate` (TIMESTAMP), `alertDays` (INTEGER), `alertTime` (JSON), `mail` (JSON), `escalationMail` (JSON), `emailBody` (VARCHAR(2000)), `needApproval` (BOOLEAN), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `createdBy` (UUID), `updatedBy` (UUID), `isDeleted` (BOOLEAN), `deletedBy` (UUID), `description` (VARCHAR(2000)), `cronType` (JSON), `occuranceType` (VARCHAR(255)), `hierarchy` (JSON), `checklistId` (UUID), `isAssetEnabled` (BOOLEAN), `cronExpression` (VARCHAR(255)).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "CheckLists",
+        "foreign_key": "checklistId",
+        "description": "Each InspectionTrackings belongs to a single CheckLists."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "createdBy",
+        "description": "Each InspectionTrackings belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerId",
+        "description": "Each InspectionTrackings belongs to a single Customers."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "deletedBy",
+        "description": "Each InspectionTrackings belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "updatedBy",
+        "description": "Each InspectionTrackings belongs to a single Users."
+      },
+      {
+        "type": "has_many",
+        "table": "InspectionAssignments",
+        "foreign_key": "inspectionId",
+        "description": "Each InspectionTrackings can have multiple InspectionAssignments."
+      }
+    ]
+  },
+  {
+    "table": "CalendarRoutines",
+    "columns": [
+      "id",
+      "customerId",
+      "workDays",
+      "workStartTime",
+      "workEndTime",
+      "holidays",
+      "createdAt",
+      "updatedAt",
+      "createdBy",
+      "updatedBy",
+      "nightStartTime",
+      "nightEndTime",
+      "shifts",
+      "continuousDrivingLimit"
+    ],
+    "description": "Table `CalendarRoutines` has columns: `id` (UUID), `customerId` (UUID), `workDays` (JSON), `workStartTime` (VARCHAR(255)), `workEndTime` (VARCHAR(255)), `holidays` (JSON), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `createdBy` (UUID), `updatedBy` (UUID), `nightStartTime` (VARCHAR(255)), `nightEndTime` (VARCHAR(255)), `shifts` (JSON), `continuousDrivingLimit` (VARCHAR(255)).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "createdBy",
+        "description": "Each CalendarRoutines belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerId",
+        "description": "Each CalendarRoutines belongs to a single Customers."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "updatedBy",
+        "description": "Each CalendarRoutines belongs to a single Users."
+      }
+    ]
+  },
+  {
+    "table": "InspectionSettings",
+    "columns": [
+      "id",
+      "customerId",
+      "alertDays",
+      "alertTime",
+      "mail",
+      "escalationMail",
+      "emailBody",
+      "dueSoonDuration",
+      "createdAt",
+      "updatedAt",
+      "createdBy",
+      "updatedBy",
+      "isDeleted",
+      "deletedBy"
+    ],
+    "description": "Table `InspectionSettings` has columns: `id` (UUID), `customerId` (UUID), `alertDays` (JSON), `alertTime` (JSON), `mail` (JSON), `escalationMail` (JSON), `emailBody` (VARCHAR(2000)), `dueSoonDuration` (INTEGER), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `createdBy` (UUID), `updatedBy` (UUID), `isDeleted` (BOOLEAN), `deletedBy` (UUID).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "createdBy",
+        "description": "Each InspectionSettings belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerId",
+        "description": "Each InspectionSettings belongs to a single Customers."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "deletedBy",
+        "description": "Each InspectionSettings belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "updatedBy",
+        "description": "Each InspectionSettings belongs to a single Users."
+      },
+      {
+        "type": "has_many",
+        "table": "InspectionStandards",
+        "foreign_key": "inspectionSettingId",
+        "description": "Each InspectionSettings can have multiple InspectionStandards."
+      }
+    ]
+  },
+  {
+    "table": "InspectionStandards",
+    "columns": [
+      "id",
+      "customerId",
+      "inspectionSettingId",
+      "standard",
+      "createdAt",
+      "updatedAt",
+      "createdBy",
+      "updatedBy",
+      "isDeleted",
+      "deletedBy"
+    ],
+    "description": "Table `InspectionStandards` has columns: `id` (UUID), `customerId` (UUID), `inspectionSettingId` (UUID), `standard` (VARCHAR(255)), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `createdBy` (UUID), `updatedBy` (UUID), `isDeleted` (BOOLEAN), `deletedBy` (UUID).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "createdBy",
+        "description": "Each InspectionStandards belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerId",
+        "description": "Each InspectionStandards belongs to a single Customers."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "deletedBy",
+        "description": "Each InspectionStandards belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "InspectionSettings",
+        "foreign_key": "inspectionSettingId",
+        "description": "Each InspectionStandards belongs to a single InspectionSettings."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "updatedBy",
+        "description": "Each InspectionStandards belongs to a single Users."
+      },
+      {
+        "type": "has_many",
+        "table": "InspectionSubStandards",
+        "foreign_key": "inspectionStandardId",
+        "description": "Each InspectionStandards can have multiple InspectionSubStandards."
+      }
+    ]
+  },
+  {
+    "table": "InspectionSubStandards",
+    "columns": [
+      "id",
+      "customerId",
+      "inspectionStandardId",
+      "ownerIds",
+      "checklistId",
+      "subStandard",
+      "createdAt",
+      "updatedAt",
+      "createdBy",
+      "updatedBy",
+      "isDeleted",
+      "deletedBy"
+    ],
+    "description": "Table `InspectionSubStandards` has columns: `id` (UUID), `customerId` (UUID), `inspectionStandardId` (UUID), `ownerIds` (JSON), `checklistId` (UUID), `subStandard` (VARCHAR(255)), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `createdBy` (UUID), `updatedBy` (UUID), `isDeleted` (BOOLEAN), `deletedBy` (UUID).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "CheckLists",
+        "foreign_key": "checklistId",
+        "description": "Each InspectionSubStandards belongs to a single CheckLists."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "createdBy",
+        "description": "Each InspectionSubStandards belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerId",
+        "description": "Each InspectionSubStandards belongs to a single Customers."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "deletedBy",
+        "description": "Each InspectionSubStandards belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "InspectionStandards",
+        "foreign_key": "inspectionStandardId",
+        "description": "Each InspectionSubStandards belongs to a single InspectionStandards."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "updatedBy",
+        "description": "Each InspectionSubStandards belongs to a single Users."
+      }
+    ]
+  },
+  {
+    "table": "Attendance",
+    "columns": [
+      "id",
+      "customerId",
+      "userId",
+      "attendanceFor",
+      "attendanceGiven",
+      "checkIn",
+      "checkOut",
+      "inGeocode",
+      "outGeocode",
+      "isAutocheckout",
+      "present",
+      "notes",
+      "createdBy",
+      "updatedBy",
+      "createdAt",
+      "updatedAt"
+    ],
+    "description": "Table `Attendance` has columns: `id` (UUID), `customerId` (UUID), `userId` (UUID), `attendanceFor` (TIMESTAMP), `attendanceGiven` (TIMESTAMP), `checkIn` (TIMESTAMP), `checkOut` (TIMESTAMP), `inGeocode` (NULL), `outGeocode` (NULL), `isAutocheckout` (BOOLEAN), `present` (BOOLEAN), `notes` (VARCHAR(255)), `createdBy` (UUID), `updatedBy` (UUID), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "createdBy",
+        "description": "Each Attendance belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerId",
+        "description": "Each Attendance belongs to a single Customers."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "updatedBy",
+        "description": "Each Attendance belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "userId",
+        "description": "Each Attendance belongs to a single Users."
+      }
+    ]
+  },
+  {
+    "table": "Location",
+    "columns": [
+      "id",
+      "customerId",
+      "userId",
+      "date",
+      "geocode",
+      "roCode",
+      "roName",
+      "roAddress",
+      "roState",
+      "roPin",
+      "roInchargeName",
+      "roInchargeEmail",
+      "roMobile1",
+      "roMobile2",
+      "customerName",
+      "createdBy",
+      "updatedBy",
+      "createdAt",
+      "updatedAt"
+    ],
+    "description": "Table `Location` has columns: `id` (UUID), `customerId` (UUID), `userId` (UUID), `date` (TIMESTAMP), `geocode` (NULL), `roCode` (VARCHAR(255)), `roName` (VARCHAR(255)), `roAddress` (VARCHAR(255)), `roState` (VARCHAR(255)), `roPin` (VARCHAR(255)), `roInchargeName` (VARCHAR(255)), `roInchargeEmail` (VARCHAR(255)), `roMobile1` (VARCHAR(255)), `roMobile2` (VARCHAR(255)), `customerName` (VARCHAR(255)), `createdBy` (UUID), `updatedBy` (UUID), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "createdBy",
+        "description": "Each Location belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerId",
+        "description": "Each Location belongs to a single Customers."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "updatedBy",
+        "description": "Each Location belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "userId",
+        "description": "Each Location belongs to a single Users."
+      }
+    ]
+  },
+  {
+    "table": "DashboardLayouts",
+    "columns": [
+      "id",
+      "customerId",
+      "createdAt",
+      "updatedAt",
+      "createdBy",
+      "updatedBy",
+      "savedTiles",
+      "userId",
+      "type",
+      "name"
+    ],
+    "description": "Table `DashboardLayouts` has columns: `id` (UUID), `customerId` (UUID), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `createdBy` (UUID), `updatedBy` (UUID), `savedTiles` (JSON), `userId` (UUID), `type` (VARCHAR(255)), `name` (VARCHAR(255)).",
+    "relationships": [
+      {
+        "type": "has_many",
+        "table": "DashboardReports",
+        "foreign_key": "dashboardId",
+        "description": "Each DashboardLayouts can have multiple DashboardReports."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "createdBy",
+        "description": "Each DashboardLayouts belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerId",
+        "description": "Each DashboardLayouts belongs to a single Customers."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "updatedBy",
+        "description": "Each DashboardLayouts belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "userId",
+        "description": "Each DashboardLayouts belongs to a single Users."
+      }
+    ]
+  },
+  {
+    "table": "ProcessSafetyTemplatesWorkflows",
+    "columns": [
+      "id",
+      "templateId",
+      "templateComponent",
+      "componentDetails",
+      "componentOrder",
+      "createdAt",
+      "updatedAt"
+    ],
+    "description": "Table `ProcessSafetyTemplatesWorkflows` has columns: `id` (UUID), `templateId` (UUID), `templateComponent` (VARCHAR(9)), `componentDetails` (JSONB), `componentOrder` (INTEGER), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "ProcessSafetyTemplatesCollections",
+        "foreign_key": "templateId",
+        "description": "Each ProcessSafetyTemplatesWorkflows belongs to a single ProcessSafetyTemplatesCollections."
+      },
+      {
+        "type": "has_many",
+        "table": "ProcessSafetyAssignments",
+        "foreign_key": "workflowId",
+        "description": "Each ProcessSafetyTemplatesWorkflows can have multiple ProcessSafetyAssignments."
+      }
+    ]
+  },
+  {
+    "table": "MobileLoginStatuses",
+    "columns": [
+      "id",
+      "userId",
+      "isLoggedIn",
+      "isDeleted",
+      "createdAt",
+      "updatedAt",
+      "createdBy",
+      "updatedBy"
+    ],
+    "description": "Table `MobileLoginStatuses` has columns: `id` (UUID), `userId` (UUID), `isLoggedIn` (BOOLEAN), `isDeleted` (BOOLEAN), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `createdBy` (UUID), `updatedBy` (UUID).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "createdBy",
+        "description": "Each MobileLoginStatuses belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "updatedBy",
+        "description": "Each MobileLoginStatuses belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "userId",
+        "description": "Each MobileLoginStatuses belongs to a single Users."
+      }
+    ]
+  },
+  {
+    "table": "ActionTrackings",
+    "columns": [
+      "id",
+      "title",
+      "description",
+      "actionOwner",
+      "category",
+      "standard",
+      "subStandard",
+      "dueDate",
+      "priority",
+      "location",
+      "subLocation",
+      "alertDays",
+      "alertTime",
+      "mail",
+      "escalationMail",
+      "emailBody",
+      "needApproval",
+      "reportingManager",
+      "createdAt",
+      "updatedAt",
+      "createdBy",
+      "updatedBy",
+      "isDeleted",
+      "deletedBy",
+      "customerId",
+      "actionStatus",
+      "closureDate",
+      "comments",
+      "uploads"
+    ],
+    "description": "Table `ActionTrackings` has columns: `id` (UUID), `title` (VARCHAR(200)), `description` (VARCHAR(2000)), `actionOwner` (UUID), `category` (VARCHAR(255)), `standard` (VARCHAR(255)), `subStandard` (VARCHAR(255)), `dueDate` (TIMESTAMP), `priority` (VARCHAR(255)), `location` (VARCHAR(255)), `subLocation` (VARCHAR(255)), `alertDays` (INTEGER), `alertTime` (JSON), `mail` (JSON), `escalationMail` (JSON), `emailBody` (VARCHAR(2000)), `needApproval` (BOOLEAN), `reportingManager` (UUID), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `createdBy` (UUID), `updatedBy` (UUID), `isDeleted` (BOOLEAN), `deletedBy` (UUID), `customerId` (UUID), `actionStatus` (VARCHAR(255)), `closureDate` (TIMESTAMP), `comments` (VARCHAR(255)), `uploads` (JSON).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "actionOwner",
+        "description": "Each ActionTrackings belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "createdBy",
+        "description": "Each ActionTrackings belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerId",
+        "description": "Each ActionTrackings belongs to a single Customers."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "deletedBy",
+        "description": "Each ActionTrackings belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "reportingManager",
+        "description": "Each ActionTrackings belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "updatedBy",
+        "description": "Each ActionTrackings belongs to a single Users."
+      }
+    ]
+  },
+  {
+    "table": "Counsellings",
+    "columns": [
+      "id",
+      "customerId",
+      "userId",
+      "counsellingDate",
+      "fromDate",
+      "toDate",
+      "session",
+      "remark",
+      "behaviour",
+      "atRiskCount",
+      "driverScore",
+      "travelDistance",
+      "createdAt",
+      "updatedAt",
+      "createdBy",
+      "updatedBy",
+      "isDeleted",
+      "deletedBy"
+    ],
+    "description": "Table `Counsellings` has columns: `id` (UUID), `customerId` (UUID), `userId` (UUID), `counsellingDate` (TIMESTAMP), `fromDate` (TIMESTAMP), `toDate` (TIMESTAMP), `session` (INTEGER), `remark` (VARCHAR(255)), `behaviour` (VARCHAR(255)), `atRiskCount` (INTEGER), `driverScore` (INTEGER), `travelDistance` (INTEGER), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `createdBy` (UUID), `updatedBy` (UUID), `isDeleted` (BOOLEAN), `deletedBy` (UUID).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "createdBy",
+        "description": "Each Counsellings belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerId",
+        "description": "Each Counsellings belongs to a single Customers."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "deletedBy",
+        "description": "Each Counsellings belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "updatedBy",
+        "description": "Each Counsellings belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "userId",
+        "description": "Each Counsellings belongs to a single Users."
+      }
+    ]
+  },
+  {
+    "table": "PrivacyPolicies",
+    "columns": [
+      "id",
+      "userId",
+      "isAccepted",
+      "createdAt",
+      "updatedAt"
+    ],
+    "description": "Table `PrivacyPolicies` has columns: `id` (UUID), `userId` (UUID), `isAccepted` (BOOLEAN), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "userId",
+        "description": "Each PrivacyPolicies belongs to a single Users."
+      }
+    ]
+  },
+  {
+    "table": "AppVersions",
+    "columns": [
+      "id",
+      "userId",
+      "customerId",
+      "appVersion",
+      "createdAt",
+      "updatedAt",
+      "isDeleted",
+      "deviceType"
+    ],
+    "description": "Table `AppVersions` has columns: `id` (UUID), `userId` (UUID), `customerId` (UUID), `appVersion` (VARCHAR(255)), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `isDeleted` (BOOLEAN), `deviceType` (VARCHAR(255)).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerId",
+        "description": "Each AppVersions belongs to a single Customers."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "userId",
+        "description": "Each AppVersions belongs to a single Users."
+      }
+    ]
+  },
+  {
+    "table": "UserInsights",
+    "columns": [
+      "id",
+      "userId",
+      "customerId",
+      "isViewed",
+      "date",
+      "pendingInsight",
+      "viewedAt",
+      "createdAt",
+      "updatedAt",
+      "isDeleted"
+    ],
+    "description": "Table `UserInsights` has columns: `id` (UUID), `userId` (UUID), `customerId` (UUID), `isViewed` (BOOLEAN), `date` (TIMESTAMP), `pendingInsight` (VARCHAR(255)), `viewedAt` (TIMESTAMP), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `isDeleted` (BOOLEAN).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerId",
+        "description": "Each UserInsights belongs to a single Customers."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "userId",
+        "description": "Each UserInsights belongs to a single Users."
+      }
+    ]
+  },
+  {
+    "table": "AppStaticTexts",
+    "columns": [
+      "id",
+      "text",
+      "createdAt",
+      "updatedAt"
+    ],
+    "description": "Table `AppStaticTexts` has columns: `id` (UUID), `text` (TEXT), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP).",
+    "relationships": []
+  },
+  {
+    "table": "AdditionalSettings",
+    "columns": [
+      "id",
+      "customerId",
+      "emergencyNumbers",
+      "adminSMS",
+      "adminEmail",
+      "createdAt",
+      "updatedAt",
+      "createdBy",
+      "updatedBy",
+      "isDeleted",
+      "deletedBy",
+      "crashAlert",
+      "minConfidence"
+    ],
+    "description": "Table `AdditionalSettings` has columns: `id` (UUID), `customerId` (UUID), `emergencyNumbers` (JSONB), `adminSMS` (BOOLEAN), `adminEmail` (BOOLEAN), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `createdBy` (UUID), `updatedBy` (UUID), `isDeleted` (BOOLEAN), `deletedBy` (UUID), `crashAlert` (BOOLEAN), `minConfidence` (INTEGER).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "createdBy",
+        "description": "Each AdditionalSettings belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerId",
+        "description": "Each AdditionalSettings belongs to a single Customers."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "deletedBy",
+        "description": "Each AdditionalSettings belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "updatedBy",
+        "description": "Each AdditionalSettings belongs to a single Users."
+      }
+    ]
+  },
+  {
+    "table": "ModeAndJourneyTypeToggles",
+    "columns": [
+      "id",
+      "userId",
+      "toggledAt",
+      "mode",
+      "createdAt",
+      "updatedAt"
+    ],
+    "description": "Table `ModeAndJourneyTypeToggles` has columns: `id` (UUID), `userId` (UUID), `toggledAt` (TIMESTAMP), `mode` (VARCHAR(255)), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "userId",
+        "description": "Each ModeAndJourneyTypeToggles belongs to a single Users."
+      }
+    ]
+  },
+  {
+    "table": "UserEngagementNotifications",
+    "columns": [
+      "id",
+      "userId",
+      "customerId",
+      "toSend",
+      "count",
+      "createdAt",
+      "updatedAt",
+      "mailStreak"
+    ],
+    "description": "Table `UserEngagementNotifications` has columns: `id` (UUID), `userId` (UUID), `customerId` (UUID), `toSend` (BOOLEAN), `count` (INTEGER), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `mailStreak` (INTEGER).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerId",
+        "description": "Each UserEngagementNotifications belongs to a single Customers."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "userId",
+        "description": "Each UserEngagementNotifications belongs to a single Users."
+      }
+    ]
+  },
+  {
+    "table": "MobileHealthLatest",
+    "columns": [
+      "id",
+      "customerId",
+      "userId",
+      "permissions",
+      "trackingStatus",
+      "phonePermissionDetails",
+      "createdBy",
+      "updatedBy",
+      "createdAt",
+      "updatedAt"
+    ],
+    "description": "Table `MobileHealthLatest` has columns: `id` (UUID), `customerId` (UUID), `userId` (UUID), `permissions` (BOOLEAN), `trackingStatus` (VARCHAR(11)), `phonePermissionDetails` (JSONB), `createdBy` (UUID), `updatedBy` (UUID), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "createdBy",
+        "description": "Each MobileHealthLatest belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerId",
+        "description": "Each MobileHealthLatest belongs to a single Customers."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "updatedBy",
+        "description": "Each MobileHealthLatest belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "userId",
+        "description": "Each MobileHealthLatest belongs to a single Users."
+      }
+    ]
+  },
+  {
+    "table": "BadgesAssignments",
+    "columns": [
+      "id",
+      "userId",
+      "badgeId",
+      "currentProgress",
+      "isBadgeUnlocked",
+      "badgeUnlockedAt",
+      "createdAt",
+      "updatedAt",
+      "isDeleted"
+    ],
+    "description": "Table `BadgesAssignments` has columns: `id` (UUID), `userId` (UUID), `badgeId` (UUID), `currentProgress` (DOUBLE PRECISION), `isBadgeUnlocked` (BOOLEAN), `badgeUnlockedAt` (TIMESTAMP), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `isDeleted` (BOOLEAN).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Badges",
+        "foreign_key": "badgeId",
+        "description": "Each BadgesAssignments belongs to a single Badges."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "userId",
+        "description": "Each BadgesAssignments belongs to a single Users."
+      }
+    ]
+  },
+  {
+    "table": "MissingIbuttons",
+    "columns": [
+      "id",
+      "iButtonId",
+      "customerName",
+      "imei",
+      "lastScannedAt",
+      "createdAt",
+      "updatedAt"
+    ],
+    "description": "Table `MissingIbuttons` has columns: `id` (UUID), `iButtonId` (VARCHAR(255)), `customerName` (VARCHAR(255)), `imei` (VARCHAR(255)), `lastScannedAt` (TIMESTAMP), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP).",
+    "relationships": []
+  },
+  {
+    "table": "AuditHistories",
+    "columns": [
+      "id",
+      "userId",
+      "customerId",
+      "type",
+      "title",
+      "action",
+      "createdAt",
+      "updatedAt",
+      "status",
+      "userName",
+      "customerName"
+    ],
+    "description": "Table `AuditHistories` has columns: `id` (UUID), `userId` (VARCHAR(36)), `customerId` (VARCHAR(36)), `type` (VARCHAR(255)), `title` (VARCHAR(255)), `action` (VARCHAR(255)), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `status` (VARCHAR(255)), `userName` (VARCHAR(255)), `customerName` (VARCHAR(255)).",
+    "relationships": []
+  },
+  {
+    "table": "Assets",
+    "columns": [
+      "id",
+      "assetName",
+      "assetType",
+      "description",
+      "location",
+      "serialNumber",
+      "status",
+      "customProperties",
+      "customerId",
+      "createdBy",
+      "updatedBy",
+      "createdAt",
+      "updatedAt",
+      "lastInspectedAt"
+    ],
+    "description": "Table `Assets` has columns: `id` (UUID), `assetName` (VARCHAR(255)), `assetType` (VARCHAR(255)), `description` (VARCHAR(255)), `location` (VARCHAR(255)), `serialNumber` (VARCHAR(255)), `status` (VARCHAR(255)), `customProperties` (JSON), `customerId` (UUID), `createdBy` (UUID), `updatedBy` (UUID), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `lastInspectedAt` (TIMESTAMP).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "createdBy",
+        "description": "Each Assets belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerId",
+        "description": "Each Assets belongs to a single Customers."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "updatedBy",
+        "description": "Each Assets belongs to a single Users."
+      },
+      {
+        "type": "has_many",
+        "table": "InspectionAssignments",
+        "foreign_key": "assetId",
+        "description": "Each Assets can have multiple InspectionAssignments."
+      }
+    ]
+  },
+  {
+    "table": "InspectionAssignments",
+    "columns": [
+      "id",
+      "date",
+      "inspectionId",
+      "userId",
+      "baseHierarchy",
+      "customerId",
+      "findings",
+      "inspectionStatus",
+      "submittedDate",
+      "assignmentId",
+      "isApproved",
+      "approvedAt",
+      "closureDate",
+      "adminRemark",
+      "createdAt",
+      "updatedAt",
+      "createdBy",
+      "updatedBy",
+      "assetId"
+    ],
+    "description": "Table `InspectionAssignments` has columns: `id` (UUID), `date` (VARCHAR(255)), `inspectionId` (UUID), `userId` (UUID), `baseHierarchy` (VARCHAR(255)), `customerId` (UUID), `findings` (VARCHAR(2000)), `inspectionStatus` (VARCHAR(255)), `submittedDate` (TIMESTAMP), `assignmentId` (UUID), `isApproved` (BOOLEAN), `approvedAt` (TIMESTAMP), `closureDate` (TIMESTAMP), `adminRemark` (VARCHAR(2000)), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `createdBy` (UUID), `updatedBy` (UUID), `assetId` (UUID).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Assets",
+        "foreign_key": "assetId",
+        "description": "Each InspectionAssignments belongs to a single Assets."
+      },
+      {
+        "type": "belongs_to",
+        "table": "ChecklistAssignments",
+        "foreign_key": "assignmentId",
+        "description": "Each InspectionAssignments belongs to a single ChecklistAssignments."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "createdBy",
+        "description": "Each InspectionAssignments belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerId",
+        "description": "Each InspectionAssignments belongs to a single Customers."
+      },
+      {
+        "type": "belongs_to",
+        "table": "InspectionTrackings",
+        "foreign_key": "inspectionId",
+        "description": "Each InspectionAssignments belongs to a single InspectionTrackings."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "updatedBy",
+        "description": "Each InspectionAssignments belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "userId",
+        "description": "Each InspectionAssignments belongs to a single Users."
+      }
+    ]
+  },
+  {
+    "table": "UserRemainderCalls",
+    "columns": [
+      "id",
+      "userId",
+      "customerId",
+      "count",
+      "createdAt",
+      "updatedAt"
+    ],
+    "description": "Table `UserRemainderCalls` has columns: `id` (UUID), `userId` (UUID), `customerId` (UUID), `count` (INTEGER), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerId",
+        "description": "Each UserRemainderCalls belongs to a single Customers."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "userId",
+        "description": "Each UserRemainderCalls belongs to a single Users."
+      }
+    ]
+  },
+  {
+    "table": "ForkliftTabs",
+    "columns": [
+      "id",
+      "customerId",
+      "deviceId",
+      "vehicleId",
+      "notificationId",
+      "updatedBy",
+      "createdAt",
+      "updatedAt"
+    ],
+    "description": "Table `ForkliftTabs` has columns: `id` (UUID), `customerId` (UUID), `deviceId` (VARCHAR(255)), `vehicleId` (UUID), `notificationId` (VARCHAR(255)), `updatedBy` (UUID), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerId",
+        "description": "Each ForkliftTabs belongs to a single Customers."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "updatedBy",
+        "description": "Each ForkliftTabs belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Vehicles",
+        "foreign_key": "vehicleId",
+        "description": "Each ForkliftTabs belongs to a single Vehicles."
+      },
+      {
+        "type": "has_many",
+        "table": "FaceLoginAttempts",
+        "foreign_key": "tabId",
+        "description": "Each ForkliftTabs can have multiple FaceLoginAttempts."
+      }
+    ]
+  },
+  {
+    "table": "FaceLoginAttempts",
+    "columns": [
+      "id",
+      "customerId",
+      "userId",
+      "tabId",
+      "vehicleId",
+      "imageUrl",
+      "shift",
+      "success",
+      "createdAt",
+      "updatedAt",
+      "logoutTime"
+    ],
+    "description": "Table `FaceLoginAttempts` has columns: `id` (UUID), `customerId` (UUID), `userId` (UUID), `tabId` (UUID), `vehicleId` (UUID), `imageUrl` (VARCHAR(255)), `shift` (VARCHAR(255)), `success` (BOOLEAN), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `logoutTime` (TIMESTAMP).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerId",
+        "description": "Each FaceLoginAttempts belongs to a single Customers."
+      },
+      {
+        "type": "belongs_to",
+        "table": "ForkliftTabs",
+        "foreign_key": "tabId",
+        "description": "Each FaceLoginAttempts belongs to a single ForkliftTabs."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "userId",
+        "description": "Each FaceLoginAttempts belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Vehicles",
+        "foreign_key": "vehicleId",
+        "description": "Each FaceLoginAttempts belongs to a single Vehicles."
+      }
+    ]
+  },
+  {
+    "table": "UserIdentifierMappings",
+    "columns": [
+      "id",
+      "identifier",
+      "customerId",
+      "userId",
+      "createdAt",
+      "updatedAt",
+      "createdBy",
+      "updatedBy"
+    ],
+    "description": "Table `UserIdentifierMappings` has columns: `id` (UUID), `identifier` (VARCHAR(255)), `customerId` (UUID), `userId` (UUID), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `createdBy` (UUID), `updatedBy` (UUID).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerId",
+        "description": "Each UserIdentifierMappings belongs to a single Customers."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "userId",
+        "description": "Each UserIdentifierMappings belongs to a single Users."
+      }
+    ]
+  },
+  {
+    "table": "ProcessSafetySchedules",
+    "columns": [
+      "id",
+      "instanceId",
+      "userId",
+      "templateId",
+      "customerId",
+      "startDate",
+      "endDate",
+      "currentStatus",
+      "currentComponentOrder",
+      "attribute",
+      "createdAt",
+      "updatedAt"
+    ],
+    "description": "Table `ProcessSafetySchedules` has columns: `id` (UUID), `instanceId` (UUID), `userId` (UUID), `templateId` (UUID), `customerId` (UUID), `startDate` (TIMESTAMP), `endDate` (TIMESTAMP), `currentStatus` (VARCHAR(255)), `currentComponentOrder` (INTEGER), `attribute` (JSONB), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerId",
+        "description": "Each ProcessSafetySchedules belongs to a single Customers."
+      },
+      {
+        "type": "belongs_to",
+        "table": "ProcessSafetyTemplatesCollections",
+        "foreign_key": "templateId",
+        "description": "Each ProcessSafetySchedules belongs to a single ProcessSafetyTemplatesCollections."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "userId",
+        "description": "Each ProcessSafetySchedules belongs to a single Users."
+      },
+      {
+        "type": "has_many",
+        "table": "ProcessSafetyAssignments",
+        "foreign_key": "scheduleId",
+        "description": "Each ProcessSafetySchedules can have multiple ProcessSafetyAssignments."
+      }
+    ]
+  },
+  {
+    "table": "ProcessSafetyTags",
+    "columns": [
+      "id",
+      "tagName",
+      "attributes",
+      "createdAt",
+      "updatedAt"
+    ],
+    "description": "Table `ProcessSafetyTags` has columns: `id` (UUID), `tagName` (VARCHAR(255)), `attributes` (JSONB), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP).",
+    "relationships": [
+      {
+        "type": "has_many",
+        "table": "ProcessSafetySubTags",
+        "foreign_key": "tagId",
+        "description": "Each ProcessSafetyTags can have multiple ProcessSafetySubTags."
+      }
+    ]
+  },
+  {
+    "table": "ProcessSafetySubTags",
+    "columns": [
+      "id",
+      "tagId",
+      "subTag",
+      "createdAt",
+      "updatedAt",
+      "attributes"
+    ],
+    "description": "Table `ProcessSafetySubTags` has columns: `id` (UUID), `tagId` (UUID), `subTag` (VARCHAR(255)), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `attributes` (JSONB).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "ProcessSafetyTags",
+        "foreign_key": "tagId",
+        "description": "Each ProcessSafetySubTags belongs to a single ProcessSafetyTags."
+      },
+      {
+        "type": "has_many",
+        "table": "ProcessSafetyTemplatesCollections",
+        "foreign_key": "subTagId",
+        "description": "Each ProcessSafetySubTags can have multiple ProcessSafetyTemplatesCollections."
+      }
+    ]
+  },
+  {
+    "table": "ProcessSafetyAccessControls",
+    "columns": [
+      "id",
+      "templateId",
+      "type",
+      "permissionGiven",
+      "associatedId",
+      "isAlerted",
+      "dueDate",
+      "createdAt",
+      "updatedAt"
+    ],
+    "description": "Table `ProcessSafetyAccessControls` has columns: `id` (UUID), `templateId` (UUID), `type` (VARCHAR(9)), `permissionGiven` (VARCHAR(16)), `associatedId` (VARCHAR(255)), `isAlerted` (BOOLEAN), `dueDate` (TIMESTAMP), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "ProcessSafetyTemplatesCollections",
+        "foreign_key": "templateId",
+        "description": "Each ProcessSafetyAccessControls belongs to a single ProcessSafetyTemplatesCollections."
+      }
+    ]
+  },
+  {
+    "table": "OpenApiKeys",
+    "columns": [
+      "id",
+      "customerId",
+      "name",
+      "keyHash",
+      "expire",
+      "createdAt",
+      "updatedAt",
+      "updatedBy",
+      "createdBy",
+      "reminderEmails"
+    ],
+    "description": "Table `OpenApiKeys` has columns: `id` (UUID), `customerId` (UUID), `name` (VARCHAR(255)), `keyHash` (VARCHAR(255)), `expire` (TIMESTAMP), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `updatedBy` (UUID), `createdBy` (UUID), `reminderEmails` (JSONB).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerId",
+        "description": "Each OpenApiKeys belongs to a single Customers."
+      }
+    ]
+  },
+  {
+    "table": "ProcessSafetyAssignments",
+    "columns": [
+      "id",
+      "associatedUserId",
+      "customerId",
+      "templateId",
+      "scheduleId",
+      "workflowId",
+      "templateComponent",
+      "submissionDetails",
+      "submissionDate",
+      "status",
+      "createdAt",
+      "updatedAt"
+    ],
+    "description": "Table `ProcessSafetyAssignments` has columns: `id` (UUID), `associatedUserId` (UUID), `customerId` (UUID), `templateId` (UUID), `scheduleId` (UUID), `workflowId` (UUID), `templateComponent` (VARCHAR(255)), `submissionDetails` (JSONB), `submissionDate` (TIMESTAMP), `status` (VARCHAR(255)), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "associatedUserId",
+        "description": "Each ProcessSafetyAssignments belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerId",
+        "description": "Each ProcessSafetyAssignments belongs to a single Customers."
+      },
+      {
+        "type": "belongs_to",
+        "table": "ProcessSafetySchedules",
+        "foreign_key": "scheduleId",
+        "description": "Each ProcessSafetyAssignments belongs to a single ProcessSafetySchedules."
+      },
+      {
+        "type": "belongs_to",
+        "table": "ProcessSafetyTemplatesCollections",
+        "foreign_key": "templateId",
+        "description": "Each ProcessSafetyAssignments belongs to a single ProcessSafetyTemplatesCollections."
+      },
+      {
+        "type": "belongs_to",
+        "table": "ProcessSafetyTemplatesWorkflows",
+        "foreign_key": "workflowId",
+        "description": "Each ProcessSafetyAssignments belongs to a single ProcessSafetyTemplatesWorkflows."
+      }
+    ]
+  },
+  {
+    "table": "ProcessSafetyHistories",
+    "columns": [
+      "id",
+      "templateId",
+      "customerId",
+      "status",
+      "templateName",
+      "associatedUsers",
+      "tagName",
+      "subTagName",
+      "initiatedOn",
+      "publishedOn",
+      "publishedBy",
+      "createdAt",
+      "updatedAt",
+      "createdBy",
+      "updatedBy",
+      "attribute",
+      "s3BlobName"
+    ],
+    "description": "Table `ProcessSafetyHistories` has columns: `id` (UUID), `templateId` (UUID), `customerId` (UUID), `status` (VARCHAR(255)), `templateName` (VARCHAR(255)), `associatedUsers` (ARRAY), `tagName` (VARCHAR(255)), `subTagName` (VARCHAR(255)), `initiatedOn` (TIMESTAMP), `publishedOn` (TIMESTAMP), `publishedBy` (VARCHAR(255)), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `createdBy` (VARCHAR(255)), `updatedBy` (VARCHAR(255)), `attribute` (JSONB), `s3BlobName` (VARCHAR(255)).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerId",
+        "description": "Each ProcessSafetyHistories belongs to a single Customers."
+      },
+      {
+        "type": "belongs_to",
+        "table": "ProcessSafetyTemplatesCollections",
+        "foreign_key": "templateId",
+        "description": "Each ProcessSafetyHistories belongs to a single ProcessSafetyTemplatesCollections."
+      },
+      {
+        "type": "has_many",
+        "table": "ProcessSafetyHistoriesAccess",
+        "foreign_key": "historyId",
+        "description": "Each ProcessSafetyHistories can have multiple ProcessSafetyHistoriesAccess."
+      }
+    ]
+  },
+  {
+    "table": "ProcessSafetyTemplatesCollections",
+    "columns": [
+      "id",
+      "customerId",
+      "templateName",
+      "description",
+      "type",
+      "isPublished",
+      "isAlwaysVisible",
+      "isForSchedule",
+      "scheduleDetails",
+      "createdBy",
+      "updatedBy",
+      "createdAt",
+      "updatedAt",
+      "subTagId",
+      "publishedOn",
+      "publishedBy"
+    ],
+    "description": "Table `ProcessSafetyTemplatesCollections` has columns: `id` (UUID), `customerId` (UUID), `templateName` (VARCHAR(255)), `description` (TEXT), `type` (VARCHAR(7)), `isPublished` (BOOLEAN), `isAlwaysVisible` (BOOLEAN), `isForSchedule` (BOOLEAN), `scheduleDetails` (JSONB), `createdBy` (UUID), `updatedBy` (UUID), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP), `subTagId` (UUID), `publishedOn` (TIMESTAMP), `publishedBy` (UUID).",
+    "relationships": [
+      {
+        "type": "has_many",
+        "table": "ProcessSafetyTemplatesWorkflows",
+        "foreign_key": "templateId",
+        "description": "Each ProcessSafetyTemplatesCollections can have multiple ProcessSafetyTemplatesWorkflows."
+      },
+      {
+        "type": "has_many",
+        "table": "ProcessSafetySchedules",
+        "foreign_key": "templateId",
+        "description": "Each ProcessSafetyTemplatesCollections can have multiple ProcessSafetySchedules."
+      },
+      {
+        "type": "has_many",
+        "table": "ProcessSafetyAccessControls",
+        "foreign_key": "templateId",
+        "description": "Each ProcessSafetyTemplatesCollections can have multiple ProcessSafetyAccessControls."
+      },
+      {
+        "type": "has_many",
+        "table": "ProcessSafetyAssignments",
+        "foreign_key": "templateId",
+        "description": "Each ProcessSafetyTemplatesCollections can have multiple ProcessSafetyAssignments."
+      },
+      {
+        "type": "has_many",
+        "table": "ProcessSafetyHistories",
+        "foreign_key": "templateId",
+        "description": "Each ProcessSafetyTemplatesCollections can have multiple ProcessSafetyHistories."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "createdBy",
+        "description": "Each ProcessSafetyTemplatesCollections belongs to a single Users."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerId",
+        "description": "Each ProcessSafetyTemplatesCollections belongs to a single Customers."
+      },
+      {
+        "type": "belongs_to",
+        "table": "ProcessSafetySubTags",
+        "foreign_key": "subTagId",
+        "description": "Each ProcessSafetyTemplatesCollections belongs to a single ProcessSafetySubTags."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "updatedBy",
+        "description": "Each ProcessSafetyTemplatesCollections belongs to a single Users."
+      }
+    ]
+  },
+  {
+    "table": "ProcessSafetyHistoriesAccess",
+    "columns": [
+      "id",
+      "userId",
+      "historyId"
+    ],
+    "description": "Table `ProcessSafetyHistoriesAccess` has columns: `id` (UUID), `userId` (UUID), `historyId` (UUID).",
+    "relationships": [
+      {
+        "type": "belongs_to",
+        "table": "ProcessSafetyHistories",
+        "foreign_key": "historyId",
+        "description": "Each ProcessSafetyHistoriesAccess belongs to a single ProcessSafetyHistories."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "userId",
+        "description": "Each ProcessSafetyHistoriesAccess belongs to a single Users."
+      }
+    ]
+  },
+  {
+    "table": "ChecklistAssignments",
+    "columns": [
+      "id",
+      "date",
+      "time",
+      "isDraft",
+      "location",
+      "address",
+      "userId",
+      "checklistId",
+      "checklistScheduleId",
+      "customerId",
+      "createdAt",
+      "updatedAt"
+    ],
+    "description": "Table `ChecklistAssignments` has columns: `id` (UUID), `date` (VARCHAR(255)), `time` (VARCHAR(255)), `isDraft` (BOOLEAN), `location` (NULL), `address` (JSON), `userId` (UUID), `checklistId` (UUID), `checklistScheduleId` (UUID), `customerId` (UUID), `createdAt` (TIMESTAMP), `updatedAt` (TIMESTAMP).",
+    "relationships": [
+      {
+        "type": "has_many",
+        "table": "ChecklistAnswers",
+        "foreign_key": "ChecklistAssignmentId",
+        "description": "Each ChecklistAssignments can have multiple ChecklistAnswers."
+      },
+      {
+        "type": "has_many",
+        "table": "InspectionAssignments",
+        "foreign_key": "assignmentId",
+        "description": "Each ChecklistAssignments can have multiple InspectionAssignments."
+      },
+      {
+        "type": "belongs_to",
+        "table": "CheckLists",
+        "foreign_key": "checklistId",
+        "description": "Each ChecklistAssignments belongs to a single CheckLists."
+      },
+      {
+        "type": "belongs_to",
+        "table": "ChecklistSchedules",
+        "foreign_key": "checklistScheduleId",
+        "description": "Each ChecklistAssignments belongs to a single ChecklistSchedules."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Customers",
+        "foreign_key": "customerId",
+        "description": "Each ChecklistAssignments belongs to a single Customers."
+      },
+      {
+        "type": "belongs_to",
+        "table": "Users",
+        "foreign_key": "userId",
+        "description": "Each ChecklistAssignments belongs to a single Users."
+      }
+    ]
+  }
+]
