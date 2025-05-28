@@ -38,6 +38,7 @@ app.add_middleware(
         "http://localhost:3000",  # Local development
         "http://localhost:3001",  # Alternative local port
         "http://127.0.0.1:3000",  # Local development alternative
+        "http://13.51.171.153:3003",  # EC2 instance
     ],
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
