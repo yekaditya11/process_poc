@@ -119,7 +119,7 @@ const SafetyConnectLayout = ({
             {/* SafetyConnect Logo */}
             <Box
               component="img"
-              src="/safetyConnect_logo.png"
+              src="/SafetyConnect_logo.png"
               alt="SafetyConnect"
               sx={{
                 height: 32,

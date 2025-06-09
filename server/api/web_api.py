@@ -1,3 +1,5 @@
+
+
 """
 FastAPI Web API for SafetyConnect Dashboard
 Provides REST endpoints for safety management dashboard KPIs and conversational AI
