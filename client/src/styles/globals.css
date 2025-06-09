@@ -1,0 +1,570 @@
+/* Professional SafetyConnect Dashboard Styles */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+  background-color: #f8fafc;
+  color: #1f2937;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Clean scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Dashboard specific styles - Clean & Professional */
+.dashboard-container {
+  padding: 20px;
+  width: 100%;
+}
+
+.dashboard-header {
+  margin-bottom: 24px;
+}
+
+.dashboard-grid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+/* Beautiful module cards with reduced rounded corners - NO HOVER EFFECTS */
+.module-card {
+  background: white;
+  padding: 20px;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+  /* Removed transition and transform for stable dashboard cards */
+}
+
+/* Dashboard cards should NOT have hover effects - only individual metrics should have hover */
+
+/* Beautiful KPI cards with rounded corners */
+.kpi-card {
+  background: white;
+  padding: 16px;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+  text-align: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateY(0);
+}
+
+.kpi-card:hover {
+  box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+  border-color: #d1d5db;
+}
+
+.kpi-value {
+  font-size: 1.875rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #092f57;
+}
+
+.kpi-label {
+  font-size: 0.875rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+/* Clean status indicators - No rounded corners */
+.status-indicator {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 1px solid;
+}
+
+.status-success {
+  background-color: #f0fdf4;
+  color: #166534;
+  border-color: #bbf7d0;
+}
+
+.status-warning {
+  background-color: #fffbeb;
+  color: #92400e;
+  border-color: #fed7aa;
+}
+
+.status-error {
+  background-color: #fef2f2;
+  color: #991b1b;
+  border-color: #fecaca;
+}
+
+.status-info {
+  background-color: #eff6ff;
+  color: #1e40af;
+  border-color: #bfdbfe;
+}
+
+/* Beautiful chart containers with reduced rounded corners */
+.chart-container {
+  position: relative;
+  height: 300px;
+  margin: 12px 0;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Keep hover effects for individual chart containers */
+.chart-container:hover {
+  box-shadow: 0 4px 15px 0 rgba(0, 0, 0, 0.1);
+  border-color: #d1d5db;
+}
+
+.chart-container.large {
+  height: 400px;
+}
+
+.chart-container.small {
+  height: 200px;
+}
+
+/* Loading states */
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+}
+
+/* Professional responsive design */
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 16px;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .module-card {
+    padding: 16px;
+  }
+
+  .kpi-value {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-container {
+    padding: 12px;
+  }
+
+  .module-card {
+    padding: 12px;
+  }
+
+  .chart-container {
+    height: 250px;
+  }
+}
+
+/* Minimal animation utilities */
+.fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.slide-up {
+  animation: slideUp 0.2s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Professional Dashboard Overrides */
+.MuiCard-root {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 6px !important;
+}
+
+/* Reduced rounded corners for dashboard papers - NO HOVER EFFECTS */
+.dashboard-container .MuiPaper-root:not(.chatbot-container .MuiPaper-root),
+.module-dashboard .MuiPaper-root:not(.chatbot-container .MuiPaper-root),
+.MuiGrid-container .MuiPaper-root:not(.chatbot-container .MuiPaper-root) {
+  border-radius: 6px !important;
+  /* Removed transition to prevent hover effects on dashboard containers */
+}
+
+/* Dashboard-wide containers should NOT have hover effects - only individual metrics should have hover */
+
+/* Explicitly disable hover effects on main dashboard containers */
+.dashboard-container .MuiPaper-root:hover:not(.chatbot-container .MuiPaper-root):not(.kpi-card):not(.chart-container),
+.module-dashboard .MuiPaper-root:hover:not(.chatbot-container .MuiPaper-root):not(.kpi-card):not(.chart-container),
+.MuiGrid-container .MuiPaper-root:hover:not(.chatbot-container .MuiPaper-root):not(.kpi-card):not(.chart-container) {
+  transform: none !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1) !important;
+  border-color: #e5e7eb !important;
+}
+
+/* Ensure chatbot message bubbles keep their round corners */
+.chatbot-container .MuiPaper-root {
+  border-radius: 18px !important;
+}
+
+/* Remove rounded corners from header and sidebar */
+.MuiAppBar-root .MuiPaper-root,
+.MuiDrawer-root .MuiPaper-root {
+  border-radius: 0 !important;
+}
+
+/* Reduced rounded corners for menu dropdowns */
+.MuiMenu-root .MuiPaper-root {
+  border-radius: 3px !important;
+}
+
+/* Dashboard buttons with reduced rounded corners */
+.dashboard-container .MuiButton-root:not(.chatbot-container .MuiButton-root),
+.module-dashboard .MuiButton-root:not(.chatbot-container .MuiButton-root) {
+  border-radius: 6px !important;
+  text-transform: none !important;
+  font-weight: 500 !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Keep hover effects for individual buttons */
+.dashboard-container .MuiButton-root:hover:not(.chatbot-container .MuiButton-root),
+.module-dashboard .MuiButton-root:hover:not(.chatbot-container .MuiButton-root) {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Navigation buttons with reduced rounded corners */
+.MuiAppBar-root .MuiButton-root,
+.MuiDrawer-root .MuiButton-root {
+  border-radius: 4px !important;
+  text-transform: none !important;
+  font-weight: 600 !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Ensure chatbot buttons keep their round corners */
+.chatbot-container .MuiButton-root {
+  border-radius: 18px !important;
+  text-transform: none !important;
+  font-weight: 500 !important;
+}
+
+/* Apply square corners to dashboard chips only, exclude chatbot */
+.dashboard-container .MuiChip-root:not(.chatbot-container .MuiChip-root),
+.module-dashboard .MuiChip-root:not(.chatbot-container .MuiChip-root) {
+  border-radius: 0 !important;
+}
+
+/* Ensure chatbot chips keep their round corners */
+.chatbot-container .MuiChip-root {
+  border-radius: 18px !important;
+}
+
+/* Ensure navigation chips keep default styling */
+.MuiAppBar-root .MuiChip-root,
+.MuiDrawer-root .MuiChip-root {
+  border-radius: 4px !important;
+}
+
+/* Reduced rounded corners for module selection dropdown and date picker */
+.dashboard-container .MuiSelect-root,
+.dashboard-container .MuiOutlinedInput-root,
+.module-dashboard .MuiSelect-root,
+.module-dashboard .MuiOutlinedInput-root {
+  border-radius: 3px !important;
+}
+
+/* Reduced rounded corners for dropdown menu items */
+.MuiMenu-root .MuiMenuItem-root {
+  border-radius: 2px !important;
+  margin: 2px 4px !important;
+}
+
+/* Reduced rounded corners for sidebar navigation items */
+.MuiDrawer-root .MuiListItemButton-root {
+  border-radius: 3px !important;
+}
+
+/* Clean table styles */
+.MuiTableContainer-root {
+  border: 1px solid #e5e7eb;
+  box-shadow: none !important;
+}
+
+.MuiTableHead-root {
+  background-color: #f8fafc;
+}
+
+.MuiTableCell-head {
+  font-weight: 600;
+  color: #092f57;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* Professional color scheme */
+:root {
+  --primary-color: #092f57;
+  --secondary-color: #1976d2;
+  --success-color: #059669;
+  --warning-color: #d97706;
+  --error-color: #dc2626;
+  --background-color: #f8fafc;
+  --surface-color: #ffffff;
+  --text-primary: #1f2937;
+  --text-secondary: #64748b;
+  --border-color: #e5e7eb;
+}
+
+/* Utility classes */
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.mb-4 {
+  margin-bottom: 16px;
+}
+
+.mb-6 {
+  margin-bottom: 24px;
+}
+
+.mt-4 {
+  margin-top: 16px;
+}
+
+.mt-6 {
+  margin-top: 24px;
+}
+
+.p-4 {
+  padding: 16px;
+}
+
+.p-6 {
+  padding: 24px;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.gap-4 {
+  gap: 16px;
+}
+
+.gap-6 {
+  gap: 24px;
+}
+
+/* Color utilities */
+.text-primary {
+  color: #092f57;
+}
+
+.text-secondary {
+  color: #f97316;
+}
+
+.text-success {
+  color: #059669;
+}
+
+.text-warning {
+  color: #d97706;
+}
+
+.text-error {
+  color: #dc2626;
+}
+
+.bg-primary {
+  background-color: #092f57;
+}
+
+.bg-secondary {
+  background-color: #f97316;
+}
+
+.bg-success {
+  background-color: #059669;
+}
+
+.bg-warning {
+  background-color: #d97706;
+}
+
+.bg-error {
+  background-color: #dc2626;
+}
+
+/* Beautiful Animation Keyframes */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+/* Animation Utility Classes */
+.animate-slide-up {
+  animation: slideInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-slide-left {
+  animation: slideInLeft 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-slide-right {
+  animation: slideInRight 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-fade-scale {
+  animation: fadeInScale 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200px 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* Staggered Animation Delays */
+.animate-delay-100 { animation-delay: 0.1s; }
+.animate-delay-200 { animation-delay: 0.2s; }
+.animate-delay-300 { animation-delay: 0.3s; }
+.animate-delay-400 { animation-delay: 0.4s; }
+.animate-delay-500 { animation-delay: 0.5s; }

@@ -1,6 +1,6 @@
 """
 Server Runner Script
-Convenient script to run the AI Safety Summarizer API server
+Convenient script to run the SafetyConnect Dashboard API server
 """
 
 import uvicorn
@@ -21,7 +21,7 @@ def main():
     reload = os.getenv("API_RELOAD", "true").lower() == "true"
     log_level = os.getenv("LOG_LEVEL", "info").lower()
     
-    print(f"Starting AI Safety Summarizer API Server...")
+    print(f"Starting SafetyConnect Dashboard API Server...")
     print(f"Host: {host}")
     print(f"Port: {port}")
     print(f"Reload: {reload}")
