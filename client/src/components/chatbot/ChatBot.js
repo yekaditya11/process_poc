@@ -13,12 +13,12 @@ import {
   Tooltip,
   Badge,
   Chip,
-  Collapse,
+
   Avatar,
 } from '@mui/material';
 import {
   Close as CloseIcon,
-  Minimize as MinimizeIcon,
+
   Refresh as RefreshIcon,
   SmartToy as BotIcon,
   Fullscreen as FullscreenIcon,
@@ -36,13 +36,14 @@ import ChatMessage from './ChatMessage';
 import ChatInput from './ChatInput';
 import ChatLoadingIndicator from './ChatLoadingIndicator';
 import ApiService from '../../services/api';
+import chartManager from '../../services/chartManager';
 import '../../styles/chatbot.css';
 
 const ChatBot = ({ moduleContext = null }) => {
   console.log('🤖 ChatBot component initialized with moduleContext:', moduleContext);
 
   const [isOpen, setIsOpen] = useState(false);
-  const [isMinimized, setIsMinimized] = useState(false);
+
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -52,6 +53,7 @@ const ChatBot = ({ moduleContext = null }) => {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [speechEnabled, setSpeechEnabled] = useState(false);
   const [suggestionsOpen, setSuggestionsOpen] = useState(false);
+  const [aiPanelOpen, setAiPanelOpen] = useState(false);
   const [persistentSuggestions] = useState([
     "Show recent incidents",
     "Driver safety status",
@@ -83,8 +85,8 @@ const ChatBot = ({ moduleContext = null }) => {
 
   // Auto-scroll to bottom when new messages arrive
   const scrollToBottom = useCallback(() => {
-    // Only scroll if chat is open and not minimized, and container exists
-    if (isOpen && !isMinimized && chatContainerRef.current) {
+    // Only scroll if chat is open and container exists
+    if (isOpen && chatContainerRef.current) {
       // Add a small delay to ensure the container is fully rendered
       setTimeout(() => {
         if (chatContainerRef.current) {
@@ -96,24 +98,24 @@ const ChatBot = ({ moduleContext = null }) => {
         }
       }, 100);
     }
-  }, [isOpen, isMinimized]);
+  }, [isOpen]);
 
   useEffect(() => {
     // Only scroll when messages change and chat is open
-    if (isOpen && !isMinimized && messages.length > 0) {
+    if (isOpen && messages.length > 0) {
       // Use requestAnimationFrame for smoother scrolling
       requestAnimationFrame(() => {
         scrollToBottom();
       });
     }
-  }, [messages, scrollToBottom, isOpen, isMinimized]);
+  }, [messages, scrollToBottom, isOpen]);
 
   // Ensure chat starts from top when first opened
   useEffect(() => {
-    if (isOpen && !isMinimized && chatContainerRef.current && messages.length === 0) {
+    if (isOpen && chatContainerRef.current && messages.length === 0) {
       chatContainerRef.current.scrollTop = 0;
     }
-  }, [isOpen, isMinimized, messages.length]);
+  }, [isOpen, messages.length]);
 
   // Initialize conversation when chatbot opens
   useEffect(() => {
@@ -122,6 +124,24 @@ const ChatBot = ({ moduleContext = null }) => {
       initializeConversation();
     }
   }, [isOpen, sessionId]);
+
+  // Listen for AI panel toggle events to adjust chatbot positioning
+  useEffect(() => {
+    const handleAIPanelToggle = (event) => {
+      const { insightsPanelOpen } = event.detail || {};
+      console.log('🤖 AI Panel toggle detected:', insightsPanelOpen);
+      setAiPanelOpen(insightsPanelOpen);
+    };
+
+    // Listen for both new and legacy events
+    window.addEventListener('ai-panel-toggle', handleAIPanelToggle);
+    window.addEventListener('chatbot-toggle', handleAIPanelToggle);
+
+    return () => {
+      window.removeEventListener('ai-panel-toggle', handleAIPanelToggle);
+      window.removeEventListener('chatbot-toggle', handleAIPanelToggle);
+    };
+  }, []);
 
   const initializeConversation = async () => {
     try {
@@ -245,7 +265,6 @@ const ChatBot = ({ moduleContext = null }) => {
 
     // Simple toggle without scroll interference
     setIsOpen(newIsOpen);
-    setIsMinimized(false);
     setIsFullscreen(false);
 
     if (hasNewMessage) {
@@ -260,23 +279,8 @@ const ChatBot = ({ moduleContext = null }) => {
     console.log('🤖 Chat state will be:', newIsOpen);
   };
 
-  const handleMinimize = () => {
-    setIsMinimized(!isMinimized);
-    if (isMinimized) {
-      setIsFullscreen(false);
-    }
-
-    // Dispatch custom event to notify charts about layout change
-    setTimeout(() => {
-      window.dispatchEvent(new CustomEvent('chatbot-toggle'));
-    }, 50);
-  };
-
   const handleFullscreen = () => {
     setIsFullscreen(!isFullscreen);
-    if (!isFullscreen) {
-      setIsMinimized(false);
-    }
 
     // Dispatch custom event to notify charts about layout change
     setTimeout(() => {
@@ -343,9 +347,42 @@ const ChatBot = ({ moduleContext = null }) => {
     setSpeechEnabled(!speechEnabled);
   };
 
+  // Handle adding chart to dashboard
+  const handleAddChartToDashboard = async (chartConfig) => {
+    try {
+      console.log('Adding chart to dashboard:', chartConfig);
+
+      // Use the chart manager directly
+      await chartManager.addChart(chartConfig);
+
+      // Add success message to chat
+      const successMessage = {
+        id: Date.now(),
+        role: 'assistant',
+        content: "✅ Chart added to your custom dashboard successfully! You can view and organize your charts in the Custom Dashboard module.",
+        timestamp: new Date(),
+        isError: false
+      };
+      setMessages(prev => [...prev, successMessage]);
+
+      console.log('Chart added to dashboard successfully');
+    } catch (error) {
+      console.error('Error adding chart to dashboard:', error);
+      // Add error message to chat
+      const errorMessage = {
+        id: Date.now(),
+        role: 'assistant',
+        content: "❌ Sorry, I couldn't add the chart to your dashboard. Please try again.",
+        timestamp: new Date(),
+        isError: true
+      };
+      setMessages(prev => [...prev, errorMessage]);
+    }
+  };
 
 
-  console.log('🤖 ChatBot render - isOpen:', isOpen, 'isMinimized:', isMinimized, 'isFullscreen:', isFullscreen);
+
+  console.log('🤖 ChatBot render - isOpen:', isOpen, 'isFullscreen:', isFullscreen);
 
   // Check if document.body is available for portal
   if (typeof document === 'undefined' || !document.body) {
@@ -378,15 +415,16 @@ const ChatBot = ({ moduleContext = null }) => {
             style={{
               position: 'fixed',
               bottom: isFullscreen ? 0 : '100px',
-              right: isFullscreen ? 0 : '24px',
+              right: isFullscreen ? 0 : aiPanelOpen ? '420px' : '24px', // Adjust for AI panel
               left: isFullscreen ? 0 : 'auto',
               top: isFullscreen ? 0 : 'auto',
-              width: isFullscreen ? '100vw' : isMinimized ? '400px' : '500px',
-              height: isFullscreen ? '100vh' : isMinimized ? '60px' : '650px',
+              width: isFullscreen ? '100vw' : '500px',
+              height: isFullscreen ? '100vh' : '650px',
               zIndex: 9999,
               display: 'flex',
               flexDirection: 'column',
               overflow: 'hidden',
+              transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)', // Smooth transition for all properties
             }}
           >
             <Paper
@@ -405,6 +443,7 @@ const ChatBot = ({ moduleContext = null }) => {
                 flexDirection: 'column',
                 overflow: 'hidden',
                 position: 'relative',
+                transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)', // Smooth transitions
                 '&::before': {
                   content: '""',
                   position: 'absolute',
@@ -508,20 +547,7 @@ const ChatBot = ({ moduleContext = null }) => {
                       </IconButton>
                     </Tooltip>
 
-                    {/* Minimize Button */}
-                    <Tooltip title={isMinimized ? "Expand" : "Minimize"}>
-                      <IconButton
-                        onClick={handleMinimize}
-                        size="small"
-                        sx={{
-                          color: 'white',
-                          bgcolor: 'rgba(255,255,255,0.1)',
-                          '&:hover': { bgcolor: 'rgba(255,255,255,0.2)' },
-                        }}
-                      >
-                        {isMinimized ? <ExpandMoreIcon fontSize="small" /> : <MinimizeIcon fontSize="small" />}
-                      </IconButton>
-                    </Tooltip>
+
 
                     {/* Fullscreen Button */}
                     <Tooltip title={isFullscreen ? "Exit Fullscreen" : "Fullscreen"}>
@@ -572,8 +598,7 @@ const ChatBot = ({ moduleContext = null }) => {
               </motion.div>
 
               {/* Messages Area - Adjusted Height for Quick Questions */}
-              <Collapse in={!isMinimized}>
-                <Box
+              <Box
                   ref={chatContainerRef}
                   sx={{
                     // Adjust height based on whether suggestions are open
@@ -667,6 +692,7 @@ const ChatBot = ({ moduleContext = null }) => {
                         <ChatMessage
                           message={message}
                           onSuggestedAction={handleSuggestedAction}
+                          onAddChartToDashboard={handleAddChartToDashboard}
                           isSpeaking={isSpeaking}
                           isFullscreen={isFullscreen}
                         />
@@ -688,10 +714,8 @@ const ChatBot = ({ moduleContext = null }) => {
                   {/* Auto-scroll anchor */}
                   <div ref={messagesEndRef} />
                 </Box>
-              </Collapse>
 
               {/* Chat Input Section - Always at Bottom */}
-              <Collapse in={!isMinimized}>
                 <Box>
                   {/* Quick Questions - Above Input */}
                   <Box
@@ -792,7 +816,6 @@ const ChatBot = ({ moduleContext = null }) => {
                     disabled={isLoading}
                   />
                 </Box>
-              </Collapse>
             </Paper>
           </motion.div>
         )}
@@ -809,8 +832,9 @@ const ChatBot = ({ moduleContext = null }) => {
             style={{
               position: 'fixed',
               bottom: 24,
-              right: 24,
+              right: aiPanelOpen ? 420 : 24, // Adjust for AI panel
               zIndex: 9999,
+              transition: 'right 0.4s cubic-bezier(0.4, 0, 0.2, 1)', // Smooth transition
             }}
           >
             <Tooltip

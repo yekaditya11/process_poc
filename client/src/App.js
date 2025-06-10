@@ -10,7 +10,12 @@ import CssBaseline from '@mui/material/CssBaseline';
 import SimpleAIAnalysisPage from './pages/SimpleAIAnalysisPage';
 import UnifiedSafetyDashboard from './pages/UnifiedSafetyDashboard';
 import AIInsightsTest from './components/test/AIInsightsTest';
+import DashboardTest from './components/test/DashboardTest';
+import NotificationTest from './components/test/NotificationTest';
 import './styles/globals.css';
+
+// Import chart manager to initialize it globally
+import './services/chartManager';
 
 // Modern Safety Dashboard Theme with Custom Blue
 const theme = createTheme({
@@ -172,6 +177,8 @@ function App() {
             <Route path="/dashboard" element={<UnifiedSafetyDashboard />} />
             <Route path="/ai-analysis" element={<SimpleAIAnalysisPage />} />
             <Route path="/test-ai" element={<AIInsightsTest />} />
+            <Route path="/test-dashboard" element={<DashboardTest />} />
+            <Route path="/test-notifications" element={<NotificationTest />} />
           </Routes>
         </div>
       </Router>

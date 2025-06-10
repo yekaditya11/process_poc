@@ -102,11 +102,12 @@ class IncidentKPIsExtractor:
                 error_msg = str(e)
                 logger.error(f"Query execution failed (attempt {retry_count + 1}/{max_retries + 1}): {error_msg}")
 
-                # Always rollback transaction on error
+                # Always rollback transaction on error, but don't fail if rollback fails
                 try:
-                    self.db_session.rollback()
-                except:
-                    pass
+                    if hasattr(self.db_session, 'rollback'):
+                        self.db_session.rollback()
+                except Exception as rollback_error:
+                    logger.debug(f"Rollback failed during error handling (this is expected): {str(rollback_error)}")
 
                 # Check if it's a connection error
                 if self._is_connection_error(error_msg) and retry_count < max_retries:

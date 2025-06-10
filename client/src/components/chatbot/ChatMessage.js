@@ -20,19 +20,55 @@ import {
   ExpandMore as ExpandIcon,
   ExpandLess as CollapseIcon,
   BarChart as ChartIcon,
+  Add as AddIcon,
+  Dashboard as DashboardIcon,
 } from '@mui/icons-material';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import EChartsChart from './EChartsChart';
 import { chatAnimations } from '../../utils/animations';
 
-const ChatMessage = ({ message, onSuggestedAction, isSpeaking, isFullscreen = false }) => {
+const ChatMessage = ({ message, onSuggestedAction, isSpeaking, isFullscreen = false, onAddChartToDashboard }) => {
   const [showChart, setShowChart] = useState(true); // Show charts by default for better UX
   const [displayedText, setDisplayedText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [isAddingToDashboard, setIsAddingToDashboard] = useState(false);
 
   const isUser = message.role === 'user';
   const isError = message.isError;
+
+  // Handle adding chart to dashboard
+  const handleAddToDashboard = async () => {
+    console.log('Add to dashboard clicked!');
+    console.log('Chart data:', message.chart_data);
+    console.log('onAddChartToDashboard function:', onAddChartToDashboard);
+
+    if (!message.chart_data) {
+      console.error('No chart data available');
+      return;
+    }
+
+    if (!onAddChartToDashboard) {
+      console.error('onAddChartToDashboard function not available');
+      return;
+    }
+
+    setIsAddingToDashboard(true);
+    try {
+      console.log('Attempting to add chart to dashboard...');
+      await onAddChartToDashboard({
+        chartData: message.chart_data,
+        title: message.chart_data.title || 'AI Generated Chart',
+        timestamp: new Date().toISOString(),
+        source: 'chat'
+      });
+      console.log('Chart added successfully!');
+    } catch (error) {
+      console.error('Error adding chart to dashboard:', error);
+    } finally {
+      setIsAddingToDashboard(false);
+    }
+  };
 
   // Line-by-line typing effect for AI responses
   useEffect(() => {
@@ -279,33 +315,72 @@ const ChatMessage = ({ message, onSuggestedAction, isSpeaking, isFullscreen = fa
                 sx={{
                   display: 'flex',
                   alignItems: 'center',
+                  justifyContent: 'space-between',
                   gap: 1,
                   mb: 1,
                 }}
               >
-                <IconButton
-                  size="small"
-                  onClick={() => setShowChart(!showChart)}
-                  sx={{
-                    bgcolor: '#e3f2fd',
-                    color: '#1976d2',
-                    '&:hover': { bgcolor: '#bbdefb' },
-                  }}
-                >
-                  <ChartIcon fontSize="small" />
-                </IconButton>
-                
-                <Typography variant="caption" sx={{ color: '#64748b' }}>
-                  {showChart ? 'Hide Chart' : 'Show Chart'}
-                </Typography>
-                
-                <IconButton
-                  size="small"
-                  onClick={() => setShowChart(!showChart)}
-                  sx={{ color: '#64748b' }}
-                >
-                  {showChart ? <CollapseIcon fontSize="small" /> : <ExpandIcon fontSize="small" />}
-                </IconButton>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <IconButton
+                    size="small"
+                    onClick={() => setShowChart(!showChart)}
+                    sx={{
+                      bgcolor: '#e3f2fd',
+                      color: '#1976d2',
+                      '&:hover': { bgcolor: '#bbdefb' },
+                    }}
+                  >
+                    <ChartIcon fontSize="small" />
+                  </IconButton>
+
+                  <Typography variant="caption" sx={{ color: '#64748b' }}>
+                    {showChart ? 'Hide Chart' : 'Show Chart'}
+                  </Typography>
+                </Box>
+
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  {/* Add to Dashboard Button */}
+                  <Tooltip title="Add chart to dashboard">
+                    <IconButton
+                      size="small"
+                      onClick={handleAddToDashboard}
+                      disabled={isAddingToDashboard}
+                      sx={{
+                        color: '#059669',
+                        bgcolor: 'rgba(5, 150, 105, 0.1)',
+                        '&:hover': {
+                          bgcolor: 'rgba(5, 150, 105, 0.2)',
+                          transform: 'scale(1.05)',
+                        },
+                        '&:disabled': {
+                          color: '#94a3b8',
+                          bgcolor: 'rgba(148, 163, 184, 0.1)',
+                        },
+                        transition: 'all 0.2s ease',
+                      }}
+                    >
+                      {isAddingToDashboard ? (
+                        <motion.div
+                          animate={{ rotate: 360 }}
+                          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                        >
+                          <DashboardIcon fontSize="small" />
+                        </motion.div>
+                      ) : (
+                        <AddIcon fontSize="small" />
+                      )}
+                    </IconButton>
+                  </Tooltip>
+
+                  {/* Collapse/Expand Button */}
+                  <IconButton
+                    size="small"
+                    onClick={() => setShowChart(!showChart)}
+                    sx={{ color: '#64748b' }}
+                  >
+                    {showChart ? <CollapseIcon fontSize="small" /> : <ExpandIcon fontSize="small" />}
+                  </IconButton>
+                </Box>
               </Box>
 
               <Collapse in={showChart}>

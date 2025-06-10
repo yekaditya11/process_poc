@@ -37,6 +37,7 @@ import {
 } from 'chart.js';
 import { Line, Bar, Doughnut } from 'react-chartjs-2';
 import { motion } from 'framer-motion';
+import { useChartResize } from '../../utils/chartResizeHandler';
 
 // Register Chart.js components
 ChartJS.register(
@@ -55,36 +56,16 @@ ChartJS.register(
 const IncidentCharts = ({ data = {} }) => {
   const [trendPeriod, setTrendPeriod] = useState('monthly');
   const chartRefs = useRef({});
+  const { setupResize } = useChartResize();
 
-  // Handle chart resizing when chatbot opens/closes or window resizes
+  // Setup chart resize handling
   useEffect(() => {
-    const handleResize = () => {
-      // Small delay to allow for chatbot animation to complete
-      setTimeout(() => {
-        // Resize all Chart.js instances
-        Object.values(chartRefs.current).forEach(chartRef => {
-          if (chartRef && chartRef.chartInstance) {
-            chartRef.chartInstance.resize();
-          }
-        });
-      }, 350); // Slightly longer than chatbot animation (300ms)
-    };
-
-    // Listen for window resize events
-    window.addEventListener('resize', handleResize);
-
-    // Also listen for custom chatbot events if they exist
-    window.addEventListener('chatbot-toggle', handleResize);
-
-    // Cleanup
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      window.removeEventListener('chatbot-toggle', handleResize);
-    };
-  }, []);
+    const cleanup = setupResize();
+    return cleanup;
+  }, [setupResize]);
 
   // Function to register chart references
-  const registerChart = (chartId, chartRef) => {
+  const registerChartRef = (chartId, chartRef) => {
     if (chartRef) {
       chartRefs.current[chartId] = chartRef;
     }
@@ -226,7 +207,7 @@ const IncidentCharts = ({ data = {} }) => {
     ],
   };
 
-  // Modern locations chart with gradient bars
+  // Modern locations chart with slightly rounded bars
   const locationsData = {
     labels: Object.keys(incidents_by_location).slice(0, 10), // Top 10 locations
     datasets: [
@@ -236,7 +217,7 @@ const IncidentCharts = ({ data = {} }) => {
         backgroundColor: modernColors.primary,
         borderColor: modernColors.primary,
         borderWidth: 0,
-        borderRadius: 8,
+        borderRadius: 3,
         borderSkipped: false,
         hoverBackgroundColor: modernColors.error,
         hoverBorderColor: modernColors.error,
@@ -660,7 +641,7 @@ const IncidentCharts = ({ data = {} }) => {
                   </Box>
                   <Box sx={{ height: 280 }}>
                     <Line
-                      ref={(ref) => registerChart('trendChart', ref)}
+                      ref={(ref) => registerChartRef('trendChart', ref)}
                       data={trendData}
                       options={modernChartOptions}
                     />
@@ -698,7 +679,7 @@ const IncidentCharts = ({ data = {} }) => {
                   </Typography>
                   <Box sx={{ height: 280 }}>
                     <Doughnut
-                      ref={(ref) => registerChart('typesChart', ref)}
+                      ref={(ref) => registerChartRef('typesChart', ref)}
                       data={typesData}
                       options={donutOptions}
                     />
@@ -736,7 +717,7 @@ const IncidentCharts = ({ data = {} }) => {
                   </Typography>
                   <Box sx={{ height: 280 }}>
                     <Bar
-                      ref={(ref) => registerChart('locationsChart', ref)}
+                      ref={(ref) => registerChartRef('locationsChart', ref)}
                       data={locationsData}
                       options={modernChartOptions}
                     />

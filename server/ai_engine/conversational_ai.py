@@ -102,13 +102,19 @@ class ConversationalAI:
         self.summarizer_app = summarizer_app
         self.conversations: Dict[str, ConversationContext] = {}
 
-        # Initialize OpenAI client
+        # Initialize OpenAI client with high-performance settings
         self.openai_client = None
         if openai_available:
             api_key = os.getenv("OPENAI_API_KEY")
             if api_key:
-                self.openai_client = OpenAI(api_key=api_key)
-                logger.info("OpenAI client initialized")
+                import httpx
+                # Configure for large context models with appropriate timeouts
+                self.openai_client = OpenAI(
+                    api_key=api_key,
+                    timeout=httpx.Timeout(60.0, read=45.0, write=10.0, connect=5.0),  # Longer timeouts for large models
+                    max_retries=2  # Allow retries for large context processing
+                )
+                logger.info("OpenAI client initialized with high-performance settings")
             else:
                 logger.warning("OpenAI API key not found")
         else:
@@ -477,13 +483,13 @@ class ConversationalAI:
                     logger.info(f"Prompt length: {len(truncated_prompt)} characters")
 
                     response = self.openai_client.chat.completions.create(
-                        model="gpt-4o-mini",  # Use GPT-4 as requested
+                        model="gpt-4o",  # Use large context model for comprehensive analysis
                         messages=[
                             {"role": "system", "content": self.system_prompt},
                             {"role": "user", "content": truncated_prompt}
                         ],
-                        max_tokens=200,  # Increased slightly to handle full JSON data processing
-                        temperature=0.3  # Lower temperature for more focused responses
+                        max_tokens=1000,  # Increased for more detailed responses
+                        temperature=0.1  # Very low temperature for focused response
                     )
                     ai_response = self._clean_ai_response(response.choices[0].message.content.strip())
                     logger.info(f"OpenAI response generated: {ai_response[:100]}...")
@@ -1241,13 +1247,13 @@ Direct Answer to "{clean_user_message}":"""
             truncated_prompt = self._truncate_prompt_for_context(prompt, max_tokens=8000)
 
             response = self.openai_client.chat.completions.create(
-                model="gpt-4o-mini",  # Use GPT-4 as requested
+                model="gpt-3.5-turbo",  # Use fastest model for speed
                 messages=[
                     {"role": "system", "content": "You are a chart generator. Respond only with valid JSON."},
                     {"role": "user", "content": truncated_prompt}
                 ],
-                max_tokens=500,
-                temperature=0.3
+                max_tokens=400,  # Reduced for faster response
+                temperature=0.1  # Very low for fastest response
             )
 
             ai_response = response.choices[0].message.content.strip()

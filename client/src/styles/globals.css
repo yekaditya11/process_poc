@@ -142,7 +142,9 @@ body {
   border: 1px solid #e5e7eb;
   border-radius: 6px;
   overflow: hidden;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Ensure charts adapt to layout changes */
+  contain: layout style;
 }
 
 /* Keep hover effects for individual chart containers */
@@ -368,6 +370,27 @@ body {
   --text-primary: #1f2937;
   --text-secondary: #64748b;
   --border-color: #e5e7eb;
+}
+
+/* AI Panel Layout Improvements */
+.dashboard-with-ai-panel {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dashboard-with-ai-panel .chart-container,
+.dashboard-with-ai-panel .MuiPaper-root {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Prevent layout shifts during AI panel animation */
+.ai-panel-transition {
+  overflow: hidden;
+  will-change: transform, width;
+}
+
+/* Ensure smooth chart resizing */
+.chart-container canvas {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
 /* Utility classes */

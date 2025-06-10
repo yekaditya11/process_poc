@@ -81,6 +81,17 @@ class DashboardConfigResponse(BaseModel):
     dashboard_id: str
     message: str
 
+class ChartAddRequest(BaseModel):
+    chart_data: Dict[str, Any]
+    title: str
+    source: str = "chat"
+    user_id: Optional[str] = "anonymous"
+
+class ChartAddResponse(BaseModel):
+    success: bool
+    chart_id: str
+    message: str
+
 # Initialize the main application
 summarizer_app = SafetySummarizerApp()
 
@@ -1402,6 +1413,107 @@ async def load_dashboard_config(dashboard_id: str):
         logger.error(f"Error loading dashboard: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.post("/dashboard/add-chart", response_model=ChartAddResponse)
+async def add_chart_to_dashboard(request: ChartAddRequest):
+    """Add a chart from chatbot to custom dashboard"""
+    try:
+        import json
+        import os
+        from datetime import datetime
+
+        # Create charts directory if it doesn't exist
+        charts_dir = "custom_charts"
+        if not os.path.exists(charts_dir):
+            os.makedirs(charts_dir)
+
+        chart_id = f"chart_{request.user_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{hash(str(request.chart_data)) % 10000}"
+
+        # Save chart configuration
+        chart_config = {
+            "chart_id": chart_id,
+            "title": request.title,
+            "chart_data": request.chart_data,
+            "source": request.source,
+            "user_id": request.user_id,
+            "created_at": datetime.now().isoformat(),
+            "size": 6,  # Default size
+            "position": 0  # Will be updated when added to dashboard
+        }
+
+        chart_path = os.path.join(charts_dir, f"{chart_id}.json")
+        with open(chart_path, 'w') as f:
+            json.dump(chart_config, f, indent=2)
+
+        return ChartAddResponse(
+            success=True,
+            chart_id=chart_id,
+            message="Chart added to dashboard successfully"
+        )
+
+    except Exception as e:
+        logger.error(f"Error adding chart to dashboard: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/dashboard/charts/{user_id}")
+async def get_user_charts(user_id: str = "anonymous"):
+    """Get all charts for a user"""
+    try:
+        import json
+        import os
+        from glob import glob
+
+        charts_dir = "custom_charts"
+        if not os.path.exists(charts_dir):
+            return {"success": True, "charts": []}
+
+        # Find all chart files for the user
+        pattern = os.path.join(charts_dir, f"chart_{user_id}_*.json")
+        chart_files = glob(pattern)
+
+        charts = []
+        for chart_file in chart_files:
+            try:
+                with open(chart_file, 'r') as f:
+                    chart_config = json.load(f)
+                    charts.append(chart_config)
+            except Exception as e:
+                logger.warning(f"Error loading chart file {chart_file}: {str(e)}")
+
+        # Sort by creation date
+        charts.sort(key=lambda x: x.get('created_at', ''), reverse=True)
+
+        return {
+            "success": True,
+            "charts": charts
+        }
+
+    except Exception as e:
+        logger.error(f"Error getting user charts: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.delete("/dashboard/charts/{chart_id}")
+async def delete_chart(chart_id: str):
+    """Delete a chart from custom dashboard"""
+    try:
+        import os
+
+        charts_dir = "custom_charts"
+        chart_path = os.path.join(charts_dir, f"{chart_id}.json")
+
+        if not os.path.exists(chart_path):
+            raise HTTPException(status_code=404, detail="Chart not found")
+
+        os.remove(chart_path)
+
+        return {
+            "success": True,
+            "message": "Chart deleted successfully"
+        }
+
+    except Exception as e:
+        logger.error(f"Error deleting chart: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 @app.get("/dashboard/list")
 async def list_dashboards(user_id: Optional[str] = Query("anonymous", description="User ID filter")):
     """List all dashboards for a user"""
@@ -1511,13 +1623,13 @@ async def generate_similar_insights(module: str, positive_insight: str):
 
         # Call OpenAI to generate similar insights
         response = await summarizer_app.ai_engine.openai_client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model="gpt-4o",  # Use large context model for comprehensive analysis
             messages=[
                 {"role": "system", "content": "You are a safety analysis expert. Generate concise, actionable safety insights."},
                 {"role": "user", "content": prompt}
             ],
-            max_tokens=300,
-            temperature=0.7
+            max_tokens=800,  # Increased for more detailed insights
+            temperature=0.3  # Lower for focused response
         )
 
         # Parse the response
@@ -1668,13 +1780,13 @@ async def generate_data_driven_insights(module: str, module_data: dict, existing
         """
 
         response = summarizer_app.ai_engine.openai_client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model="gpt-4o",  # Use large context model for comprehensive analysis
             messages=[
                 {"role": "system", "content": "You are a data analyst specializing in safety metrics. Generate insights based ONLY on the actual data provided, not generic recommendations."},
                 {"role": "user", "content": prompt}
             ],
-            max_tokens=800,
-            temperature=0.7  # Moderate temperature for focused analysis
+            max_tokens=1500,  # Increased for more detailed analysis
+            temperature=0.3  # Lower temperature for focused analysis
         )
 
         # Parse and filter response
@@ -1888,8 +2000,8 @@ async def generate_additional_insights(module: str, existing_insights: list, pos
                 {"role": "system", "content": "You are a safety analysis expert. Generate unique, actionable safety insights without duplicating existing ones."},
                 {"role": "user", "content": prompt}
             ],
-            max_tokens=800,
-            temperature=0.8  # Higher temperature for more variety
+            max_tokens=500,  # Reduced for faster response
+            temperature=0.5  # Balanced temperature for speed and variety
         )
 
         # Parse the response

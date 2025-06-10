@@ -54,12 +54,18 @@ class SafetySummarizationEngine:
         """
         self.openai_client = None
         
-        # Initialize OpenAI client
+        # Initialize OpenAI client with high-performance settings
         if openai_available:
             api_key = api_key or os.getenv("OPENAI_API_KEY")
             if api_key:
-                self.openai_client = OpenAI(api_key=api_key)
-                logger.info("SafetySummarizationEngine: OpenAI client initialized")
+                import httpx
+                # Configure timeout settings optimized for large context models
+                self.openai_client = OpenAI(
+                    api_key=api_key,
+                    timeout=httpx.Timeout(90.0, read=60.0, write=10.0, connect=5.0),  # Longer timeouts for large models
+                    max_retries=2  # Allow retries for large context processing
+                )
+                logger.info("SafetySummarizationEngine: OpenAI client initialized with high-performance settings")
             else:
                 logger.warning("SafetySummarizationEngine: OpenAI API key not found")
         else:
@@ -104,17 +110,27 @@ class SafetySummarizationEngine:
             }
         }
 
-        # Model preferences and context limits
+        # Model preferences and context limits - optimized for speed
         self.model_context_limits = {
-            "gpt-4o": 128000,           # GPT-4.1 - Very large context
-            "gpt-4o-mini": 128000,      # GPT-4.1 Mini - Large context
-            "gpt-4-turbo-preview": 128000,  # GPT-4 Turbo
-            "gpt-4-1106-preview": 128000,   # GPT-4 Turbo
-            "gpt-4": 8192,              # Regular GPT-4
-            "gpt-3.5-turbo-16k": 16384  # GPT-3.5 Turbo
+            "gpt-3.5-turbo": 16384,     # Fastest model - prioritize for speed
+            "gpt-3.5-turbo-1106": 16384, # Latest fast model
+            "gpt-3.5-turbo-16k": 16384, # Fast model with larger context
+            "gpt-4o-mini": 128000,      # Backup - slower but more capable
+            "gpt-4o": 128000,           # Fallback - slowest but most capable
+            "gpt-4-turbo-preview": 128000,  # Legacy fallback
+            "gpt-4": 8192,              # Legacy fallback
         }
+
+        # Large context model priority order - prioritizing models with large token capacity
+        self.speed_optimized_models = [
+            "gpt-4o",                  # Latest large context model (128k tokens)
+            "gpt-4o-mini",             # Fast large context model (128k tokens)
+            "gpt-4-turbo-preview",     # Large context model (128k tokens)
+            "gpt-3.5-turbo-16k",       # Larger context (16k tokens)
+            "gpt-3.5-turbo",           # Fallback (4k tokens)
+        ]
     
-    @cached_ai_response("module_analysis", ttl_seconds=1800)  # 30 minutes cache
+    @cached_ai_response("module_analysis", ttl_seconds=3600)  # 1 hour cache for better performance
     def generate_module_specific_analysis(self, module_data: Dict[str, Any], module: str) -> Dict[str, Any]:
         """
         Generate comprehensive AI analysis for a specific safety module
@@ -249,14 +265,10 @@ class SafetySummarizationEngine:
             # Select optimal model based on prompt size
             optimal_model = self._select_optimal_model(prompt)
 
-            # Try the optimal model first, then fallbacks
-            models_to_try = [optimal_model]
-            if optimal_model not in ["gpt-4o", "gpt-4o-mini", "gpt-4-turbo-preview", "gpt-4-1106-preview", "gpt-4", "gpt-3.5-turbo-16k"]:
-                models_to_try = ["gpt-4o", "gpt-4o-mini", "gpt-4-turbo-preview", "gpt-4-1106-preview", "gpt-4", "gpt-3.5-turbo-16k"]
-            else:
-                # Add fallbacks after optimal model
-                fallbacks = ["gpt-4o", "gpt-4o-mini", "gpt-4-turbo-preview", "gpt-4-1106-preview", "gpt-4", "gpt-3.5-turbo-16k"]
-                models_to_try.extend([m for m in fallbacks if m != optimal_model])
+            # Prioritize fastest models for maximum performance
+            models_to_try = self.speed_optimized_models.copy()  # Use speed-optimized order
+            if optimal_model and optimal_model not in models_to_try:
+                models_to_try.insert(0, optimal_model)  # Put optimal model first if not already included
 
             for model in models_to_try:
                 try:
@@ -265,15 +277,15 @@ class SafetySummarizationEngine:
                         messages=[
                             {
                                 "role": "system",
-                                "content": "You are a safety management expert specializing in workplace safety analytics. Provide detailed, actionable insights in the exact JSON format requested."
+                                "content": "You are a safety management expert. Provide concise, actionable insights in JSON format."
                             },
                             {
                                 "role": "user",
                                 "content": prompt
                             }
                         ],
-                        max_tokens=2000,
-                        temperature=0.3
+                        max_tokens=2000,  # Increased for more detailed analysis with large context models
+                        temperature=0.1   # Very low temperature for focused responses
                     )
                     logger.info(f"Successfully used model: {model}")
                     break
@@ -454,14 +466,10 @@ Respond ONLY with the JSON object, no additional text.
             # Select optimal model based on prompt size
             optimal_model = self._select_optimal_model(prompt)
 
-            # Try the optimal model first, then fallbacks
-            models_to_try = [optimal_model]
-            if optimal_model not in ["gpt-4o", "gpt-4o-mini", "gpt-4-turbo-preview", "gpt-4-1106-preview", "gpt-4", "gpt-3.5-turbo-16k"]:
-                models_to_try = ["gpt-4o", "gpt-4o-mini", "gpt-4-turbo-preview", "gpt-4-1106-preview", "gpt-4", "gpt-3.5-turbo-16k"]
-            else:
-                # Add fallbacks after optimal model
-                fallbacks = ["gpt-4o", "gpt-4o-mini", "gpt-4-turbo-preview", "gpt-4-1106-preview", "gpt-4", "gpt-3.5-turbo-16k"]
-                models_to_try.extend([m for m in fallbacks if m != optimal_model])
+            # Use speed-optimized models for comprehensive analysis
+            models_to_try = self.speed_optimized_models.copy()
+            if optimal_model and optimal_model not in models_to_try:
+                models_to_try.insert(0, optimal_model)  # Put optimal model first if not already included
 
             for model in models_to_try:
                 try:
@@ -470,15 +478,15 @@ Respond ONLY with the JSON object, no additional text.
                         messages=[
                             {
                                 "role": "system",
-                                "content": "You are a senior safety management consultant providing executive-level safety analysis across multiple safety modules. Focus on strategic insights and organizational safety performance."
+                                "content": "You are a safety consultant. Provide concise executive-level safety analysis in JSON format."
                             },
                             {
                                 "role": "user",
                                 "content": prompt
                             }
                         ],
-                        max_tokens=2500,
-                        temperature=0.3
+                        max_tokens=3000,  # Increased for comprehensive analysis with large context models
+                        temperature=0.1   # Very low for focused response
                     )
                     logger.info(f"Comprehensive analysis successfully used model: {model}")
                     break
@@ -658,13 +666,13 @@ Respond ONLY with the JSON object, no additional text.
         # Add buffer for response tokens (2000-2500)
         total_estimated_tokens = estimated_tokens + 2500
 
-        # Select model based on context requirements
-        for model in ["gpt-4o", "gpt-4o-mini", "gpt-4-turbo-preview", "gpt-4-1106-preview", "gpt-4", "gpt-3.5-turbo-16k"]:
+        # Select model based on context requirements - prioritize speed
+        for model in self.speed_optimized_models:
             if total_estimated_tokens <= self.model_context_limits.get(model, 4000):
                 logger.info(f"Selected model {model} for {estimated_tokens} estimated input tokens")
                 return model
 
-        # If all models would exceed context, use the largest and hope truncation works
+        # If all models would exceed context, use the largest context model available
         logger.warning(f"Prompt too large ({estimated_tokens} tokens), using gpt-4o with truncation")
         return "gpt-4o"
 

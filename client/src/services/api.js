@@ -7,13 +7,13 @@ import axios from 'axios';
 import requestOptimizer from '../utils/requestOptimizer';
 
 // Base API configuration
-const API_BASE_URL ='http://13.51.171.153:9000';
-// const API_BASE_URL ='http://localhost:9000';
+// const API_BASE_URL ='http://13.51.171.153:9000';
+const API_BASE_URL ='http://localhost:9000';
 
 
 const api = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 30000,
+  timeout: 120000, // Increased to 2 minutes for large context model processing
   headers: {
     'Content-Type': 'application/json',
   },
@@ -302,7 +302,11 @@ class ApiService {
 
     return requestOptimizer.optimizedRequest(
       `${API_BASE_URL}/ai-analysis/incident-investigation`,
-      { params, skipCache: true }  // Skip cache for AI analysis to ensure fresh data
+      {
+        params,
+        skipCache: false,  // Allow caching for better performance
+        timeout: 120000    // Increased to 2 minutes for large context model processing
+      }
     );
   }
 
@@ -312,7 +316,11 @@ class ApiService {
 
     return requestOptimizer.optimizedRequest(
       `${API_BASE_URL}/ai-analysis/action-tracking`,
-      { params, skipCache: true }
+      {
+        params,
+        skipCache: false,  // Allow caching for better performance
+        timeout: 120000
+      }
     );
   }
 
@@ -322,7 +330,11 @@ class ApiService {
 
     return requestOptimizer.optimizedRequest(
       `${API_BASE_URL}/ai-analysis/driver-safety-checklists`,
-      { params, skipCache: true }
+      {
+        params,
+        skipCache: false,  // Allow caching for better performance
+        timeout: 120000
+      }
     );
   }
 
@@ -332,7 +344,11 @@ class ApiService {
 
     return requestOptimizer.optimizedRequest(
       `${API_BASE_URL}/ai-analysis/observation-tracker`,
-      { params, skipCache: true }
+      {
+        params,
+        skipCache: false,  // Allow caching for better performance
+        timeout: 120000  // Increased to 2 minutes for large context model processing
+      }
     );
   }
 
@@ -441,6 +457,24 @@ class ApiService {
   async listDashboards(userId = 'anonymous') {
     const params = { user_id: userId };
     return api.get('/dashboard/list', { params });
+  }
+
+  // Chart Management Methods
+  async addChartToDashboard(chartData, title, source = 'chat', userId = 'anonymous') {
+    return api.post('/dashboard/add-chart', {
+      chart_data: chartData,
+      title: title,
+      source: source,
+      user_id: userId
+    });
+  }
+
+  async getUserCharts(userId = 'anonymous') {
+    return api.get(`/dashboard/charts/${userId}`);
+  }
+
+  async deleteChart(chartId) {
+    return api.delete(`/dashboard/charts/${chartId}`);
   }
 
   // Generic metrics fetcher for real-time updates - Optimized

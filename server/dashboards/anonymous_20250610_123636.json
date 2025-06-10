@@ -1,0 +1,254 @@
+{
+  "dashboard_id": "anonymous_20250610_123636",
+  "dashboard_name": "EMPLOYEE DASHBORD",
+  "user_id": "anonymous",
+  "charts": [
+    {
+      "chart_id": "chart_anonymous_20250610_123618_585",
+      "title": "Employees Needing Medical Checkup",
+      "chart_data": {
+        "type": "echarts",
+        "echarts_config": {
+          "title": {
+            "text": "Employees Needing Medical Checkup",
+            "left": "center",
+            "textStyle": {
+              "color": "#092f57",
+              "fontSize": 16,
+              "fontWeight": "bold"
+            }
+          },
+          "tooltip": {
+            "trigger": "axis",
+            "backgroundColor": "rgba(255, 255, 255, 0.95)",
+            "borderColor": "#ddd",
+            "borderWidth": 1,
+            "textStyle": {
+              "color": "#333"
+            },
+            "axisPointer": {
+              "type": "shadow"
+            }
+          },
+          "grid": {
+            "left": "3%",
+            "right": "4%",
+            "bottom": "15%",
+            "containLabel": true
+          },
+          "xAxis": {
+            "type": "category",
+            "data": [
+              "Expired Medical Certifications",
+              "Employees with Missing Medical Data",
+              "Expiring Medical Certifications"
+            ],
+            "axisLabel": {
+              "color": "#666",
+              "rotate": 0,
+              "interval": 0
+            },
+            "axisLine": {
+              "lineStyle": {
+                "color": "#ddd"
+              }
+            }
+          },
+          "yAxis": {
+            "type": "value",
+            "axisLabel": {
+              "color": "#666"
+            },
+            "axisLine": {
+              "lineStyle": {
+                "color": "#ddd"
+              }
+            },
+            "splitLine": {
+              "lineStyle": {
+                "color": "#f0f0f0"
+              }
+            }
+          },
+          "series": [
+            {
+              "type": "bar",
+              "data": [
+                {
+                  "value": 6,
+                  "itemStyle": {
+                    "color": "#FF6B6B"
+                  }
+                },
+                {
+                  "value": 14,
+                  "itemStyle": {
+                    "color": "#4ECDC4"
+                  }
+                },
+                {
+                  "value": 3,
+                  "itemStyle": {
+                    "color": "#FFD93D"
+                  }
+                }
+              ],
+              "emphasis": {
+                "itemStyle": {
+                  "shadowBlur": 10,
+                  "shadowOffsetX": 0,
+                  "shadowColor": "rgba(0, 0, 0, 0.5)"
+                }
+              },
+              "animationDelay": 100
+            }
+          ],
+          "dataZoom": [
+            {
+              "type": "inside",
+              "start": 0,
+              "end": 100
+            },
+            {
+              "start": 0,
+              "end": 100,
+              "height": 30,
+              "bottom": 50
+            }
+          ],
+          "animation": true,
+          "animationDuration": 1000,
+          "animationEasing": "cubicOut"
+        },
+        "title": "Employees Needing Medical Checkup",
+        "chart_type": "bar"
+      },
+      "source": "chat",
+      "user_id": "anonymous",
+      "created_at": "2025-06-10T12:36:18.097024",
+      "size": 6,
+      "position": 0
+    },
+    {
+      "chart_id": "chart_anonymous_20250610_123536_1705",
+      "title": "Employees with Expired Trainings",
+      "chart_data": {
+        "type": "echarts",
+        "echarts_config": {
+          "title": {
+            "text": "Employees with Expired Trainings",
+            "left": "center",
+            "textStyle": {
+              "color": "#092f57",
+              "fontSize": 16,
+              "fontWeight": "bold"
+            }
+          },
+          "tooltip": {
+            "trigger": "axis",
+            "backgroundColor": "rgba(255, 255, 255, 0.95)",
+            "borderColor": "#ddd",
+            "borderWidth": 1,
+            "textStyle": {
+              "color": "#333"
+            },
+            "axisPointer": {
+              "type": "shadow"
+            }
+          },
+          "grid": {
+            "left": "3%",
+            "right": "4%",
+            "bottom": "15%",
+            "containLabel": true
+          },
+          "xAxis": {
+            "type": "category",
+            "data": [
+              "Employees with Expired Trainings",
+              "Total Employees"
+            ],
+            "axisLabel": {
+              "color": "#666",
+              "rotate": 0,
+              "interval": 0
+            },
+            "axisLine": {
+              "lineStyle": {
+                "color": "#ddd"
+              }
+            }
+          },
+          "yAxis": {
+            "type": "value",
+            "axisLabel": {
+              "color": "#666"
+            },
+            "axisLine": {
+              "lineStyle": {
+                "color": "#ddd"
+              }
+            },
+            "splitLine": {
+              "lineStyle": {
+                "color": "#f0f0f0"
+              }
+            }
+          },
+          "series": [
+            {
+              "type": "bar",
+              "data": [
+                {
+                  "value": 9,
+                  "itemStyle": {
+                    "color": "#FF6B6B"
+                  }
+                },
+                {
+                  "value": 14,
+                  "itemStyle": {
+                    "color": "#4ECDC4"
+                  }
+                }
+              ],
+              "emphasis": {
+                "itemStyle": {
+                  "shadowBlur": 10,
+                  "shadowOffsetX": 0,
+                  "shadowColor": "rgba(0, 0, 0, 0.5)"
+                }
+              },
+              "animationDelay": 100
+            }
+          ],
+          "dataZoom": [
+            {
+              "type": "inside",
+              "start": 0,
+              "end": 100
+            },
+            {
+              "start": 0,
+              "end": 100,
+              "height": 30,
+              "bottom": 50
+            }
+          ],
+          "animation": true,
+          "animationDuration": 1000,
+          "animationEasing": "cubicOut"
+        },
+        "title": "Employees with Expired Trainings",
+        "chart_type": "bar"
+      },
+      "source": "chat",
+      "user_id": "anonymous",
+      "created_at": "2025-06-10T12:35:36.314304",
+      "size": 6,
+      "position": 0
+    }
+  ],
+  "created_at": "2025-06-10T12:36:36.975889",
+  "updated_at": "2025-06-10T12:36:36.975889"
+}

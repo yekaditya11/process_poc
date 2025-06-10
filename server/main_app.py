@@ -40,13 +40,17 @@ class SafetySummarizerApp:
         logger.info("Initializing SafetyConnect Dashboard Application")
 
         # Initialize all 7 core KPI extractors
-        # Note: Some extractors require a db_session, others can create their own
+        # Note: All extractors that use database sessions will share the same session for consistency
         try:
             self.db_session = db_manager.get_process_safety_session()
+
+            # Initialize extractors that use database sessions with shared session
             self.incident_extractor = IncidentKPIsExtractor(self.db_session)
             self.action_extractor = ActionTrackingKPIsExtractor(self.db_session)
+            self.observation_tracker_extractor = ObservationTrackerKPIsExtractor(self.db_session)
+
+            # Initialize extractors that create their own sessions
             self.driver_safety_extractor = DriverSafetyChecklistKPIsExtractor()
-            self.observation_tracker_extractor = ObservationTrackerKPIsExtractor()
             self.equipment_asset_extractor = EquipmentAssetKPIsExtractor()
             self.employee_training_extractor = EmployeeTrainingKPIsExtractor()
             self.risk_assessment_extractor = RiskAssessmentKPIsExtractor()
@@ -71,13 +75,14 @@ class SafetySummarizerApp:
             # Get fresh session with validation
             self.db_session = db_manager.create_fresh_session()
 
-            # Update extractors with new session
+            # Update all extractors that use database sessions with new session
             self.incident_extractor.db_session = self.db_session
             self.action_extractor.db_session = self.db_session
+            self.observation_tracker_extractor.db_session = self.db_session
 
             # Validate the new session
             if db_manager.validate_session(self.db_session):
-                logger.info("Database sessions recreated and validated successfully")
+                logger.info("Database sessions recreated and validated successfully for all extractors")
                 return True
             else:
                 logger.error("Database session validation failed after recreation")
@@ -85,6 +90,36 @@ class SafetySummarizerApp:
         except Exception as e:
             logger.error(f"Failed to recreate database sessions: {str(e)}")
             return False
+
+    def cleanup_database_sessions(self):
+        """Clean up all database sessions"""
+        try:
+            logger.info("Cleaning up database sessions")
+
+            # Clean up main session
+            if hasattr(self, 'db_session') and self.db_session:
+                db_manager.cleanup_session(self.db_session)
+                self.db_session = None
+
+            # Clean up extractor sessions that manage their own sessions
+            extractors_with_cleanup = [
+                self.driver_safety_extractor,
+                self.equipment_asset_extractor,
+                self.employee_training_extractor,
+                self.risk_assessment_extractor
+            ]
+
+            for extractor in extractors_with_cleanup:
+                if hasattr(extractor, 'close'):
+                    try:
+                        extractor.close()
+                    except Exception as e:
+                        logger.warning(f"Error closing extractor session: {str(e)}")
+
+            logger.info("Database sessions cleaned up successfully")
+
+        except Exception as e:
+            logger.error(f"Error during database session cleanup: {str(e)}")
 
     def close(self):
         """Close database connections"""

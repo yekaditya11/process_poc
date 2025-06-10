@@ -35,9 +35,17 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import { motion } from 'framer-motion';
+import { useChartResize } from '../../utils/chartResizeHandler';
 
 const EmployeeTrainingCharts = ({ data }) => {
   const theme = useTheme();
+  const { setupResize } = useChartResize();
+
+  // Setup chart resize handling
+  React.useEffect(() => {
+    const cleanup = setupResize();
+    return cleanup;
+  }, [setupResize]);
 
   // Safely extract data with fallbacks
   const summaryMetrics = data?.summary_metrics || {};

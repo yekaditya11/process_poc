@@ -546,6 +546,77 @@ class RiskAssessmentKPIsExtractor:
             logger.error(f"Error analyzing common hazards: {str(e)}")
             return {"common_hazards": [], "total_hazards": 0, "error": str(e)}
 
+    def get_risk_matrix(self) -> Dict[str, Any]:
+        """Generate risk matrix data for visualization"""
+        try:
+            if self.risk_data.empty:
+                return {"matrix_data": [], "severity_levels": [], "likelihood_levels": []}
+
+            # Define risk matrix structure
+            severity_levels = [1, 2, 3, 4, 5]
+            likelihood_levels = ['A', 'B', 'C', 'D', 'E']
+
+            # Initialize matrix
+            matrix_data = []
+
+            # Count risks in each cell
+            for severity in severity_levels:
+                for likelihood in likelihood_levels:
+                    count = 0
+                    risks_in_cell = []
+
+                    for _, row in self.risk_data.iterrows():
+                        # Check both initial and residual risks
+                        initial_severity, initial_likelihood, _ = self._parse_risk_rating(row.get('Initial_Risk', ''))
+                        residual_severity, residual_likelihood, _ = self._parse_risk_rating(row.get('Residual_Risk', ''))
+
+                        # Count if either initial or residual risk matches this cell
+                        if ((initial_severity == severity and initial_likelihood == likelihood) or
+                            (residual_severity == severity and residual_likelihood == likelihood)):
+                            count += 1
+                            risks_in_cell.append({
+                                "assessment_no": row.get('No', ''),
+                                "situation": row.get('Situation_Task', ''),
+                                "initial_risk": row.get('Initial_Risk', ''),
+                                "residual_risk": row.get('Residual_Risk', '')
+                            })
+
+                    # Determine risk level color
+                    risk_score = severity * (ord(likelihood) - ord('A') + 1)
+                    if risk_score <= 3:
+                        risk_level = "Low"
+                        color = "#10b981"  # Green
+                    elif risk_score <= 8:
+                        risk_level = "Medium"
+                        color = "#f59e0b"  # Yellow
+                    elif risk_score <= 15:
+                        risk_level = "High"
+                        color = "#ef4444"  # Red
+                    else:
+                        risk_level = "Critical"
+                        color = "#dc2626"  # Dark Red
+
+                    matrix_data.append({
+                        "severity": severity,
+                        "likelihood": likelihood,
+                        "count": count,
+                        "risk_level": risk_level,
+                        "color": color,
+                        "risk_score": risk_score,
+                        "risks": risks_in_cell
+                    })
+
+            return {
+                "matrix_data": matrix_data,
+                "severity_levels": severity_levels,
+                "likelihood_levels": likelihood_levels,
+                "total_risk_positions": len([cell for cell in matrix_data if cell["count"] > 0])
+            }
+
+        except Exception as e:
+            logger.error(f"Error generating risk matrix: {str(e)}")
+            return {"matrix_data": [], "severity_levels": [], "likelihood_levels": [], "error": str(e)}
+
     def get_measure_effectiveness(self) -> Dict[str, Any]:
         """Analyze effectiveness of control measures"""
         try:
@@ -681,6 +752,7 @@ class RiskAssessmentKPIsExtractor:
             severity_analysis = self.get_severity_analysis()
             likelihood_analysis = self.get_likelihood_analysis()
             effects_analysis = self.get_hazard_effects_analysis()
+            risk_matrix = self.get_risk_matrix()  # Add risk matrix
             control_measures = self.get_common_control_measures()
             recovery_measures = self.get_common_recovery_measures()
             high_risk_activities = self.get_activities_with_high_residual_risk()
@@ -695,6 +767,7 @@ class RiskAssessmentKPIsExtractor:
                 "severity_analysis": severity_analysis,
                 "likelihood_analysis": likelihood_analysis,
                 "hazard_effects": effects_analysis,
+                "risk_matrix": risk_matrix,  # Add risk matrix to response
 
                 # Insights
                 "common_control_measures": control_measures,

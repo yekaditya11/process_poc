@@ -540,7 +540,30 @@ const ObservationCharts = ({ data = {} }) => {
                     📊 Observations by Area
                   </Typography>
                   <Box sx={{ height: 250 }}>
-                    <Bar data={areaData} options={modernChartOptions} />
+                    {areaEntries.length > 0 ? (
+                      <Bar data={areaData} options={modernChartOptions} />
+                    ) : (
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          height: '100%',
+                          color: 'text.secondary',
+                        }}
+                      >
+                        <Typography variant="h6" sx={{ fontWeight: 600, color: '#6b7280', mb: 1 }}>
+                          No area data available
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: '#9ca3af', textAlign: 'center' }}>
+                          {closedObservations > 0
+                            ? `${closedObservations} observations submitted but no location data provided`
+                            : 'No observations have been submitted yet'
+                          }
+                        </Typography>
+                      </Box>
+                    )}
                   </Box>
                 </CardContent>
               </Card>
@@ -574,7 +597,30 @@ const ObservationCharts = ({ data = {} }) => {
                     🎯 Priority Breakdown
                   </Typography>
                   <Box sx={{ height: 250 }}>
-                    <Doughnut data={priorityData} options={donutOptions} />
+                    {priorityEntries.length > 0 ? (
+                      <Doughnut data={priorityData} options={donutOptions} />
+                    ) : (
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          height: '100%',
+                          color: 'text.secondary',
+                        }}
+                      >
+                        <Typography variant="h6" sx={{ fontWeight: 600, color: '#6b7280', mb: 1 }}>
+                          No priority data available
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: '#9ca3af', textAlign: 'center' }}>
+                          {closedObservations > 0
+                            ? `${closedObservations} observations submitted but no severity data provided`
+                            : 'No observations have been submitted yet'
+                          }
+                        </Typography>
+                      </Box>
+                    )}
                   </Box>
                 </CardContent>
               </Card>
@@ -657,8 +703,14 @@ const ObservationCharts = ({ data = {} }) => {
                           color: 'text.secondary',
                         }}
                       >
-                        <Typography variant="h6" sx={{ fontWeight: 600, color: '#6b7280' }}>
+                        <Typography variant="h6" sx={{ fontWeight: 600, color: '#6b7280', mb: 1 }}>
                           No remarks available
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: '#9ca3af', textAlign: 'center' }}>
+                          {closedObservations > 0
+                            ? `${closedObservations} observations submitted but no description data provided`
+                            : 'No observations have been submitted yet'
+                          }
                         </Typography>
                       </Box>
                     )}

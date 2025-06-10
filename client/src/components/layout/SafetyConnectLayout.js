@@ -36,7 +36,7 @@ import {
   NavigateNext as NavigateNextIcon,
 } from '@mui/icons-material';
 
-const drawerWidth = 200; // Reduced from 240 for minimal design
+const drawerWidth = 180; // Further reduced from 200 to 180 for more content space
 
 const SafetyConnectLayout = ({ 
   children, 

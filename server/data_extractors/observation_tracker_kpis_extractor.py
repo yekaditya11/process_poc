@@ -53,6 +53,71 @@ class ObservationTrackerKPIsExtractor:
         if self._should_close_session and self.db_session:
             self.db_session.close()
 
+    def _recreate_session(self):
+        """Recreate database session when connection is lost"""
+        try:
+            from config.database_config import db_manager
+            logger.info("Recreating database session due to connection issue")
+
+            # Clean up current session if it exists
+            if self.db_session:
+                db_manager.cleanup_session(self.db_session)
+
+            # Get fresh session
+            self.db_session = db_manager.create_fresh_session()
+            logger.info("Database session recreated successfully")
+            return True
+        except Exception as e:
+            logger.error(f"Failed to recreate database session: {str(e)}")
+            return False
+
+    def _execute_query_safely(self, query, params=None, max_retries=2):
+        """Execute query with proper error handling and retry logic"""
+        retry_count = 0
+
+        while retry_count <= max_retries:
+            try:
+                # Validate session before executing query
+                from config.database_config import db_manager
+                if not db_manager.validate_session(self.db_session):
+                    logger.info("Session validation failed, recreating session")
+                    if not self._recreate_session():
+                        raise Exception("Failed to recreate database session")
+
+                if params:
+                    result = self.db_session.execute(query, params)
+                else:
+                    result = self.db_session.execute(query)
+                return result
+            except Exception as e:
+                error_msg = str(e)
+                logger.error(f"Query execution failed (attempt {retry_count + 1}/{max_retries + 1}): {error_msg}")
+
+                # Always rollback transaction on error, but don't fail if rollback fails
+                try:
+                    if hasattr(self.db_session, 'rollback'):
+                        self.db_session.rollback()
+                except Exception as rollback_error:
+                    logger.debug(f"Rollback failed during error handling (this is expected): {str(rollback_error)}")
+
+                # Check if this is a connection-related error that might benefit from retry
+                if retry_count < max_retries and any(keyword in error_msg.lower() for keyword in [
+                    'connection', 'timeout', 'network', 'broken pipe', 'reset', 'rollback', 'transaction'
+                ]):
+                    retry_count += 1
+                    logger.info(f"Retrying query execution (attempt {retry_count + 1}/{max_retries + 1})")
+
+                    # Try to recreate session for connection-related errors
+                    if not self._recreate_session():
+                        logger.error("Failed to recreate session during retry")
+                        break
+                else:
+                    # Non-retryable error or max retries reached
+                    raise e
+
+        # If we get here, all retries failed
+        raise Exception(f"Query execution failed after {max_retries + 1} attempts")
+
     def get_observation_tracker_kpis(self, customer_id: Optional[str] = None,
                                    start_date: Optional[datetime] = None,
                                    end_date: Optional[datetime] = None,
@@ -86,7 +151,7 @@ class ObservationTrackerKPIsExtractor:
 
             return {
                 "template_id": self.observation_tracker_template_id,
-                "template_name": "Report Dangerous Behaviour",
+                "template_name": "Observation Report",
                 "observations_by_area": observations_by_area,
                 "observation_status": observation_status,
                 "observation_priority": observation_priority,
@@ -109,6 +174,12 @@ class ObservationTrackerKPIsExtractor:
 
         except Exception as e:
             logger.error(f"Error getting observation tracker KPIs: {str(e)}")
+            # Rollback any pending transaction, but don't fail if rollback fails
+            try:
+                if hasattr(self.db_session, 'rollback'):
+                    self.db_session.rollback()
+            except Exception as rollback_error:
+                logger.debug(f"Rollback failed during error handling (this is expected): {str(rollback_error)}")
             return {
                 "template_id": self.observation_tracker_template_id,
                 "template_name": "Report Dangerous Behaviour",
@@ -193,7 +264,7 @@ class ObservationTrackerKPIsExtractor:
                 "end_date": end_date
             }
 
-            result = self.db_session.execute(area_query, params)
+            result = self._execute_query_safely(area_query, params)
             rows = result.fetchall()
 
             observations_by_area = {}
@@ -242,6 +313,12 @@ class ObservationTrackerKPIsExtractor:
 
         except Exception as e:
             logger.error(f"Error getting observations by area: {str(e)}")
+            # Rollback any pending transaction, but don't fail if rollback fails
+            try:
+                if hasattr(self.db_session, 'rollback'):
+                    self.db_session.rollback()
+            except Exception as rollback_error:
+                logger.debug(f"Rollback failed during error handling (this is expected): {str(rollback_error)}")
             return {
                 "observations_by_area": {},
                 "total_observations": 0,
@@ -295,10 +372,10 @@ class ObservationTrackerKPIsExtractor:
             }
 
             # Execute queries
-            open_result = self.db_session.execute(open_query, params)
+            open_result = self._execute_query_safely(open_query, params)
             open_count = open_result.scalar() or 0
 
-            closed_result = self.db_session.execute(closed_query, params)
+            closed_result = self._execute_query_safely(closed_query, params)
             closed_count = closed_result.scalar() or 0
 
             total_observations = open_count + closed_count
@@ -392,7 +469,7 @@ class ObservationTrackerKPIsExtractor:
                 "end_date": end_date
             }
 
-            result = self.db_session.execute(priority_query, params)
+            result = self._execute_query_safely(priority_query, params)
             rows = result.fetchall()
 
             observations_by_priority = {}
@@ -516,7 +593,7 @@ class ObservationTrackerKPIsExtractor:
                 "end_date": end_date
             }
 
-            result = self.db_session.execute(query, params)
+            result = self._execute_query_safely(query, params)
             rows = result.fetchall()
 
             all_remarks = []

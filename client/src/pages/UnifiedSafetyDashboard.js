@@ -18,9 +18,7 @@ import {
   Alert,
   CircularProgress,
   IconButton,
-  Tooltip,
-  Fade,
-  Chip
+  Tooltip
 } from '@mui/material';
 import {
   Psychology as AIIcon,
@@ -32,25 +30,17 @@ import {
   Build as BuildIcon,
   School as SchoolIcon,
   Assessment as AssessmentIcon,
-  Close as CloseIcon,
-  ThumbUp as ThumbUpIcon,
-  ThumbDown as ThumbDownIcon
+  Dashboard as DashboardIcon
 } from '@mui/icons-material';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// Import animation utilities - Clean and minimal animations only
-import {
-  cardAnimations,
-  createStaggeredAnimation
-} from '../utils/animations';
-
 // Import components
 import ErrorBoundary from '../components/common/ErrorBoundary';
-import ChatBot from '../components/chatbot/ChatBot';
 import DatePickerFilter from '../components/filters/DatePickerFilter';
 import SafetyConnectLayout from '../components/layout/SafetyConnectLayout';
 
 // Import chart components
+import GlobalDashboardCharts from '../components/charts/GlobalDashboardCharts';
 import IncidentCharts from '../components/charts/IncidentCharts';
 import RiskAssessmentCharts from '../components/charts/RiskAssessmentCharts';
 import ActionTrackingCharts from '../components/charts/ActionTrackingCharts';
@@ -59,13 +49,23 @@ import ObservationCharts from '../components/charts/ObservationCharts';
 import EquipmentAssetCharts from '../components/charts/EquipmentAssetCharts';
 import EmployeeTrainingCharts from '../components/charts/EmployeeTrainingCharts';
 
+// Import custom dashboard
+import DashboardManager from '../components/dashboard/DashboardManager';
 
+// Import unified insights panel
+import UnifiedInsightsPanel from '../components/insights/UnifiedInsightsPanel';
 
 // Import API service
 import ApiService from '../services/api';
 
 // Module configuration
 const SAFETY_MODULES = [
+  {
+    id: 'global-dashboard',
+    label: 'Global Dashboard',
+    icon: DashboardIcon,
+    color: '#1f2937'
+  },
   {
     id: 'incident-investigation',
     label: 'Incident Investigation',
@@ -107,6 +107,12 @@ const SAFETY_MODULES = [
     label: 'Employee Training',
     icon: SchoolIcon,
     color: '#0891b2'
+  },
+  {
+    id: 'custom-dashboard',
+    label: 'Custom Dashboard',
+    icon: DashboardIcon,
+    color: '#7c3aed'
   }
 ];
 
@@ -114,7 +120,7 @@ const UnifiedSafetyDashboard = () => {
   const navigate = useNavigate();
 
   // State management
-  const [selectedModule, setSelectedModule] = useState('incident-investigation');
+  const [selectedModule, setSelectedModule] = useState('global-dashboard');
   const [aiAnalysisEnabled, setAiAnalysisEnabled] = useState(false);
   const [moduleData, setModuleData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -136,11 +142,24 @@ const UnifiedSafetyDashboard = () => {
   // State for generating more insights
   const [loadingMoreInsights, setLoadingMoreInsights] = useState(false);
 
+  // State for insights panel expansion
+  const [insightsPanelExpanded, setInsightsPanelExpanded] = useState(false);
+
+  // State to force chart re-render when AI panel toggles
+  const [chartRenderKey, setChartRenderKey] = useState(0);
+
   // Get current module info
   const currentModule = SAFETY_MODULES.find(m => m.id === selectedModule);
 
   // Fetch module data
   const fetchModuleData = async (moduleId, dateParams) => {
+    // Custom dashboard doesn't need data fetching
+    if (moduleId === 'custom-dashboard') {
+      setLoading(false);
+      setModuleData({}); // Set empty data to indicate loaded
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
@@ -152,6 +171,9 @@ const UnifiedSafetyDashboard = () => {
 
       let data;
       switch (moduleId) {
+        case 'global-dashboard':
+          data = await ApiService.getAllKPIs(null, apiDaysBack);
+          break;
         case 'incident-investigation':
           data = await ApiService.getIncidentInvestigationModuleKPIs(
             null, apiStartDate, apiEndDate, apiDaysBack
@@ -210,7 +232,45 @@ const UnifiedSafetyDashboard = () => {
     }
   }, [moduleData, aiAnalysisEnabled, selectedModule]);
 
+  // Handle chart resizing when insights panel toggles
+  useEffect(() => {
+    // Optimized resize handling with proper timing
+    const triggerResize = () => {
+      // Immediate notification for layout change start
+      requestAnimationFrame(() => {
+        window.dispatchEvent(new CustomEvent('ai-panel-toggle', {
+          detail: {
+            insightsPanelOpen: aiAnalysisEnabled,
+            phase: 'start'
+          }
+        }));
+      });
 
+      // Resize during animation (mid-point)
+      setTimeout(() => {
+        window.dispatchEvent(new Event('resize'));
+        window.dispatchEvent(new CustomEvent('ai-panel-toggle', {
+          detail: {
+            insightsPanelOpen: aiAnalysisEnabled,
+            phase: 'mid'
+          }
+        }));
+      }, 200); // Half of animation duration
+
+      // Final resize after animation completes
+      setTimeout(() => {
+        window.dispatchEvent(new Event('resize'));
+        window.dispatchEvent(new CustomEvent('ai-panel-toggle', {
+          detail: {
+            insightsPanelOpen: aiAnalysisEnabled,
+            phase: 'complete'
+          }
+        }));
+      }, 450); // Slightly after animation duration (400ms)
+    };
+
+    triggerResize();
+  }, [aiAnalysisEnabled]);
 
   // Handle module change
   const handleModuleChange = (event) => {
@@ -231,6 +291,9 @@ const UnifiedSafetyDashboard = () => {
 
     setAiAnalysisEnabled(isEnabled);
 
+    // Force chart re-render by updating key
+    setChartRenderKey(prev => prev + 1);
+
     // If enabling AI, fetch AI analysis for current module
     if (isEnabled && moduleData) {
       console.log('🤖 Fetching AI analysis...');
@@ -238,6 +301,24 @@ const UnifiedSafetyDashboard = () => {
     } else if (isEnabled && !moduleData) {
       console.log('🤖 AI enabled but no module data available yet');
     }
+
+    // Improved event dispatch for layout changes
+    requestAnimationFrame(() => {
+      // Notify about AI panel toggle with detailed information
+      const responsiveWidth = isEnabled ? '40%' : '0%';
+      window.dispatchEvent(new CustomEvent('ai-panel-toggle', {
+        detail: {
+          insightsPanelOpen: isEnabled,
+          phase: 'start',
+          panelWidth: responsiveWidth
+        }
+      }));
+
+      // Also dispatch legacy event for backward compatibility
+      window.dispatchEvent(new CustomEvent('chatbot-toggle', {
+        detail: { insightsPanelOpen: isEnabled }
+      }));
+    });
   };
 
   // Handle date range change
@@ -261,6 +342,9 @@ const UnifiedSafetyDashboard = () => {
 
       let aiData;
       switch (moduleId) {
+        case 'global-dashboard':
+          aiData = await ApiService.generateComprehensiveAIAnalysis(null, apiDaysBack);
+          break;
         case 'incident-investigation':
           aiData = await ApiService.getIncidentInvestigationAIAnalysis(null, apiDaysBack, true);
           break;
@@ -434,11 +518,46 @@ const UnifiedSafetyDashboard = () => {
     }
   };
 
+  // Handle removing insights
+  const handleRemoveInsight = (insightIndex) => {
+    console.log(`Removing insight ${insightIndex}`);
+
+    if (aiAnalysis && aiAnalysis.insights) {
+      const updatedInsights = aiAnalysis.insights.filter((_, index) => index !== insightIndex);
+      setAiAnalysis(prev => ({
+        ...prev,
+        insights: updatedInsights
+      }));
+
+      // Update feedback state to remove the deleted insight and adjust indices
+      setInsightFeedback(prev => {
+        const newFeedback = {};
+        Object.keys(prev).forEach(key => {
+          const index = parseInt(key);
+          if (index < insightIndex) {
+            newFeedback[index] = prev[key];
+          } else if (index > insightIndex) {
+            newFeedback[index - 1] = prev[key];
+          }
+          // Skip the deleted insight (index === insightIndex)
+        });
+        return newFeedback;
+      });
+    }
+  };
+
   // Render module charts
   const renderModuleCharts = () => {
+    // Custom dashboard doesn't need moduleData
+    if (selectedModule === 'custom-dashboard') {
+      return <DashboardManager />;
+    }
+
     if (!moduleData) return null;
 
     switch (selectedModule) {
+      case 'global-dashboard':
+        return <GlobalDashboardCharts data={moduleData} />;
       case 'incident-investigation':
         return <IncidentCharts data={moduleData} />;
       case 'risk-assessment':
@@ -471,7 +590,7 @@ const UnifiedSafetyDashboard = () => {
         headerActions={headerActions}
       >
 
-        <Box sx={{ px: 3, py: 2 }}>
+        <Box sx={{ px: 1.5, py: 2 }}> {/* Reduced padding from 3 to 1.5 for more width */}
           {/* Simplified Clean Header */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -692,10 +811,23 @@ const UnifiedSafetyDashboard = () => {
             </motion.div>
           )}
 
-          {/* Main Dashboard Content - Clean and Stable */}
-          <Box sx={{ position: 'relative' }}>
-            {/* Main Dashboard - Full Width */}
-            <Box sx={{ width: '100%' }}>
+          {/* Main Content Area - Responsive Layout */}
+          <Box sx={{
+            display: 'flex',
+            gap: 2, // Reduced gap from 3 to 2 for more space utilization
+            minHeight: '600px',
+            transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+            overflow: 'hidden', // Prevent layout shifts during animation
+            position: 'relative'
+          }}>
+            {/* Dashboard Content - Adjusts width based on insights panel */}
+            <Box sx={{
+              flex: aiAnalysisEnabled ? '1 1 60%' : '1 1 100%',
+              transition: 'flex 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+              minWidth: 0, // Prevents flex item from overflowing
+              maxWidth: aiAnalysisEnabled ? '60%' : '100%',
+              overflow: 'hidden' // Ensure content doesn't overflow during transition
+            }}>
               <AnimatePresence mode="wait">
                 <motion.div
                   key={selectedModule}
@@ -704,18 +836,19 @@ const UnifiedSafetyDashboard = () => {
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.3 }}
                 >
-              {/* Module Card - Clean Design */}
-              <Card
-                sx={{
-                  minHeight: 600,
-                  bgcolor: 'white',
-                  border: '1px solid #e5e7eb',
-                  borderRadius: 2,
-                  overflow: 'hidden',
-                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-                }}
-              >
-                  <CardContent sx={{ p: 3 }}>
+                {/* Module Card - Clean Design */}
+                <Card
+                  sx={{
+                    minHeight: 600,
+                    bgcolor: 'white',
+                    border: '1px solid #e5e7eb',
+                    borderRadius: 2,
+                    overflow: 'hidden',
+                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                    height: '100%'
+                  }}
+                >
+                  <CardContent sx={{ p: 3, height: '100%' }}>
                     {loading ? (
                       <motion.div
                         initial={{ opacity: 0 }}
@@ -783,7 +916,14 @@ const UnifiedSafetyDashboard = () => {
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.3 }}
                       >
-                        <Box>
+                        <Box
+                          key={`charts-${chartRenderKey}-${aiAnalysisEnabled ? 'with-ai' : 'without-ai'}`}
+                          sx={{
+                            transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                            width: '100%',
+                            overflow: 'hidden'
+                          }}
+                        >
                           {/* Module Charts - Clean Display */}
                           {renderModuleCharts()}
                         </Box>
@@ -791,339 +931,66 @@ const UnifiedSafetyDashboard = () => {
                     )}
                   </CardContent>
                 </Card>
-
                 </motion.div>
               </AnimatePresence>
             </Box>
 
-            {/* AI Insights Overlay Card */}
+            {/* Unified Insights Panel - Slides in from right */}
             <AnimatePresence>
               {aiAnalysisEnabled && (
                 <motion.div
-                  initial={{ opacity: 0, y: -20, scale: 0.95 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -20, scale: 0.95 }}
+                  initial={{ opacity: 0, x: 300, width: 0 }}
+                  animate={{
+                    opacity: 1,
+                    x: 0,
+                    width: '40%'
+                  }}
+                  exit={{ opacity: 0, x: 300, width: 0 }}
                   transition={{
                     duration: 0.4,
                     ease: [0.4, 0, 0.2, 1]
                   }}
                   style={{
-                    position: 'absolute',
-                    top: 20,
-                    right: 20,
-                    zIndex: 1000,
-                    width: '800px',
-                    maxWidth: '95vw'
+                    flex: '0 0 40%',
+                    minWidth: '420px',
+                    maxWidth: 'none' // Remove max width constraint to use full 40%
                   }}
                 >
-                  <Card
-                    sx={{
-                      height: 'fit-content',
-                      maxHeight: '85vh',
-                      minHeight: '400px',
-                      bgcolor: 'white',
-                      border: '1px solid #e5e7eb',
-                      borderRadius: 2,
-                      overflow: 'auto',
-                      boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+                  <UnifiedInsightsPanel
+                    aiAnalysis={aiAnalysis}
+                    aiLoading={aiLoading}
+                    aiError={aiError}
+                    insightFeedback={insightFeedback}
+                    loadingMoreInsights={loadingMoreInsights}
+                    selectedModule={selectedModule}
+                    onClose={() => {
+                      setAiAnalysisEnabled(false);
+                      // Improved event dispatch for panel close
+                      requestAnimationFrame(() => {
+                        window.dispatchEvent(new CustomEvent('ai-panel-toggle', {
+                          detail: {
+                            insightsPanelOpen: false,
+                            phase: 'start',
+                            panelWidth: '0%'
+                          }
+                        }));
+
+                        // Legacy event for backward compatibility
+                        window.dispatchEvent(new CustomEvent('chatbot-toggle', {
+                          detail: { insightsPanelOpen: false }
+                        }));
+                      });
                     }}
-                  >
-                    <CardContent sx={{ p: 3 }}>
-                      {/* AI Header with Close Button */}
-                      <Box sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        mb: 3,
-                        pb: 2,
-                        borderBottom: '1px solid #f3f4f6'
-                      }}>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <motion.div
-                          animate={{
-                            rotate: aiLoading ? 360 : 0,
-                            scale: aiLoading ? [1, 1.1, 1] : 1
-                          }}
-                          transition={{
-                            duration: aiLoading ? 2 : 0.3,
-                            repeat: aiLoading ? Infinity : 0,
-                            ease: aiLoading ? "linear" : "easeInOut"
-                          }}
-                        >
-                          <AIIcon sx={{
-                            fontSize: 28,
-                            color: '#667eea'
-                          }} />
-                        </motion.div>
-                        <Box>
-                          <Typography variant="h6" sx={{ fontWeight: 600, color: '#1f2937' }}>
-                            AI Insights
-                          </Typography>
-                          <Typography variant="body2" sx={{ color: '#6b7280' }}>
-                            {currentModule?.label}
-                          </Typography>
-                        </Box>
-                        </Box>
-
-                        {/* Close Button */}
-                        <IconButton
-                          onClick={() => setAiAnalysisEnabled(false)}
-                          size="small"
-                          sx={{
-                            color: '#6b7280',
-                            '&:hover': {
-                              bgcolor: '#f3f4f6',
-                              color: '#374151'
-                            }
-                          }}
-                        >
-                          <CloseIcon fontSize="small" />
-                        </IconButton>
-                      </Box>
-
-                      {/* Clean AI Content */}
-                      {aiLoading ? (
-                        <motion.div
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          transition={{ duration: 0.3 }}
-                        >
-                          <Box sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            gap: 2,
-                            py: 4
-                          }}>
-                            <CircularProgress
-                              size={32}
-                              sx={{ color: '#667eea' }}
-                            />
-                            <Typography sx={{ color: '#6b7280', textAlign: 'center', fontSize: '0.9rem' }}>
-                              AI is analyzing...
-                            </Typography>
-                          </Box>
-                        </motion.div>
-                      ) : aiError ? (
-                        <Alert severity="error" sx={{ mb: 2 }}>
-                          {aiError}
-                        </Alert>
-                      ) : aiAnalysis ? (
-                        <motion.div
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.4, delay: 0.1 }}
-                        >
-                          {/* Key Insights */}
-                          {aiAnalysis.insights && aiAnalysis.insights.length > 0 && (
-                            <Box>
-                              <Typography variant="subtitle1" sx={{
-                                mb: 2,
-                                fontWeight: 600,
-                                color: '#1f2937'
-                              }}>
-                                Key Insights
-                              </Typography>
-                              <Box sx={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                gap: 1.5,
-                                maxHeight: '400px', // Limit height to ~10 insights
-                                overflowY: 'auto',
-                                pr: 1, // Add padding for scrollbar
-                                '&::-webkit-scrollbar': {
-                                  width: '6px',
-                                },
-                                '&::-webkit-scrollbar-track': {
-                                  background: '#f1f1f1',
-                                  borderRadius: '3px',
-                                },
-                                '&::-webkit-scrollbar-thumb': {
-                                  background: '#c1c1c1',
-                                  borderRadius: '3px',
-                                  '&:hover': {
-                                    background: '#a8a8a8',
-                                  },
-                                },
-                              }}>
-                                {aiAnalysis.insights.map((insight, index) => {
-                                  // Handle both old format (string) and new format (object with sentiment)
-                                  const insightText = typeof insight === 'string' ? insight : insight.text;
-                                  const sentiment = typeof insight === 'string' ? 'neutral' : insight.sentiment;
-
-                                  // Determine bullet color based on sentiment
-                                  const getBulletColor = (sentiment) => {
-                                    switch (sentiment) {
-                                      case 'positive': return '#10b981'; // Light Green
-                                      case 'negative': return '#dc2626'; // Red
-                                      case 'neutral':
-                                      default: return '#6b7280'; // Gray
-                                    }
-                                  };
-
-                                  return (
-                                    <Box key={index} sx={{
-                                      display: 'flex',
-                                      alignItems: 'flex-start',
-                                      gap: 1,
-                                      mb: 0.8, // Reduced spacing between points
-                                      '&:hover .feedback-buttons': {
-                                        opacity: 1
-                                      }
-                                    }}>
-
-                                      {/* Larger Bullet Point */}
-                                      <Typography sx={{
-                                        color: getBulletColor(sentiment),
-                                        lineHeight: 1.6,
-                                        fontSize: '1.2rem', // Increased size
-                                        fontWeight: 'bold',
-                                        minWidth: '12px',
-                                        mt: 0.1
-                                      }}>
-                                        •
-                                      </Typography>
-
-                                      {/* Insight Text */}
-                                      <Typography sx={{
-                                        color: '#4b5563',
-                                        lineHeight: 1.6,
-                                        fontSize: '0.95rem', // Slightly larger text
-                                        py: 0.2,
-                                        flex: 1,
-                                        mr: 1
-                                      }}>
-                                        {insightText.replace(/^•\s*/, '')}
-                                      </Typography>
-
-                                      {/* Feedback Buttons - Right after the text */}
-                                      <Box
-                                        className="feedback-buttons"
-                                        sx={{
-                                          display: 'flex',
-                                          gap: 0.3,
-                                          opacity: 0,
-                                          transition: 'opacity 0.2s ease',
-                                          alignItems: 'flex-start',
-                                          mt: 0.2
-                                        }}
-                                      >
-                                        <IconButton
-                                          size="small"
-                                          onClick={(event) => handleInsightFeedback(index, 'positive', event)}
-                                          sx={{
-                                            p: 0.4,
-                                            color: insightFeedback[index] === 'positive' ? '#10b981' : '#9ca3af',
-                                            '&:hover': {
-                                              color: '#10b981',
-                                              backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                                              transform: 'scale(1.1)'
-                                            },
-                                            transition: 'all 0.2s ease'
-                                          }}
-                                        >
-                                          <ThumbUpIcon sx={{ fontSize: '0.9rem' }} />
-                                        </IconButton>
-                                        <IconButton
-                                          size="small"
-                                          onClick={(event) => handleInsightFeedback(index, 'negative', event)}
-                                          sx={{
-                                            p: 0.4,
-                                            color: insightFeedback[index] === 'negative' ? '#dc2626' : '#9ca3af',
-                                            '&:hover': {
-                                              color: '#dc2626',
-                                              backgroundColor: 'rgba(220, 38, 38, 0.1)',
-                                              transform: 'scale(1.1)'
-                                            },
-                                            transition: 'all 0.2s ease'
-                                          }}
-                                        >
-                                          <ThumbDownIcon sx={{ fontSize: '0.9rem' }} />
-                                        </IconButton>
-                                      </Box>
-                                    </Box>
-                                  );
-                                })}
-                              </Box>
-
-                              {/* More Button - Outside scrollable area */}
-                              <Box sx={{
-                                display: 'flex',
-                                justifyContent: 'center',
-                                mt: 2,
-                                pt: 2,
-                                borderTop: '1px solid #e5e7eb'
-                              }}>
-                                <motion.div
-                                  whileHover={{ scale: 1.02 }}
-                                  whileTap={{ scale: 0.98 }}
-                                >
-                                  <IconButton
-                                    onClick={handleGenerateMoreInsights}
-                                    disabled={loadingMoreInsights}
-                                    sx={{
-                                      bgcolor: '#f8fafc',
-                                      border: '1px solid #e5e7eb',
-                                      borderRadius: 2,
-                                      px: 2,
-                                      py: 1,
-                                      color: '#6b7280',
-                                      fontSize: '0.875rem',
-                                      fontWeight: 500,
-                                      '&:hover': {
-                                        bgcolor: '#667eea',
-                                        color: 'white',
-                                        borderColor: '#667eea'
-                                      },
-                                      '&:disabled': {
-                                        bgcolor: '#f3f4f6',
-                                        color: '#9ca3af'
-                                      }
-                                    }}
-                                  >
-                                    {loadingMoreInsights ? (
-                                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                        <CircularProgress size={16} sx={{ color: '#9ca3af' }} />
-                                        <Typography sx={{ fontSize: '0.875rem' }}>
-                                          Generating...
-                                        </Typography>
-                                      </Box>
-                                    ) : (
-                                      <Typography sx={{ fontSize: '0.875rem' }}>
-                                        📊 Analyze Data (5 more)
-                                      </Typography>
-                                    )}
-                                  </IconButton>
-                                </motion.div>
-                              </Box>
-                            </Box>
-                          )}
-                        </motion.div>
-                      ) : (
-                        <Box sx={{
-                          textAlign: 'center',
-                          py: 4,
-                          color: '#6b7280'
-                        }}>
-                          <AIIcon sx={{ fontSize: 48, color: '#d1d5db', mb: 2 }} />
-                          <Typography variant="body2">
-                            Toggle AI to get insights
-                          </Typography>
-                        </Box>
-                      )}
-                    </CardContent>
-                  </Card>
+                    onFeedback={handleInsightFeedback}
+                    onGenerateMore={handleGenerateMoreInsights}
+                    onRemoveInsight={handleRemoveInsight}
+                  />
                 </motion.div>
               )}
             </AnimatePresence>
           </Box>
         </Box>
       </SafetyConnectLayout>
-
-      {/* Floating ChatBot */}
-      <ChatBot
-        moduleContext={selectedModule}
-      />
     </ErrorBoundary>
   );
 };

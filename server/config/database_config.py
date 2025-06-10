@@ -63,6 +63,7 @@ class DatabaseManager:
                     max_overflow=20,
                     pool_timeout=30,
                     echo=False,
+                    isolation_level="AUTOCOMMIT",  # Use autocommit to prevent transaction rollback issues
                     connect_args={
                         "connect_timeout": 10,
                         "application_name": "SafetyConnect_Dashboard"
@@ -82,12 +83,13 @@ class DatabaseManager:
         while retry_count < max_retries:
             try:
                 # Always create a new session to avoid transaction issues
-                Session = sessionmaker(bind=self.process_safety_engine)
+                Session = sessionmaker(bind=self.process_safety_engine, autoflush=False, autocommit=False)
                 session = Session()
 
                 # Test the connection with a simple query
-                session.execute(sa.text("SELECT 1"))
-                session.commit()
+                result = session.execute(sa.text("SELECT 1"))
+                result.fetchone()
+                # Don't commit here since we're using autocommit at engine level
 
                 logger.info("ProcessSafety database session created successfully")
                 return session
@@ -145,17 +147,19 @@ class DatabaseManager:
         """Validate that a database session is still active and usable"""
         try:
             # Try a simple query to test the connection
-            session.execute(sa.text("SELECT 1"))
+            result = session.execute(sa.text("SELECT 1"))
+            result.fetchone()
             return True
         except Exception as e:
             error_msg = str(e)
             logger.warning(f"Session validation failed: {error_msg}")
 
-            # Try to rollback any pending transaction
+            # Try to rollback any pending transaction, but don't fail if it doesn't work
             try:
-                session.rollback()
-            except:
-                pass
+                if hasattr(session, 'rollback'):
+                    session.rollback()
+            except Exception as rollback_error:
+                logger.debug(f"Rollback during validation failed (this is expected): {str(rollback_error)}")
 
             return False
 
@@ -163,10 +167,16 @@ class DatabaseManager:
         """Safely cleanup a database session"""
         if session:
             try:
-                # Rollback any pending transaction
-                session.rollback()
+                # Try to rollback any pending transaction, but don't fail if it doesn't work
+                try:
+                    if hasattr(session, 'rollback'):
+                        session.rollback()
+                except Exception as rollback_error:
+                    logger.debug(f"Rollback during cleanup failed (this is expected): {str(rollback_error)}")
+
                 # Close the session
-                session.close()
+                if hasattr(session, 'close'):
+                    session.close()
                 logger.debug("Database session cleaned up successfully")
             except Exception as e:
                 logger.warning(f"Error during session cleanup: {str(e)}")
