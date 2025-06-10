@@ -1621,9 +1621,12 @@ async def generate_similar_insights(module: str, positive_insight: str):
         Example: [{"text": "insight text", "sentiment": "positive"}]
         """
 
+        # Select optimal model based on prompt size and 16k token threshold
+        optimal_model = summarizer_app.ai_engine._select_optimal_model(prompt)
+
         # Call OpenAI to generate similar insights
         response = await summarizer_app.ai_engine.openai_client.chat.completions.create(
-            model="gpt-4o",  # Use large context model for comprehensive analysis
+            model=optimal_model,
             messages=[
                 {"role": "system", "content": "You are a safety analysis expert. Generate concise, actionable safety insights."},
                 {"role": "user", "content": prompt}
@@ -1779,8 +1782,11 @@ async def generate_data_driven_insights(module: str, module_data: dict, existing
         Return as JSON array: [{{"text": "specific data insight", "sentiment": "positive/negative/neutral"}}]
         """
 
+        # Select optimal model based on prompt size and 16k token threshold
+        optimal_model = summarizer_app.ai_engine._select_optimal_model(prompt)
+
         response = summarizer_app.ai_engine.openai_client.chat.completions.create(
-            model="gpt-4o",  # Use large context model for comprehensive analysis
+            model=optimal_model,
             messages=[
                 {"role": "system", "content": "You are a data analyst specializing in safety metrics. Generate insights based ONLY on the actual data provided, not generic recommendations."},
                 {"role": "user", "content": prompt}

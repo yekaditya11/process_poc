@@ -23,6 +23,15 @@ except ImportError as e:
     OpenAI = None
     print(f"❌ OpenAI import failed: {e}")
 
+# Check if tiktoken is available for accurate token counting
+try:
+    import tiktoken
+    tiktoken_available = True
+    print("✅ Tiktoken imported successfully")
+except ImportError as e:
+    tiktoken_available = False
+    print(f"❌ Tiktoken import failed: {e}")
+
 # Import chart generators
 try:
     from .plotly_chart_generator import PlotlyChartGenerator
@@ -119,6 +128,33 @@ class ConversationalAI:
                 logger.warning("OpenAI API key not found")
         else:
             logger.warning("OpenAI not available")
+
+        # Token threshold for model selection (16,000 tokens)
+        self.token_threshold = 16000
+
+        # Speed-optimized models for requests under 16k tokens
+        self.fast_models = [
+            "gpt-3.5-turbo",           # Fastest model for small requests
+            "gpt-3.5-turbo-1106",      # Latest fast model
+            "gpt-3.5-turbo-16k",       # Fast model with larger context
+        ]
+
+        # Large context models for requests over 16k tokens
+        self.large_context_models = [
+            "gpt-4o",                  # Latest large context model (128k tokens)
+            "gpt-4o-mini",             # Fast large context model (128k tokens)
+            "gpt-4-turbo-preview",     # Large context model (128k tokens)
+        ]
+
+        # Initialize tiktoken encoder for accurate token counting
+        self.tiktoken_encoder = None
+        if tiktoken_available:
+            try:
+                self.tiktoken_encoder = tiktoken.encoding_for_model("gpt-3.5-turbo")
+                logger.info("Tiktoken encoder initialized for accurate token counting")
+            except Exception as e:
+                logger.warning(f"Failed to initialize tiktoken encoder: {e}")
+                self.tiktoken_encoder = None
 
         # Initialize chart generators
         self.plotly_generator = None
@@ -482,8 +518,11 @@ class ConversationalAI:
                     truncated_prompt = self._truncate_prompt_for_context(conversation_prompt)
                     logger.info(f"Prompt length: {len(truncated_prompt)} characters")
 
+                    # Select optimal model based on prompt size and 16k token threshold
+                    optimal_model = self._select_optimal_model(truncated_prompt)
+
                     response = self.openai_client.chat.completions.create(
-                        model="gpt-4o",  # Use large context model for comprehensive analysis
+                        model=optimal_model,
                         messages=[
                             {"role": "system", "content": self.system_prompt},
                             {"role": "user", "content": truncated_prompt}
@@ -782,6 +821,44 @@ CRITICAL INSTRUCTIONS FOR QUESTION-ANSWER ALIGNMENT:
 Direct Answer to "{clean_user_message}":"""
 
         return prompt
+
+    def _estimate_token_count(self, text: str) -> int:
+        """Estimate token count for a given text using tiktoken if available"""
+        if self.tiktoken_encoder:
+            try:
+                # Use tiktoken for accurate token counting
+                tokens = self.tiktoken_encoder.encode(text)
+                return len(tokens)
+            except Exception as e:
+                logger.warning(f"Tiktoken encoding failed: {e}, falling back to character estimation")
+
+        # Fallback: More accurate estimation: ~4 characters per token for English text
+        return len(text) // 4
+
+    def _select_optimal_model(self, prompt: str) -> str:
+        """Select the optimal model based on prompt length and 16k token threshold"""
+        estimated_tokens = self._estimate_token_count(prompt)
+
+        # Add buffer for response tokens (1000-1500 for conversational responses)
+        total_estimated_tokens = estimated_tokens + 1500
+
+        logger.info(f"Conversational AI - Estimated tokens: {estimated_tokens}, total with buffer: {total_estimated_tokens}")
+
+        # Use 16k token threshold for model selection
+        if total_estimated_tokens <= self.token_threshold:
+            # Use fast models for requests under 16k tokens
+            for model in self.fast_models:
+                logger.info(f"Selected fast model {model} for {estimated_tokens} estimated input tokens (under 16k threshold)")
+                return model
+        else:
+            # Use large context models for requests over 16k tokens
+            for model in self.large_context_models:
+                logger.info(f"Selected large context model {model} for {estimated_tokens} estimated input tokens (over 16k threshold)")
+                return model
+
+        # Fallback to GPT-4o if no model is suitable
+        logger.warning(f"Prompt too large ({estimated_tokens} tokens), using gpt-4o as fallback")
+        return "gpt-4o"
 
     def _truncate_prompt_for_context(self, prompt: str, max_tokens: int = 12000) -> str:
         """Truncate prompt to prevent OpenAI context length exceeded errors"""
@@ -1246,8 +1323,15 @@ Direct Answer to "{clean_user_message}":"""
             # Truncate prompt for chart generation too
             truncated_prompt = self._truncate_prompt_for_context(prompt, max_tokens=8000)
 
+            # Select optimal model for chart generation (usually fast models are sufficient)
+            chart_model = self._select_optimal_model(truncated_prompt)
+            # For chart generation, prefer fast models even if over threshold (charts are simpler)
+            if chart_model in self.large_context_models:
+                chart_model = self.fast_models[0]  # Use fastest model for chart generation
+                logger.info(f"Using fast model {chart_model} for chart generation instead of {chart_model}")
+
             response = self.openai_client.chat.completions.create(
-                model="gpt-3.5-turbo",  # Use fastest model for speed
+                model=chart_model,
                 messages=[
                     {"role": "system", "content": "You are a chart generator. Respond only with valid JSON."},
                     {"role": "user", "content": truncated_prompt}

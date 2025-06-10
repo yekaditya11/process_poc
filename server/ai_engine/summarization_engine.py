@@ -23,6 +23,13 @@ except ImportError:
     openai_available = False
     OpenAI = None
 
+# Check if tiktoken is available for accurate token counting
+try:
+    import tiktoken
+    tiktoken_available = True
+except ImportError:
+    tiktoken_available = False
+
 from .cache_manager import cached_ai_response, ai_cache
 
 # Configure logging
@@ -110,9 +117,9 @@ class SafetySummarizationEngine:
             }
         }
 
-        # Model preferences and context limits - optimized for speed
+        # Model preferences and context limits - optimized for speed based on token count
         self.model_context_limits = {
-            "gpt-3.5-turbo": 16384,     # Fastest model - prioritize for speed
+            "gpt-3.5-turbo": 16384,     # Fastest model - prioritize for speed under 16k tokens
             "gpt-3.5-turbo-1106": 16384, # Latest fast model
             "gpt-3.5-turbo-16k": 16384, # Fast model with larger context
             "gpt-4o-mini": 128000,      # Backup - slower but more capable
@@ -121,14 +128,32 @@ class SafetySummarizationEngine:
             "gpt-4": 8192,              # Legacy fallback
         }
 
-        # Large context model priority order - prioritizing models with large token capacity
-        self.speed_optimized_models = [
+        # Token threshold for model selection (16,000 tokens)
+        self.token_threshold = 16000
+
+        # Speed-optimized models for requests under 16k tokens
+        self.fast_models = [
+            "gpt-3.5-turbo",           # Fastest model for small requests
+            "gpt-3.5-turbo-1106",      # Latest fast model
+            "gpt-3.5-turbo-16k",       # Fast model with larger context
+        ]
+
+        # Large context models for requests over 16k tokens
+        self.large_context_models = [
             "gpt-4o",                  # Latest large context model (128k tokens)
             "gpt-4o-mini",             # Fast large context model (128k tokens)
             "gpt-4-turbo-preview",     # Large context model (128k tokens)
-            "gpt-3.5-turbo-16k",       # Larger context (16k tokens)
-            "gpt-3.5-turbo",           # Fallback (4k tokens)
         ]
+
+        # Initialize tiktoken encoder for accurate token counting
+        self.tiktoken_encoder = None
+        if tiktoken_available:
+            try:
+                self.tiktoken_encoder = tiktoken.encoding_for_model("gpt-3.5-turbo")
+                logger.info("Tiktoken encoder initialized for accurate token counting")
+            except Exception as e:
+                logger.warning(f"Failed to initialize tiktoken encoder: {e}")
+                self.tiktoken_encoder = None
     
     @cached_ai_response("module_analysis", ttl_seconds=3600)  # 1 hour cache for better performance
     def generate_module_specific_analysis(self, module_data: Dict[str, Any], module: str) -> Dict[str, Any]:
@@ -262,13 +287,11 @@ class SafetySummarizationEngine:
             # Create specialized prompt for the module
             prompt = self._create_analysis_prompt(analysis_data, module, config)
 
-            # Select optimal model based on prompt size
+            # Select optimal model based on prompt size and 16k token threshold
             optimal_model = self._select_optimal_model(prompt)
 
-            # Prioritize fastest models for maximum performance
-            models_to_try = self.speed_optimized_models.copy()  # Use speed-optimized order
-            if optimal_model and optimal_model not in models_to_try:
-                models_to_try.insert(0, optimal_model)  # Put optimal model first if not already included
+            # Get prioritized list of models to try
+            models_to_try = self._get_models_to_try(optimal_model)
 
             for model in models_to_try:
                 try:
@@ -463,13 +486,11 @@ Respond ONLY with the JSON object, no additional text.
             # Create comprehensive analysis prompt
             prompt = self._create_comprehensive_prompt(comprehensive_data)
 
-            # Select optimal model based on prompt size
+            # Select optimal model based on prompt size and 16k token threshold
             optimal_model = self._select_optimal_model(prompt)
 
-            # Use speed-optimized models for comprehensive analysis
-            models_to_try = self.speed_optimized_models.copy()
-            if optimal_model and optimal_model not in models_to_try:
-                models_to_try.insert(0, optimal_model)  # Put optimal model first if not already included
+            # Get prioritized list of models to try
+            models_to_try = self._get_models_to_try(optimal_model)
 
             for model in models_to_try:
                 try:
@@ -655,26 +676,70 @@ Respond ONLY with the JSON object, no additional text.
             return "Data summary unavailable due to processing error"
 
     def _estimate_token_count(self, text: str) -> int:
-        """Estimate token count for a given text"""
-        # More accurate estimation: ~4 characters per token for English text
+        """Estimate token count for a given text using tiktoken if available"""
+        if self.tiktoken_encoder:
+            try:
+                # Use tiktoken for accurate token counting
+                tokens = self.tiktoken_encoder.encode(text)
+                return len(tokens)
+            except Exception as e:
+                logger.warning(f"Tiktoken encoding failed: {e}, falling back to character estimation")
+
+        # Fallback: More accurate estimation: ~4 characters per token for English text
         return len(text) // 4
 
     def _select_optimal_model(self, prompt: str) -> str:
-        """Select the optimal model based on prompt length"""
+        """Select the optimal model based on prompt length and 16k token threshold"""
         estimated_tokens = self._estimate_token_count(prompt)
 
         # Add buffer for response tokens (2000-2500)
         total_estimated_tokens = estimated_tokens + 2500
 
-        # Select model based on context requirements - prioritize speed
-        for model in self.speed_optimized_models:
-            if total_estimated_tokens <= self.model_context_limits.get(model, 4000):
-                logger.info(f"Selected model {model} for {estimated_tokens} estimated input tokens")
-                return model
+        logger.info(f"Estimated tokens: {estimated_tokens}, total with buffer: {total_estimated_tokens}")
+
+        # Use 16k token threshold for model selection
+        if total_estimated_tokens <= self.token_threshold:
+            # Use fast models for requests under 16k tokens
+            for model in self.fast_models:
+                if total_estimated_tokens <= self.model_context_limits.get(model, 16384):
+                    logger.info(f"Selected fast model {model} for {estimated_tokens} estimated input tokens (under 16k threshold)")
+                    return model
+        else:
+            # Use large context models for requests over 16k tokens
+            for model in self.large_context_models:
+                if total_estimated_tokens <= self.model_context_limits.get(model, 128000):
+                    logger.info(f"Selected large context model {model} for {estimated_tokens} estimated input tokens (over 16k threshold)")
+                    return model
 
         # If all models would exceed context, use the largest context model available
         logger.warning(f"Prompt too large ({estimated_tokens} tokens), using gpt-4o with truncation")
         return "gpt-4o"
+
+    def _get_models_to_try(self, optimal_model: str) -> List[str]:
+        """Get prioritized list of models to try based on optimal model selection"""
+        if optimal_model in self.fast_models:
+            # For fast models, try fast models first, then fallback to large context
+            models_to_try = self.fast_models.copy()
+            # Add large context models as fallback
+            for model in self.large_context_models:
+                if model not in models_to_try:
+                    models_to_try.append(model)
+        else:
+            # For large context models, try large context models first
+            models_to_try = self.large_context_models.copy()
+            # Add fast models as fallback (though they likely won't work for large requests)
+            for model in self.fast_models:
+                if model not in models_to_try:
+                    models_to_try.append(model)
+
+        # Ensure optimal model is first
+        if optimal_model and optimal_model not in models_to_try:
+            models_to_try.insert(0, optimal_model)
+        elif optimal_model and optimal_model in models_to_try:
+            models_to_try.remove(optimal_model)
+            models_to_try.insert(0, optimal_model)
+
+        return models_to_try
 
     def _generate_fallback_comprehensive_summary(self, all_modules_data: Dict[str, Any]) -> Dict[str, Any]:
         """Generate fallback comprehensive summary when AI is not available"""
