@@ -242,7 +242,7 @@ const EmployeeTrainingCharts = ({ data }) => {
         <Grid item xs={12} md={4}>
           <motion.div variants={itemVariants} whileHover={{ scale: 1.01, y: -2 }}>
             <Card sx={{
-              height: 320, // Reduced height for more compact design
+              height: 430,
               background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
               border: `2px solid ${colors.primary}20`,
               borderRadius: 4,
@@ -257,7 +257,7 @@ const EmployeeTrainingCharts = ({ data }) => {
                 <Typography variant="h6" sx={{
                   fontWeight: 700,
                   color: '#111827',
-                  fontSize: '1.2rem', // Smaller title
+                  fontSize: '1.2rem',
                   mb: 2,
                   pb: 1.5,
                   borderBottom: `2px solid ${colors.primary}15`,
@@ -268,15 +268,15 @@ const EmployeeTrainingCharts = ({ data }) => {
                   <TrainingIcon sx={{ color: colors.primary, fontSize: '1.2rem' }} />
                   Training Compliance
                 </Typography>
-                <Box sx={{ height: 240 }}> {/* Reduced chart height */}
+                <Box sx={{ height: 350 }}>
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                       <Pie
                         data={trainingComplianceData}
                         cx="50%"
                         cy="50%"
-                        innerRadius={45}
-                        outerRadius={75}
+                        innerRadius={60}
+                        outerRadius={100}
                         dataKey="value"
                         label={({ name, value, percent }) => `${(percent * 100).toFixed(0)}%`}
                         labelLine={false}
@@ -335,7 +335,7 @@ const EmployeeTrainingCharts = ({ data }) => {
         <Grid item xs={12} md={8}>
           <motion.div variants={itemVariants} whileHover={{ scale: 1.005, y: -2 }}>
             <Card sx={{
-              height: 320, // Reduced height to match pie chart
+              height: 430,
               background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
               border: `2px solid ${colors.info}20`,
               borderRadius: 4,
@@ -350,7 +350,7 @@ const EmployeeTrainingCharts = ({ data }) => {
                 <Typography variant="h6" sx={{
                   fontWeight: 700,
                   color: '#111827',
-                  fontSize: '1.2rem', // Smaller title to match
+                  fontSize: '1.2rem',
                   mb: 2,
                   pb: 1.5,
                   borderBottom: `2px solid ${colors.info}15`,
@@ -361,7 +361,7 @@ const EmployeeTrainingCharts = ({ data }) => {
                   <DepartmentIcon sx={{ color: colors.info, fontSize: '1.2rem' }} />
                   Training by Department
                 </Typography>
-                <Box sx={{ height: 240 }}> {/* Reduced chart height */}
+                <Box sx={{ height: 350 }}>
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={departmentData} margin={{ top: 15, right: 20, left: 15, bottom: 5 }}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />

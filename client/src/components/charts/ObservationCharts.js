@@ -127,11 +127,13 @@ const ObservationCharts = ({ data = {} }) => {
         backgroundColor: modernColors.warning,
         borderColor: modernColors.warning,
         borderWidth: 0,
-        borderRadius: 8,
+        borderRadius: 3,
         borderSkipped: false,
         hoverBackgroundColor: modernColors.error,
         hoverBorderColor: modernColors.error,
-        hoverBorderWidth: 2,
+        hoverBorderWidth: 1,
+        barPercentage: 0.7,
+        categoryPercentage: 0.8,
       },
     ],
   };
@@ -170,54 +172,41 @@ const ObservationCharts = ({ data = {} }) => {
       mode: 'index',
     },
     animation: {
-      duration: 1500,
+      duration: 1200,
       easing: 'easeInOutQuart',
     },
     layout: {
       padding: {
-        top: 5,
-        bottom: 5,
-        left: 5,
-        right: 5,
+        top: 10,
+        bottom: 25,
+        left: 10,
+        right: 10,
       },
     },
     plugins: {
       legend: {
-        position: 'bottom',
-        labels: {
-          padding: 12,
-          usePointStyle: true,
-          pointStyle: 'circle',
-          boxWidth: 8,
-          boxHeight: 8,
-          font: {
-            size: 11,
-            weight: 600,
-            family: 'Inter, system-ui, sans-serif',
-          },
-          color: '#374151',
-        },
+        display: false,
       },
       tooltip: {
         backgroundColor: 'rgba(17, 24, 39, 0.95)',
         titleColor: '#ffffff',
         bodyColor: '#e5e7eb',
         borderColor: modernColors.primary,
-        borderWidth: 2,
-        cornerRadius: 12,
+        borderWidth: 1,
+        cornerRadius: 8,
         titleFont: {
-          size: 14,
+          size: 13,
           weight: 700,
           family: 'Inter, system-ui, sans-serif',
         },
         bodyFont: {
-          size: 13,
+          size: 12,
           weight: 500,
           family: 'Inter, system-ui, sans-serif',
         },
-        padding: 16,
-        displayColors: true,
-        boxPadding: 8,
+        padding: 12,
+        displayColors: false,
+        boxPadding: 6,
       },
     },
     scales: {
@@ -228,15 +217,17 @@ const ObservationCharts = ({ data = {} }) => {
         ticks: {
           color: '#6b7280',
           font: {
-            size: 12,
-            weight: 600,
+            size: 11,
+            weight: 500,
             family: 'Inter, system-ui, sans-serif',
           },
-          padding: 8,
+          padding: 15,
+          maxRotation: 45,
+          minRotation: 0,
         },
         border: {
           color: '#e5e7eb',
-          width: 2,
+          width: 1,
         },
       },
       y: {
@@ -248,15 +239,15 @@ const ObservationCharts = ({ data = {} }) => {
         ticks: {
           color: '#6b7280',
           font: {
-            size: 12,
-            weight: 600,
+            size: 11,
+            weight: 500,
             family: 'Inter, system-ui, sans-serif',
           },
-          padding: 12,
+          padding: 8,
         },
         border: {
           color: '#e5e7eb',
-          width: 2,
+          width: 1,
         },
         beginAtZero: true,
       },
@@ -269,28 +260,30 @@ const ObservationCharts = ({ data = {} }) => {
     scales: undefined,
     layout: {
       padding: {
-        top: 5,
-        bottom: 5,
+        top: 10,
+        bottom: 15,
         left: 5,
-        right: 15,
+        right: 5,
       },
     },
     plugins: {
       ...modernChartOptions.plugins,
       legend: {
-        ...modernChartOptions.plugins.legend,
-        position: 'right',
+        display: true,
+        position: 'bottom',
         align: 'center',
         labels: {
-          ...modernChartOptions.plugins.legend.labels,
-          padding: 10,
-          boxWidth: 10,
-          boxHeight: 10,
+          padding: 15,
+          boxWidth: 12,
+          boxHeight: 12,
           font: {
-            size: 10,
+            size: 11,
             weight: 600,
             family: 'Inter, system-ui, sans-serif',
           },
+          color: '#374151',
+          usePointStyle: true,
+          pointStyle: 'circle',
           generateLabels: function(chart) {
             const data = chart.data;
             if (data.labels.length && data.datasets.length) {
@@ -310,6 +303,19 @@ const ObservationCharts = ({ data = {} }) => {
               });
             }
             return [];
+          }
+        }
+      },
+      tooltip: {
+        ...modernChartOptions.plugins.tooltip,
+        displayColors: true,
+        callbacks: {
+          label: function(context) {
+            const label = context.label || '';
+            const value = context.parsed;
+            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+            const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : '0';
+            return `${label}: ${value} (${percentage}%)`;
           }
         }
       }
@@ -517,7 +523,7 @@ const ObservationCharts = ({ data = {} }) => {
           <Grid item xs={12} md={4}>
             <motion.div variants={cardVariants} whileHover={{ scale: 1.01, y: -2 }}>
               <Card sx={{
-                height: 340,
+                height: 480,
                 background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
                 border: `2px solid ${modernColors.warning}20`,
                 borderRadius: 4,
@@ -539,7 +545,7 @@ const ObservationCharts = ({ data = {} }) => {
                   }}>
                     📊 Observations by Area
                   </Typography>
-                  <Box sx={{ height: 250 }}>
+                  <Box sx={{ height: 390 }}>
                     {areaEntries.length > 0 ? (
                       <Bar data={areaData} options={modernChartOptions} />
                     ) : (
@@ -574,7 +580,7 @@ const ObservationCharts = ({ data = {} }) => {
           <Grid item xs={12} md={4}>
             <motion.div variants={cardVariants} whileHover={{ scale: 1.01, y: -2 }}>
               <Card sx={{
-                height: 340,
+                height: 480,
                 background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
                 border: `2px solid ${modernColors.secondary}20`,
                 borderRadius: 4,
@@ -596,7 +602,7 @@ const ObservationCharts = ({ data = {} }) => {
                   }}>
                     🎯 Priority Breakdown
                   </Typography>
-                  <Box sx={{ height: 250 }}>
+                  <Box sx={{ height: 390 }}>
                     {priorityEntries.length > 0 ? (
                       <Doughnut data={priorityData} options={donutOptions} />
                     ) : (
@@ -631,7 +637,7 @@ const ObservationCharts = ({ data = {} }) => {
           <Grid item xs={12} md={4}>
             <motion.div variants={cardVariants} whileHover={{ scale: 1.01, y: -2 }}>
               <Card sx={{
-                height: 340,
+                height: 480,
                 background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
                 border: `2px solid ${modernColors.info}20`,
                 borderRadius: 4,
@@ -653,7 +659,7 @@ const ObservationCharts = ({ data = {} }) => {
                   }}>
                     💬 Top Remarks ({totalRemarks} total)
                   </Typography>
-                  <Box sx={{ height: 250, overflow: 'auto' }}>
+                  <Box sx={{ height: 390, overflow: 'auto' }}>
                     {topRemarks.length > 0 ? (
                       <List dense>
                         {topRemarks.slice(0, 6).map((remark, index) => (

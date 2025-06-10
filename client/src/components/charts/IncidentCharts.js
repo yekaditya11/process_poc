@@ -693,7 +693,7 @@ const IncidentCharts = ({ data = {} }) => {
           <Grid item xs={12}>
             <motion.div variants={cardVariants} whileHover={{ scale: 1.005, y: -2 }}>
               <Card sx={{
-                height: 380,
+                height: 490,
                 background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
                 border: `2px solid ${modernColors.info}20`,
                 borderRadius: 4,
@@ -715,7 +715,7 @@ const IncidentCharts = ({ data = {} }) => {
                   }}>
                     📍 Top Incident Locations
                   </Typography>
-                  <Box sx={{ height: 280 }}>
+                  <Box sx={{ height: 390 }}>
                     <Bar
                       ref={(ref) => registerChartRef('locationsChart', ref)}
                       data={locationsData}

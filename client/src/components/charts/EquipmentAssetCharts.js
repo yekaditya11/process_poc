@@ -488,7 +488,7 @@ const EquipmentAssetCharts = ({ data }) => {
       <Grid item xs={12} md={8}>
         <motion.div variants={itemVariants} whileHover={{ scale: 1.005, y: -2 }}>
           <Card sx={{
-            height: 340,
+            height: 450,
             background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
             border: `2px solid ${colors.info}20`,
             borderRadius: 4,
@@ -510,7 +510,7 @@ const EquipmentAssetCharts = ({ data }) => {
               }}>
                 📊 Inspection Completion by Equipment Type
               </Typography>
-              <Box sx={{ height: 250 }}>
+              <Box sx={{ height: 360 }}>
                 <Bar
                   data={{
                     labels: inspectionByType.map(item => item.name),
@@ -635,7 +635,7 @@ const EquipmentAssetCharts = ({ data }) => {
       <Grid item xs={12} md={4}>
         <motion.div variants={itemVariants} whileHover={{ scale: 1.01, y: -2 }}>
           <Card sx={{
-            height: 340,
+            height: 450,
             background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
             border: `2px solid ${colors.warning}20`,
             borderRadius: 4,
@@ -682,7 +682,7 @@ const EquipmentAssetCharts = ({ data }) => {
               </Box>
 
               <List dense sx={{
-                maxHeight: 200,
+                maxHeight: 310,
                 overflow: 'auto',
                 py: 0,
                 '&::-webkit-scrollbar': {

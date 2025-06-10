@@ -1,16 +1,18 @@
 /**
  * Global Dashboard Charts Component
  * Displays 10 key KPIs from different modules in a unified view
- * Redesigned to match dashboardtheme.png styling
+ * Redesigned to match other dashboard styling patterns
  */
 
+import React from 'react';
 import {
   Box,
   Grid,
   Card,
   CardContent,
   Typography,
-  Alert
+  Alert,
+  alpha
 } from '@mui/material';
 import {
   CheckCircle,
@@ -23,26 +25,116 @@ import {
   Assessment
 } from '@mui/icons-material';
 import ReactECharts from 'echarts-for-react';
+import { motion } from 'framer-motion';
 
-// Dashboard theme colors based on dashboardtheme.png
-const dashboardTheme = {
-  colors: {
-    primary: '#2563eb',      // Blue
-    secondary: '#059669',    // Green
-    warning: '#f59e0b',      // Orange/Yellow
-    danger: '#dc2626',       // Red
-    info: '#0891b2',         // Cyan
-    purple: '#7c3aed',       // Purple
-    gray: '#6b7280',         // Gray
-    lightBlue: '#3b82f6',    // Light Blue
-  },
-  cardStyle: {
-    backgroundColor: '#ffffff',
-    borderRadius: '12px',
-    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-    border: '1px solid #e5e7eb'
+// Color scheme consistent with other dashboards
+const colors = {
+  primary: '#1e40af',
+  secondary: '#059669',
+  success: '#059669',
+  warning: '#d97706',
+  error: '#dc2626',
+  info: '#0284c7',
+  purple: '#7c3aed',
+  gray: '#6b7280'
+};
+
+// Animation variants
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.1
+    }
   }
 };
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20, scale: 0.95 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 0.4, ease: [0.4, 0, 0.2, 1] }
+  }
+};
+
+// StatCard component matching other dashboards
+const StatCard = ({ title, value, icon, color = 'primary' }) => (
+  <motion.div
+    variants={itemVariants}
+    whileHover={{
+      scale: 1.02,
+      y: -4,
+      transition: { duration: 0.2 }
+    }}
+  >
+    <Card sx={{
+      height: 120,
+      bgcolor: alpha(colors[color], 0.05),
+      borderRadius: 2,
+      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+      '&:hover': {
+        boxShadow: '0 8px 25px 0 rgba(0, 0, 0, 0.15)',
+        bgcolor: alpha(colors[color], 0.08),
+      }
+    }}>
+      <CardContent sx={{ p: 2, height: '100%', display: 'flex', alignItems: 'center' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+          <motion.div
+            whileHover={{ scale: 1.1, rotate: 5 }}
+            transition={{ duration: 0.2 }}
+          >
+            <Box
+              sx={{
+                width: 36,
+                height: 36,
+                borderRadius: 2,
+                bgcolor: alpha(colors[color], 0.1),
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: colors[color],
+                mr: 2,
+              }}
+            >
+              {icon}
+            </Box>
+          </motion.div>
+          <Box sx={{ flex: 1, minWidth: 0 }}>
+            <Typography
+              variant="h5"
+              sx={{
+                fontWeight: 700,
+                color: colors[color],
+                fontSize: '1.5rem',
+                lineHeight: 1.2,
+                mb: 0.5
+              }}
+            >
+              {value}
+            </Typography>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{
+                fontSize: '0.875rem',
+                lineHeight: 1.2,
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              {title}
+            </Typography>
+          </Box>
+        </Box>
+      </CardContent>
+    </Card>
+  </motion.div>
+);
 
 const GlobalDashboardCharts = ({ data }) => {
   console.log('GlobalDashboardCharts received data:', data);
@@ -130,8 +222,8 @@ const GlobalDashboardCharts = ({ data }) => {
         radius: ['40%', '70%'],
         center: ['50%', '50%'],
         data: [
-          { value: kpis.openActions, name: 'Open', itemStyle: { color: dashboardTheme.colors.warning } },
-          { value: kpis.closedActions, name: 'Closed', itemStyle: { color: dashboardTheme.colors.secondary } }
+          { value: kpis.openActions, name: 'Open', itemStyle: { color: colors.warning } },
+          { value: kpis.closedActions, name: 'Closed', itemStyle: { color: colors.success } }
         ],
         emphasis: {
           itemStyle: {
@@ -189,7 +281,7 @@ const GlobalDashboardCharts = ({ data }) => {
         type: 'bar',
         data: finalObservationData.map(item => ({
           value: item.count,
-          itemStyle: { color: dashboardTheme.colors.primary }
+          itemStyle: { color: colors.primary }
         })),
         emphasis: {
           itemStyle: {
@@ -202,495 +294,182 @@ const GlobalDashboardCharts = ({ data }) => {
     ]
   };
 
-  // ECharts configuration for Actions Completed On Time - Circular Progress
-  const actionsProgressOption = {
-    series: [
-      {
-        type: 'gauge',
-        startAngle: 200,
-        endAngle: -20,
-        min: 0,
-        max: 100,
-        splitNumber: 5,
-        itemStyle: {
-          color: dashboardTheme.colors.primary
-        },
-        progress: {
-          show: true,
-          width: 8
-        },
-        pointer: {
-          show: false
-        },
-        axisLine: {
-          lineStyle: {
-            width: 8,
-            color: [[1, '#f3f4f6']]
-          }
-        },
-        axisTick: {
-          show: false
-        },
-        splitLine: {
-          show: false
-        },
-        axisLabel: {
-          show: false
-        },
-        title: {
-          show: false
-        },
-        detail: {
-          valueAnimation: true,
-          width: '60%',
-          lineHeight: 40,
-          borderRadius: 8,
-          offsetCenter: [0, '10%'],
-          fontSize: 20,
-          fontWeight: 'bold',
-          formatter: '{value}%',
-          color: '#1f2937'
-        },
-        data: [
-          {
-            value: kpis.actionsCompletedOnTime
-          }
-        ]
-      }
-    ]
-  };
 
-  // ECharts configuration for Driver Checklist - Horizontal Progress Bar
-  const driverProgressOption = {
-    grid: {
-      left: '5%',
-      right: '25%',
-      top: '30%',
-      bottom: '30%',
-      containLabel: false
-    },
-    xAxis: {
-      type: 'value',
-      max: 100,
-      axisLine: { show: false },
-      axisTick: { show: false },
-      axisLabel: { show: false },
-      splitLine: { show: false }
-    },
-    yAxis: {
-      type: 'category',
-      data: ['Progress'],
-      axisLine: { show: false },
-      axisTick: { show: false },
-      axisLabel: { show: false }
-    },
-    series: [
-      {
-        type: 'bar',
-        data: [
-          {
-            value: kpis.driverCompletionRate,
-            itemStyle: {
-              color: {
-                type: 'linear',
-                x: 0,
-                y: 0,
-                x2: 1,
-                y2: 0,
-                colorStops: [
-                  { offset: 0, color: dashboardTheme.colors.warning },
-                  { offset: 1, color: '#fbbf24' }
-                ]
-              },
-              borderRadius: [0, 6, 6, 0]
-            }
-          }
-        ],
-        barWidth: '40%',
-        label: {
-          show: true,
-          position: 'right',
-          formatter: '{c}%',
-          color: '#1f2937',
-          fontSize: 16,
-          fontWeight: 'bold'
-        },
-        backgroundStyle: {
-          color: '#f3f4f6',
-          borderRadius: [0, 6, 6, 0]
-        },
-        showBackground: true
-      }
-    ],
-    graphic: [
-      {
-        type: 'text',
-        left: 'center',
-        bottom: '10%',
-        style: {
-          text: 'Completion Rate',
-          fontSize: 11,
-          fill: '#6b7280',
-          textAlign: 'center'
-        }
-      }
-    ]
-  };
-
-  // ECharts configuration for Valid Calibrations - Mini Bar Chart
-  const calibrationMiniBarOption = {
-    grid: {
-      left: '5%',
-      right: '5%',
-      top: '20%',
-      bottom: '20%',
-      containLabel: true
-    },
-    xAxis: {
-      type: 'value',
-      max: 100,
-      show: false
-    },
-    yAxis: {
-      type: 'category',
-      data: ['Valid', 'Expired'],
-      axisLabel: {
-        color: '#6b7280',
-        fontSize: 11
-      },
-      axisLine: {
-        show: false
-      },
-      axisTick: {
-        show: false
-      }
-    },
-    series: [
-      {
-        type: 'bar',
-        data: [
-          {
-            value: kpis.validCalibrations,
-            itemStyle: { color: dashboardTheme.colors.secondary }
-          },
-          {
-            value: 100 - kpis.validCalibrations,
-            itemStyle: { color: dashboardTheme.colors.danger }
-          }
-        ],
-        barWidth: '60%',
-        label: {
-          show: true,
-          position: 'right',
-          formatter: '{c}%',
-          color: '#1f2937',
-          fontSize: 13
-        }
-      }
-    ]
-  };
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Typography variant="h5" sx={{ mb: 3, fontWeight: 600, color: '#1f2937' }}>
-        Safety Dashboard
-      </Typography>
+    <motion.div
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      <Box sx={{ p: 2 }}>
+        <Typography variant="h5" sx={{ mb: 3, fontWeight: 600, color: '#1f2937' }}>
+          Safety Dashboard
+        </Typography>
 
-      {/* Top Row - Critical KPIs */}
-      <Grid container spacing={3} sx={{ mb: 3 }}>
-        {/* Incidents Reported */}
-        <Grid item xs={12} sm={6} md={3}>
-          <Card sx={{ ...dashboardTheme.cardStyle, height: '150px' }}>
-            <CardContent sx={{ p: 2, height: '100%' }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '100%' }}>
-                <Box>
-                  <Typography
-                    variant="h4"
-                    sx={{
-                      fontWeight: 600,
-                      color: '#1f2937',
-                      mb: 0.5,
-                      fontSize: '2rem'
-                    }}
-                  >
-                    {kpis.incidentsReported}
-                  </Typography>
-                  <Typography
-                    variant="body1"
-                    sx={{
-                      color: '#6b7280',
-                      fontSize: '0.95rem',
-                      fontWeight: 500
-                    }}
-                  >
-                    Incidents Reported
-                  </Typography>
-                </Box>
-                <Security sx={{ fontSize: 32, color: dashboardTheme.colors.danger }} />
-              </Box>
-            </CardContent>
-          </Card>
+        {/* Key Metrics Summary */}
+        <Grid container spacing={2} sx={{ mb: 3 }}>
+          {/* Incidents Reported */}
+          <Grid item xs={12} sm={6} md={3}>
+            <StatCard
+              title="Incidents Reported"
+              value={kpis.incidentsReported}
+              icon={<Security />}
+              color="error"
+            />
+          </Grid>
+
+          {/* Days Since Last Incident */}
+          <Grid item xs={12} sm={6} md={3}>
+            <StatCard
+              title="Days Since Last Incident"
+              value={kpis.daysSinceLastIncident}
+              icon={<CheckCircle />}
+              color="success"
+            />
+          </Grid>
+
+          {/* Actions Completed On Time */}
+          <Grid item xs={12} sm={6} md={3}>
+            <StatCard
+              title="Actions On Time"
+              value={`${kpis.actionsCompletedOnTime}%`}
+              icon={<Assignment />}
+              color="primary"
+            />
+          </Grid>
+
+          {/* Driver Checklist Completion */}
+          <Grid item xs={12} sm={6} md={3}>
+            <StatCard
+              title="Driver Checklists"
+              value={`${kpis.driverCompletionRate}%`}
+              icon={<DirectionsCar />}
+              color="warning"
+            />
+          </Grid>
+
+          {/* Expired Trainings */}
+          <Grid item xs={12} sm={6} md={3}>
+            <StatCard
+              title="Expired Trainings"
+              value={kpis.expiredTrainings}
+              icon={<School />}
+              color="purple"
+            />
+          </Grid>
+
+          {/* Unfit Employees */}
+          <Grid item xs={12} sm={6} md={3}>
+            <StatCard
+              title="Employees Unfit to Work"
+              value={`${Number(kpis.unfitEmployees).toFixed(1)}%`}
+              icon={<Error />}
+              color="error"
+            />
+          </Grid>
+
+          {/* Valid Calibrations */}
+          <Grid item xs={12} sm={6} md={3}>
+            <StatCard
+              title="Valid Calibrations"
+              value={`${kpis.validCalibrations}%`}
+              icon={<Build />}
+              color="success"
+            />
+          </Grid>
+
+          {/* Risk Assessments */}
+          <Grid item xs={12} sm={6} md={3}>
+            <StatCard
+              title="Risk Assessments"
+              value={kpis.riskAssessments}
+              icon={<Assessment />}
+              color="info"
+            />
+          </Grid>
         </Grid>
 
-        {/* Days Since Last Incident */}
-        <Grid item xs={12} sm={6} md={3}>
-          <Card sx={{ ...dashboardTheme.cardStyle, height: '150px' }}>
-            <CardContent sx={{ p: 2, height: '100%' }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '100%' }}>
-                <Box>
-                  <Typography
-                    variant="h4"
-                    sx={{
-                      fontWeight: 600,
-                      color: '#1f2937',
-                      mb: 0.5,
-                      fontSize: '2rem'
-                    }}
-                  >
-                    {kpis.daysSinceLastIncident}
+        {/* Charts Section */}
+        <Grid container spacing={3} sx={{ mt: 2 }}>
+          {/* Open vs Closed Actions */}
+          <Grid item xs={12} md={6}>
+            <motion.div variants={itemVariants} whileHover={{ scale: 1.01, y: -2 }}>
+              <Card sx={{
+                height: 450,
+                background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
+                border: `2px solid ${colors.primary}20`,
+                borderRadius: 4,
+                boxShadow: '0 10px 40px rgba(30, 64, 175, 0.1)',
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                '&:hover': {
+                  boxShadow: '0 15px 50px rgba(30, 64, 175, 0.15)',
+                  transform: 'translateY(-2px)',
+                }
+              }}>
+                <CardContent sx={{ p: 3, height: '100%' }}>
+                  <Typography variant="h6" sx={{
+                    fontWeight: 700,
+                    color: '#111827',
+                    fontSize: '1.1rem',
+                    mb: 2,
+                    pb: 1,
+                    borderBottom: `2px solid ${colors.primary}15`
+                  }}>
+                    📊 Open vs Closed Actions
                   </Typography>
-                  <Typography
-                    variant="body1"
-                    sx={{
-                      color: '#6b7280',
-                      fontSize: '0.95rem',
-                      fontWeight: 500
-                    }}
-                  >
-                    Days Since Last Incident
+                  <Box sx={{ height: 360 }}>
+                    <ReactECharts
+                      option={actionChartOption}
+                      style={{ height: '100%', width: '100%' }}
+                      opts={{ renderer: 'canvas' }}
+                    />
+                  </Box>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </Grid>
+
+          {/* Observations by Area */}
+          <Grid item xs={12} md={6}>
+            <motion.div variants={itemVariants} whileHover={{ scale: 1.01, y: -2 }}>
+              <Card sx={{
+                height: 450,
+                background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
+                border: `2px solid ${colors.success}20`,
+                borderRadius: 4,
+                boxShadow: '0 10px 40px rgba(5, 150, 105, 0.1)',
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                '&:hover': {
+                  boxShadow: '0 15px 50px rgba(5, 150, 105, 0.15)',
+                  transform: 'translateY(-2px)',
+                }
+              }}>
+                <CardContent sx={{ p: 3, height: '100%' }}>
+                  <Typography variant="h6" sx={{
+                    fontWeight: 700,
+                    color: '#111827',
+                    fontSize: '1.1rem',
+                    mb: 2,
+                    pb: 1,
+                    borderBottom: `2px solid ${colors.success}15`
+                  }}>
+                    📍 Observations by Area
                   </Typography>
-                </Box>
-                <CheckCircle sx={{ fontSize: 32, color: dashboardTheme.colors.secondary }} />
-              </Box>
-            </CardContent>
-          </Card>
+                  <Box sx={{ height: 360 }}>
+                    <ReactECharts
+                      option={observationChartOption}
+                      style={{ height: '100%', width: '100%' }}
+                      opts={{ renderer: 'canvas' }}
+                    />
+                  </Box>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </Grid>
         </Grid>
-
-        {/* Actions Completed On Time */}
-        <Grid item xs={12} sm={6} md={3}>
-          <Card sx={{ ...dashboardTheme.cardStyle, height: '150px' }}>
-            <CardContent sx={{ p: 1.5, height: '100%', display: 'flex', flexDirection: 'column' }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 0.5 }}>
-                <Typography
-                  variant="body1"
-                  sx={{
-                    color: '#6b7280',
-                    fontSize: '0.95rem',
-                    fontWeight: 500
-                  }}
-                >
-                  Actions On Time
-                </Typography>
-                <Assignment sx={{ fontSize: 20, color: dashboardTheme.colors.primary }} />
-              </Box>
-              <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <ReactECharts
-                  option={actionsProgressOption}
-                  style={{ height: '100px', width: '100%' }}
-                  opts={{ renderer: 'canvas' }}
-                />
-              </Box>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        {/* Driver Checklist Completion */}
-        <Grid item xs={12} sm={6} md={3}>
-          <Card sx={{ ...dashboardTheme.cardStyle, height: '150px' }}>
-            <CardContent sx={{ p: 1.5, height: '100%', display: 'flex', flexDirection: 'column' }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 0.5 }}>
-                <Typography
-                  variant="body1"
-                  sx={{
-                    color: '#6b7280',
-                    fontSize: '0.95rem',
-                    fontWeight: 500
-                  }}
-                >
-                  Driver Checklists
-                </Typography>
-                <DirectionsCar sx={{ fontSize: 20, color: dashboardTheme.colors.warning }} />
-              </Box>
-              <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <ReactECharts
-                  option={driverProgressOption}
-                  style={{ height: '100px', width: '100%' }}
-                  opts={{ renderer: 'canvas' }}
-                />
-              </Box>
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
-
-      {/* Second Row - Training & Equipment */}
-      <Grid container spacing={3} sx={{ mb: 3 }}>
-        {/* Expired Trainings */}
-        <Grid item xs={12} sm={6} md={3}>
-          <Card sx={{ ...dashboardTheme.cardStyle, height: '150px' }}>
-            <CardContent sx={{ p: 2, height: '100%' }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '100%' }}>
-                <Box>
-                  <Typography
-                    variant="h4"
-                    sx={{
-                      fontWeight: 600,
-                      color: '#1f2937',
-                      mb: 0.5,
-                      fontSize: '2rem'
-                    }}
-                  >
-                    {kpis.expiredTrainings}
-                  </Typography>
-                  <Typography
-                    variant="body1"
-                    sx={{
-                      color: '#6b7280',
-                      fontSize: '0.95rem',
-                      fontWeight: 500
-                    }}
-                  >
-                    Expired Trainings
-                  </Typography>
-                </Box>
-                <School sx={{ fontSize: 32, color: dashboardTheme.colors.purple }} />
-              </Box>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        {/* Unfit Employees */}
-        <Grid item xs={12} sm={6} md={3}>
-          <Card sx={{ ...dashboardTheme.cardStyle, height: '150px' }}>
-            <CardContent sx={{ p: 2, height: '100%' }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '100%' }}>
-                <Box>
-                  <Typography
-                    variant="h4"
-                    sx={{
-                      fontWeight: 600,
-                      color: '#1f2937',
-                      mb: 0.5,
-                      fontSize: '2rem'
-                    }}
-                  >
-                    {Number(kpis.unfitEmployees).toFixed(1)}%
-                  </Typography>
-                  <Typography
-                    variant="body1"
-                    sx={{
-                      color: '#6b7280',
-                      fontSize: '0.95rem',
-                      fontWeight: 500
-                    }}
-                  >
-                    Employees Unfit to Work
-                  </Typography>
-                </Box>
-                <Error sx={{ fontSize: 32, color: dashboardTheme.colors.danger }} />
-              </Box>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        {/* Valid Calibrations */}
-        <Grid item xs={12} sm={6} md={3}>
-          <Card sx={{ ...dashboardTheme.cardStyle, height: '150px' }}>
-            <CardContent sx={{ p: 1.5, height: '100%', display: 'flex', flexDirection: 'column' }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 0.5 }}>
-                <Typography
-                  variant="body1"
-                  sx={{
-                    color: '#6b7280',
-                    fontSize: '0.95rem',
-                    fontWeight: 500
-                  }}
-                >
-                  Equipment Status
-                </Typography>
-                <Build sx={{ fontSize: 20, color: dashboardTheme.colors.secondary }} />
-              </Box>
-              <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <ReactECharts
-                  option={calibrationMiniBarOption}
-                  style={{ height: '100px', width: '100%' }}
-                  opts={{ renderer: 'canvas' }}
-                />
-              </Box>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        {/* Risk Assessments */}
-        <Grid item xs={12} sm={6} md={3}>
-          <Card sx={{ ...dashboardTheme.cardStyle, height: '150px' }}>
-            <CardContent sx={{ p: 2, height: '100%' }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '100%' }}>
-                <Box>
-                  <Typography
-                    variant="h4"
-                    sx={{
-                      fontWeight: 600,
-                      color: '#1f2937',
-                      mb: 0.5,
-                      fontSize: '2rem'
-                    }}
-                  >
-                    {kpis.riskAssessments}
-                  </Typography>
-                  <Typography
-                    variant="body1"
-                    sx={{
-                      color: '#6b7280',
-                      fontSize: '0.95rem',
-                      fontWeight: 500
-                    }}
-                  >
-                    Risk Assessments
-                  </Typography>
-                </Box>
-                <Assessment sx={{ fontSize: 32, color: dashboardTheme.colors.info }} />
-              </Box>
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
-
-      {/* Third Row - Charts */}
-      <Grid container spacing={3}>
-        {/* Open vs Closed Actions */}
-        <Grid item xs={12} md={6}>
-          <Card sx={{
-            ...dashboardTheme.cardStyle,
-            height: 380
-          }}>
-            <CardContent sx={{ p: 3, height: '100%' }}>
-              <ReactECharts
-                option={actionChartOption}
-                style={{ height: '100%', width: '100%' }}
-                opts={{ renderer: 'canvas' }}
-              />
-            </CardContent>
-          </Card>
-        </Grid>
-
-        {/* Observations by Area */}
-        <Grid item xs={12} md={6}>
-          <Card sx={{
-            ...dashboardTheme.cardStyle,
-            height: 380
-          }}>
-            <CardContent sx={{ p: 3, height: '100%' }}>
-              <ReactECharts
-                option={observationChartOption}
-                style={{ height: '100%', width: '100%' }}
-                opts={{ renderer: 'canvas' }}
-              />
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
-    </Box>
+      </Box>
+    </motion.div>
   );
 };
 
