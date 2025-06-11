@@ -6,8 +6,8 @@
 import axios from 'axios';
 import requestOptimizer from '../utils/requestOptimizer';
 
-// Base API configuration
 const API_BASE_URL ='http://13.51.171.153:9000';
+
 // const API_BASE_URL ='http://localhost:9000';
 
 

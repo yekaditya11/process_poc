@@ -554,94 +554,108 @@ Respond ONLY with the JSON object, no additional text.
         data_summary = self._create_data_summary(comprehensive_data.get("module_data", {}))
 
         prompt = f"""
-Analyze the comprehensive safety management data across {len(modules)} safety modules and provide an executive-level strategic analysis.
+Analyze the SPECIFIC SAFETY DATA provided below and generate insights based on the ACTUAL NUMBERS and METRICS shown.
 
-DATA SUMMARY:
+DATA TO ANALYZE:
 {data_summary}
 
 MODULES ANALYZED: {', '.join(modules)}
 
 REQUIRED JSON OUTPUT FORMAT:
 {{
-    "summary": "2-3 sentence executive summary of overall safety performance",
+    "summary": "2-3 sentence summary based on the actual data values provided",
     "risk_level": "Low|Medium|High|Critical",
     "insights": [
         {{
-            "text": "Current organizational safety performance metric 1",
+            "text": "With [X] incidents reported and [Y] days since last incident, [specific analysis with numbers]",
             "sentiment": "positive|negative|neutral"
         }},
         {{
-            "text": "Current cross-module performance indicator 2",
+            "text": "Action tracking shows [X]% completion rate with [Y] open and [Z] closed actions, indicating [analysis]",
             "sentiment": "positive|negative|neutral"
         }},
         {{
-            "text": "Current operational status finding 3",
+            "text": "Employee training shows [X]% expired trainings affecting [Y] employees out of [Z] total staff",
             "sentiment": "positive|negative|neutral"
         }},
         {{
-            "text": "Current trend analysis across modules 4",
+            "text": "Equipment calibration at [X]% with [Y] valid certificates represents [analysis with comparison]",
             "sentiment": "positive|negative|neutral"
         }},
         {{
-            "text": "Current risk assessment finding 5",
+            "text": "Driver safety checklist completion at [X]% compared to [comparison metric] shows [specific gap/strength]",
             "sentiment": "positive|negative|neutral"
         }},
         {{
-            "text": "Current compliance and performance status 6",
+            "text": "Observation tracker recorded [X] total observations with [top area] having [Y] observations ([Z]% of total)",
             "sentiment": "positive|negative|neutral"
         }},
         {{
-            "text": "Current pattern identified across safety areas 7",
+            "text": "Risk assessment module shows [X] total assessments with [specific metric analysis]",
             "sentiment": "positive|negative|neutral"
         }},
         {{
-            "text": "Current correlation or trend spanning modules 8",
+            "text": "Cross-module comparison: [Module A] at [X]% vs [Module B] at [Y]% shows [Z] percentage point difference",
             "sentiment": "positive|negative|neutral"
         }},
         {{
-            "text": "Current organizational safety maturity level 9",
+            "text": "Performance ranking: [Best module] leads at [X]% while [worst module] trails at [Y]%, indicating [analysis]",
             "sentiment": "positive|negative|neutral"
         }},
         {{
-            "text": "Current systemic strength or concern 10",
+            "text": "Overall safety metrics show [X] total incidents, [Y]% action completion, and [Z]% training compliance",
             "sentiment": "positive|negative|neutral"
         }},
         {{
-            "text": "Current business impact assessment 11",
+            "text": "Critical concern: [Specific metric] at [X]% is [comparison] indicating [specific risk/issue]",
             "sentiment": "positive|negative|neutral"
         }},
         {{
-            "text": "Current resource utilization status 12",
+            "text": "Business impact: [X] incidents and [Y]% completion rates suggest [specific operational impact]",
             "sentiment": "positive|negative|neutral"
         }},
         {{
-            "text": "One strategic recommendation for improvement",
+            "text": "Recommendation: Focus on [specific area] where [metric] at [X]% needs improvement to reach [target]%",
             "sentiment": "neutral"
         }},
         {{
-            "text": "One priority organizational action",
+            "text": "Priority action: Address [worst metric] at [X]% which is [Y] points below acceptable performance",
             "sentiment": "neutral"
         }}
     ]
 }}
 
-ANALYSIS FOCUS:
-- Generate 12-14 bullet points total
-- Focus 85% on CURRENT STATE analysis (12 points about current organizational safety status)
-- Include only 1 strategic recommendation and 1 action item (15% of content)
-- Describe what IS currently happening across modules, not what should happen
-- Focus on actual cross-module performance, trends, and organizational status
-- Identify current patterns and correlations across safety modules
-- Assess current organizational safety maturity and performance
-- Highlight current systemic issues or strengths
-- Focus on current business impact and operational status
+CRITICAL REQUIREMENTS:
+- EVERY SINGLE INSIGHT MUST include specific numbers, percentages, or counts from the data
+- ALWAYS start insights with the actual data values: "With X incidents...", "At Y% completion...", "Z employees have..."
+- NEVER write generic statements without numbers
+- ALWAYS compare actual values when analyzing performance
+- ALWAYS calculate and show ratios, percentages, and differences
+- ALWAYS reference the exact metric names and their values
+- If no numbers are available for a topic, skip that insight entirely
+
+MANDATORY FORMAT FOR EACH INSIGHT:
+- Start with actual numbers: "With [X number/percentage]..."
+- Include comparisons: "X is higher/lower than Y..."
+- Show calculations: "X out of Y total means Z%..."
+- Reference specific modules: "In [module name], [specific metric] shows [exact value]..."
+
+EXAMPLE REQUIRED INSIGHTS FORMAT:
+✅ GOOD: "With 15 incidents reported and 45 open actions, the incident-to-action ratio of 1:3 indicates significant follow-up workload"
+✅ GOOD: "Driver safety completion at 78% lags behind equipment calibration at 92%, showing a 14 percentage point performance gap"
+✅ GOOD: "23% of employees (46 out of 200 total) have expired training, representing nearly 1 in 4 staff members"
+✅ GOOD: "Observation tracker shows 127 total observations with Manufacturing (45 observations) and Warehouse (32 observations) as top areas"
+
+❌ BAD: "Organizational safety maturity level needs improvement"
+❌ BAD: "There are concerns in safety management practices"
+❌ BAD: "Training compliance requires attention"
 
 Respond ONLY with the JSON object, no additional text.
 """
         return prompt
 
     def _create_data_summary(self, module_data: Dict[str, Any]) -> str:
-        """Create a concise summary of module data to avoid token limits"""
+        """Create a detailed summary of module data for AI analysis"""
         try:
             summary_lines = []
 
@@ -650,24 +664,54 @@ Respond ONLY with the JSON object, no additional text.
                     continue
 
                 module_name = self.module_configs.get(module, {}).get("name", module)
-                summary_lines.append(f"\n{module_name}:")
+                summary_lines.append(f"\n{module_name.upper()}:")
 
-                # Extract key metrics only
+                # Extract and organize metrics by importance
                 key_metrics = []
-                for key, value in data.items():
-                    if isinstance(value, (int, float)):
-                        key_metrics.append(f"{key}: {value}")
-                    elif isinstance(value, dict) and len(value) <= 5:
-                        # Only include small dictionaries
-                        for sub_key, sub_value in value.items():
-                            if isinstance(sub_value, (int, float)):
-                                key_metrics.append(f"{key}_{sub_key}: {sub_value}")
 
-                # Limit to top 10 metrics per module
-                if key_metrics:
-                    summary_lines.append("  " + ", ".join(key_metrics[:10]))
+                def extract_metrics(data_dict, prefix=""):
+                    """Recursively extract numeric metrics"""
+                    for key, value in data_dict.items():
+                        full_key = f"{prefix}_{key}" if prefix else key
+
+                        if isinstance(value, (int, float)):
+                            # Format percentages and counts appropriately
+                            if 'percentage' in key.lower() or 'rate' in key.lower():
+                                key_metrics.append(f"{full_key}: {value}%")
+                            elif 'count' in key.lower() or 'total' in key.lower():
+                                key_metrics.append(f"{full_key}: {value} items")
+                            else:
+                                key_metrics.append(f"{full_key}: {value}")
+                        elif isinstance(value, dict) and len(value) <= 8:
+                            # Include nested dictionaries with important metrics
+                            extract_metrics(value, full_key)
+                        elif isinstance(value, str) and value.replace('.', '').isdigit():
+                            # Handle string numbers
+                            key_metrics.append(f"{full_key}: {value}")
+
+                extract_metrics(data)
+
+                # Prioritize important metrics (incidents, actions, percentages)
+                priority_metrics = []
+                other_metrics = []
+
+                for metric in key_metrics:
+                    if any(keyword in metric.lower() for keyword in
+                          ['incident', 'action', 'percentage', 'completion', 'expired', 'unfit', 'open', 'closed']):
+                        priority_metrics.append(metric)
+                    else:
+                        other_metrics.append(metric)
+
+                # Show priority metrics first, then others
+                all_metrics = priority_metrics + other_metrics
+
+                if all_metrics:
+                    # Group metrics for better readability
+                    for i in range(0, len(all_metrics), 4):
+                        group = all_metrics[i:i+4]
+                        summary_lines.append("  " + " | ".join(group))
                 else:
-                    summary_lines.append("  Data available but no numeric metrics")
+                    summary_lines.append("  No numeric metrics available")
 
             return "\n".join(summary_lines)
 
