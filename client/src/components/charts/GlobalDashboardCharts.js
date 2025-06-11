@@ -45,19 +45,41 @@ const containerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.1
+      staggerChildren: 0.15,
+      delayChildren: 0.2
     }
   }
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 20, scale: 0.95 },
+  hidden: { opacity: 0, y: 30, scale: 0.9 },
   visible: {
     opacity: 1,
     y: 0,
     scale: 1,
-    transition: { duration: 0.4, ease: [0.4, 0, 0.2, 1] }
+    transition: {
+      duration: 0.6,
+      ease: [0.4, 0, 0.2, 1],
+      type: "spring",
+      stiffness: 100,
+      damping: 15
+    }
+  }
+};
+
+const chartVariants = {
+  hidden: { opacity: 0, y: 40, scale: 0.95 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      duration: 0.8,
+      ease: [0.4, 0, 0.2, 1],
+      type: "spring",
+      stiffness: 80,
+      damping: 20
+    }
   }
 };
 
@@ -215,6 +237,10 @@ const GlobalDashboardCharts = ({ data }) => {
         fontSize: 14
       }
     },
+    animation: true,
+    animationDuration: 1500,
+    animationEasing: 'elasticOut',
+    animationDelay: (idx) => idx * 200,
     series: [
       {
         name: 'Actions',
@@ -231,7 +257,10 @@ const GlobalDashboardCharts = ({ data }) => {
             shadowOffsetX: 0,
             shadowColor: 'rgba(0, 0, 0, 0.5)'
           }
-        }
+        },
+        animationType: 'scale',
+        animationEasing: 'elasticOut',
+        animationDelay: (idx) => idx * 300
       }
     ]
   };
@@ -275,6 +304,10 @@ const GlobalDashboardCharts = ({ data }) => {
         fontSize: 12
       }
     },
+    animation: true,
+    animationDuration: 1200,
+    animationEasing: 'cubicOut',
+    animationDelay: (idx) => idx * 100,
     series: [
       {
         name: 'Observations',
@@ -289,7 +322,9 @@ const GlobalDashboardCharts = ({ data }) => {
             shadowOffsetX: 0,
             shadowColor: 'rgba(0, 0, 0, 0.5)'
           }
-        }
+        },
+        animationDelay: (idx) => idx * 150,
+        animationEasing: 'bounceOut'
       }
     ]
   };
@@ -394,7 +429,12 @@ const GlobalDashboardCharts = ({ data }) => {
         <Grid container spacing={3} sx={{ mt: 2 }}>
           {/* Open vs Closed Actions */}
           <Grid item xs={12} md={6}>
-            <motion.div variants={itemVariants} whileHover={{ scale: 1.01, y: -2 }}>
+            <motion.div
+              key={`action-chart-${kpis.openActions}-${kpis.closedActions}`}
+              variants={chartVariants}
+              whileHover={{ scale: 1.02, y: -4 }}
+              transition={{ duration: 0.2 }}
+            >
               <Card sx={{
                 height: 450,
                 background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
@@ -418,13 +458,20 @@ const GlobalDashboardCharts = ({ data }) => {
                   }}>
                     📊 Open vs Closed Actions
                   </Typography>
-                  <Box sx={{ height: 360 }}>
-                    <ReactECharts
-                      option={actionChartOption}
-                      style={{ height: '100%', width: '100%' }}
-                      opts={{ renderer: 'canvas' }}
-                    />
-                  </Box>
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.5, duration: 0.6 }}
+                  >
+                    <Box sx={{ height: 360 }}>
+                      <ReactECharts
+                        key={`action-echart-${kpis.openActions}-${kpis.closedActions}`}
+                        option={actionChartOption}
+                        style={{ height: '100%', width: '100%' }}
+                        opts={{ renderer: 'canvas' }}
+                      />
+                    </Box>
+                  </motion.div>
                 </CardContent>
               </Card>
             </motion.div>
@@ -432,7 +479,12 @@ const GlobalDashboardCharts = ({ data }) => {
 
           {/* Observations by Area */}
           <Grid item xs={12} md={6}>
-            <motion.div variants={itemVariants} whileHover={{ scale: 1.01, y: -2 }}>
+            <motion.div
+              key={`observation-chart-${finalObservationData.length}`}
+              variants={chartVariants}
+              whileHover={{ scale: 1.02, y: -4 }}
+              transition={{ duration: 0.2 }}
+            >
               <Card sx={{
                 height: 450,
                 background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
@@ -456,13 +508,20 @@ const GlobalDashboardCharts = ({ data }) => {
                   }}>
                     📍 Observations by Area
                   </Typography>
-                  <Box sx={{ height: 360 }}>
-                    <ReactECharts
-                      option={observationChartOption}
-                      style={{ height: '100%', width: '100%' }}
-                      opts={{ renderer: 'canvas' }}
-                    />
-                  </Box>
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.7, duration: 0.6 }}
+                  >
+                    <Box sx={{ height: 360 }}>
+                      <ReactECharts
+                        key={`observation-echart-${finalObservationData.length}`}
+                        option={observationChartOption}
+                        style={{ height: '100%', width: '100%' }}
+                        opts={{ renderer: 'canvas' }}
+                      />
+                    </Box>
+                  </motion.div>
                 </CardContent>
               </Card>
             </motion.div>

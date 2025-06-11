@@ -55,6 +55,9 @@ import DashboardManager from '../components/dashboard/DashboardManager';
 // Import unified insights panel
 import UnifiedInsightsPanel from '../components/insights/UnifiedInsightsPanel';
 
+// Import floating AI assistant
+import FloatingAIAssistant from '../components/common/FloatingAIAssistant';
+
 // Import API service
 import ApiService from '../services/api';
 
@@ -283,8 +286,12 @@ const UnifiedSafetyDashboard = () => {
   };
 
   // Handle AI toggle - Show/hide AI insights card inline
-  const handleAIToggle = (event) => {
-    const isEnabled = event.target.checked;
+  const handleAIToggle = (eventOrBoolean) => {
+    // Handle both event (from switch) and boolean (from floating button)
+    const isEnabled = typeof eventOrBoolean === 'boolean'
+      ? eventOrBoolean
+      : eventOrBoolean.target.checked;
+
     console.log('🤖 AI Toggle clicked:', isEnabled);
     console.log('🤖 Current moduleData:', moduleData ? 'Available' : 'Not available');
     console.log('🤖 Current selectedModule:', selectedModule);
@@ -669,99 +676,8 @@ const UnifiedSafetyDashboard = () => {
                 </FormControl>
               </motion.div>
 
-              {/* Right side - AI Toggle, Date Picker & Reload */}
+              {/* Right side - Date Picker & Reload */}
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                {/* AI Analysis Toggle with Slide Effect */}
-                <motion.div
-                  initial={{ x: -20, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  transition={{
-                    type: "spring",
-                    stiffness: 300,
-                    damping: 30,
-                    delay: 0.1
-                  }}
-                >
-                  <FormControlLabel
-                    control={
-                      <motion.div
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                      >
-                        <Switch
-                          checked={aiAnalysisEnabled}
-                          onChange={handleAIToggle}
-                          sx={{
-                            '& .MuiSwitch-switchBase': {
-                              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                              '&.Mui-checked': {
-                                color: '#10b981',
-                                transform: 'translateX(20px)',
-                                '& + .MuiSwitch-track': {
-                                  backgroundColor: '#10b981',
-                                  opacity: 1,
-                                },
-                              },
-                            },
-                            '& .MuiSwitch-track': {
-                              borderRadius: 12,
-                              backgroundColor: '#e5e7eb',
-                              opacity: 1,
-                              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                            },
-                            '& .MuiSwitch-thumb': {
-                              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
-                              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                            },
-                          }}
-                        />
-                      </motion.div>
-                    }
-                    label={
-                      <motion.div
-                        animate={{
-                          x: aiAnalysisEnabled ? 5 : 0,
-                          scale: aiAnalysisEnabled ? 1.02 : 1,
-                        }}
-                        transition={{
-                          type: "spring",
-                          stiffness: 300,
-                          damping: 25
-                        }}
-                      >
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          <motion.div
-                            animate={{
-                              rotate: aiAnalysisEnabled ? 360 : 0,
-                              scale: aiAnalysisEnabled ? 1.1 : 1,
-                            }}
-                            transition={{
-                              duration: 0.5,
-                              type: "spring",
-                              stiffness: 200,
-                              damping: 15
-                            }}
-                          >
-                            <AIIcon sx={{
-                              fontSize: 18,
-                              color: aiAnalysisEnabled ? '#10b981' : '#6b7280',
-                              transition: 'color 0.3s ease'
-                            }} />
-                          </motion.div>
-                          <Typography sx={{
-                            color: aiAnalysisEnabled ? '#092f57' : '#6b7280',
-                            fontSize: '0.875rem',
-                            fontWeight: aiAnalysisEnabled ? 600 : 500,
-                            transition: 'all 0.3s ease'
-                          }}>
-                            AI Insights
-                          </Typography>
-                        </Box>
-                      </motion.div>
-                    }
-                  />
-                </motion.div>
 
                 {/* Compact Date Picker */}
                 <DatePickerFilter
@@ -792,6 +708,16 @@ const UnifiedSafetyDashboard = () => {
                     <RefreshIcon sx={{ fontSize: 20, color: loading ? '#94a3b8' : '#092f57' }} />
                   </IconButton>
                 </Tooltip>
+
+                {/* Cosmic AI Assistant in header */}
+                <Box sx={{ ml: 1, display: 'flex', alignItems: 'center' }}>
+                  <FloatingAIAssistant
+                    isActive={aiAnalysisEnabled}
+                    onToggle={() => handleAIToggle(!aiAnalysisEnabled)}
+                    isLoading={aiLoading}
+                    hasNewInsights={aiAnalysis?.insights && aiAnalysis.insights.length > 0}
+                  />
+                </Box>
               </Box>
             </Box>
 
