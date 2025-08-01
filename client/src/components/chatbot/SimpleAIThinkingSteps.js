@@ -252,7 +252,7 @@ const SimpleAIThinkingSteps = ({
                           boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
                         }}
                       >
-                        {step.isFinal ? '✓' : step.isLooping ? '⟳' : (index + 1)}
+                        {step.isFinal ? '✓' : step.isLooping ? '⟳' : '•'}
                       </Box>
                     </motion.div>
                     

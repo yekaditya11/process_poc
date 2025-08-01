@@ -246,7 +246,7 @@ const StreamingTestInner = () => {
               {lastResult.messages?.map((message, index) => (
                 <Box key={index} sx={{ mb: 1, display: 'flex', alignItems: 'center', gap: 2 }}>
                   <Typography variant="body2" sx={{ minWidth: 60 }}>
-                    Step {index + 1}:
+                    Step:
                   </Typography>
                   <Typography variant="body2">
                     {message}

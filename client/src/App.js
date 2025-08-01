@@ -9,7 +9,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import SimpleAIAnalysisPage from './pages/SimpleAIAnalysisPage';
 import UnifiedSafetyDashboard from './pages/UnifiedSafetyDashboard';
-import MicrophoneTestPage from './pages/MicrophoneTestPage';
+
 import AIInsightsTest from './components/test/AIInsightsTest';
 import DashboardTest from './components/test/DashboardTest';
 import NotificationTest from './components/test/NotificationTest';
@@ -188,7 +188,7 @@ function App() {
               <Route path="/test-notifications" element={<NotificationTest />} />
               <Route path="/test-streaming" element={<StreamingTest />} />
               <Route path="/test-ai-thinking" element={<AIThinkingDemo />} />
-              <Route path="/test-microphone" element={<MicrophoneTestPage />} />
+
             </Routes>
           </div>
         </DashboardContextProvider>

@@ -268,24 +268,23 @@ const StreamingMessageRenderer = ({
                   >
                     <Box
                       sx={{
-                        width: 32,
-                        height: 32,
+                        width: 6,
+                        height: 6,
                         borderRadius: '50%',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         bgcolor: completedSteps.includes(index) ? 'success.main' : 
-                                 index === currentStep ? 'primary.main' : 'grey.300',
+                                 index === currentStep ? 'primary.main' : 'grey.400',
                         color: 'white',
-                        fontSize: '0.875rem',
+                        fontSize: '0.25rem',
                         fontWeight: 600,
-                        border: '2px solid',
+                        border: '0.5px solid',
                         borderColor: completedSteps.includes(index) ? 'success.dark' : 
-                                    index === currentStep ? 'primary.dark' : 'grey.400',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
+                                    index === currentStep ? 'primary.dark' : 'grey.500'
                       }}
                     >
-                      {completedSteps.includes(index) ? '✓' : (index + 1)}
+                      {completedSteps.includes(index) ? '✓' : ''}
                     </Box>
                   </motion.div>
                 )}

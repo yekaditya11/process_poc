@@ -31,7 +31,6 @@ import { chatAnimations } from '../../utils/animations';
 const ChatMessage = ({
   message,
   onSuggestedAction,
-  isSpeaking,
   isFullscreen = false,
   onAddChartToDashboard,
   isStreaming = false
@@ -282,51 +281,7 @@ const ChatMessage = ({
                 {formatTimestamp(message.timestamp)}
               </Typography>
 
-              {/* Speaking Indicator */}
-              {isSpeaking && !isUser && (
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 0.5,
-                    px: 1,
-                    py: 0.5,
-                    bgcolor: '#e0f2fe',
-                    borderRadius: 1,
-                    border: '1px solid #81d4fa',
-                  }}
-                >
-                  <Box sx={{ display: 'flex', gap: 0.25 }}>
-                    {[0, 1, 2].map((i) => (
-                      <Box
-                        key={i}
-                        sx={{
-                          width: 3,
-                          height: 3,
-                          bgcolor: '#0277bd',
-                          borderRadius: '50%',
-                          animation: 'speaking-wave 1s infinite ease-in-out',
-                          animationDelay: `${i * 0.1}s`,
-                          '@keyframes speaking-wave': {
-                            '0%, 60%, 100%': { transform: 'scaleY(1)' },
-                            '30%': { transform: 'scaleY(2)' },
-                          },
-                        }}
-                      />
-                    ))}
-                  </Box>
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      fontSize: '0.65rem',
-                      color: '#0277bd',
-                      fontWeight: 500,
-                    }}
-                  >
-                    Speaking
-                  </Typography>
-                </Box>
-              )}
+
             </Box>
           </Paper>
           </motion.div>

@@ -26,8 +26,6 @@ import {
   ExpandLess as ExpandLessIcon,
   ExpandMore as ExpandMoreIcon,
   QuestionAnswer as SuggestionsIcon,
-  VolumeUp as SpeakerIcon,
-  VolumeOff as MuteIcon,
 } from '@mui/icons-material';
 import { motion, AnimatePresence } from 'framer-motion';
 import { chatAnimations, staggerContainer, staggerItem } from '../../utils/animations';
@@ -52,8 +50,7 @@ const ChatBot = ({ moduleContext = null }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [sessionId, setSessionId] = useState(null);
   const [hasNewMessage, setHasNewMessage] = useState(false);
-  const [isSpeaking, setIsSpeaking] = useState(false);
-  const [speechEnabled, setSpeechEnabled] = useState(false);
+
   const [isStreaming, setIsStreaming] = useState(false);
   const [currentUserMessage, setCurrentUserMessage] = useState('');
   const [isApiComplete, setIsApiComplete] = useState(false);
@@ -250,10 +247,7 @@ const ChatBot = ({ moduleContext = null }) => {
 
         setMessages(prev => [...prev, aiMessage]);
 
-        // Speak the AI response if speech is enabled
-        if (speechEnabled && response.message) {
-          setTimeout(() => speakText(response.message), 500);
-        }
+
 
         // Show notification if chat is closed
         if (!isOpen) {
@@ -372,42 +366,7 @@ const ChatBot = ({ moduleContext = null }) => {
     setSuggestionsOpen(!suggestionsOpen);
   };
 
-  // Text-to-Speech functionality
-  const speakText = (text) => {
-    if (!speechEnabled || !('speechSynthesis' in window)) return;
 
-    // Stop any current speech
-    window.speechSynthesis.cancel();
-
-    // Clean text for speech (remove markdown, emojis, etc.)
-    const cleanText = text
-      .replace(/[👋🤖📊⚠️✅❌]/g, '') // Remove emojis
-      .replace(/\*\*(.*?)\*\*/g, '$1') // Remove bold markdown
-      .replace(/\*(.*?)\*/g, '$1') // Remove italic markdown
-      .replace(/`(.*?)`/g, '$1') // Remove code markdown
-      .trim();
-
-    if (cleanText.length === 0) return;
-
-    const utterance = new SpeechSynthesisUtterance(cleanText);
-    utterance.rate = 0.9;
-    utterance.pitch = 1;
-    utterance.volume = 0.8;
-
-    utterance.onstart = () => setIsSpeaking(true);
-    utterance.onend = () => setIsSpeaking(false);
-    utterance.onerror = () => setIsSpeaking(false);
-
-    window.speechSynthesis.speak(utterance);
-  };
-
-  const toggleSpeech = () => {
-    if (isSpeaking) {
-      window.speechSynthesis.cancel();
-      setIsSpeaking(false);
-    }
-    setSpeechEnabled(!speechEnabled);
-  };
 
   // Handle adding chart to dashboard
   const handleAddChartToDashboard = async (chartConfig) => {
@@ -582,31 +541,7 @@ const ChatBot = ({ moduleContext = null }) => {
                   </Box>
 
                   <Box sx={{ display: 'flex', gap: 0.5, zIndex: 1 }}>
-                    {/* Speech Toggle Button */}
-                    <Tooltip title={speechEnabled ? "Disable speech" : "Enable speech"}>
-                      <IconButton
-                        onClick={toggleSpeech}
-                        size="small"
-                        sx={{
-                          color: 'white',
-                          bgcolor: speechEnabled ? 'rgba(76, 175, 80, 0.2)' : 'rgba(255,255,255,0.1)',
-                          border: speechEnabled ? '1px solid rgba(76, 175, 80, 0.3)' : 'none',
-                          '&:hover': {
-                            bgcolor: speechEnabled ? 'rgba(76, 175, 80, 0.3)' : 'rgba(255,255,255,0.2)'
-                          },
-                          ...(isSpeaking && {
-                            animation: 'pulse-speak 1s infinite',
-                            '@keyframes pulse-speak': {
-                              '0%': { opacity: 1 },
-                              '50%': { opacity: 0.7 },
-                              '100%': { opacity: 1 },
-                            },
-                          }),
-                        }}
-                      >
-                        {speechEnabled ? <SpeakerIcon fontSize="small" /> : <MuteIcon fontSize="small" />}
-                      </IconButton>
-                    </Tooltip>
+
 
 
 
@@ -765,7 +700,6 @@ const ChatBot = ({ moduleContext = null }) => {
                             message={message}
                             onSuggestedAction={handleSuggestedAction}
                             onAddChartToDashboard={handleAddChartToDashboard}
-                            isSpeaking={isSpeaking}
                             isFullscreen={isFullscreen}
                           />
                         </motion.div>

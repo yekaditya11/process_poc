@@ -168,7 +168,7 @@ The feature integrates seamlessly with:
 
 ## Future Enhancements
 
-- **Voice Narration**: Audio explanation of thinking steps
+
 - **Interactive Steps**: Allow users to drill down into specific steps
 - **Learning Mode**: Educational explanations of each thinking process
 - **Customizable Speed**: User-controlled thinking step speed

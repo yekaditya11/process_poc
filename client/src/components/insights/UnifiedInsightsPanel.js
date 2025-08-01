@@ -26,8 +26,7 @@ import {
   ThumbUp as ThumbUpIcon,
   ThumbDown as ThumbDownIcon,
   SmartToy as BotIcon,
-  VolumeUp as SpeakerIcon,
-  VolumeOff as MuteIcon,
+
   Refresh as RefreshIcon,
   QuestionAnswer as SuggestionsIcon,
   ExpandLess as ExpandLessIcon,
@@ -67,8 +66,7 @@ const UnifiedInsightsPanel = ({
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [sessionId, setSessionId] = useState(null);
-  const [isSpeaking, setIsSpeaking] = useState(false);
-  const [speechEnabled, setSpeechEnabled] = useState(false);
+
   const [suggestionsOpen, setSuggestionsOpen] = useState(false);
 
   const [isExpanded, setIsExpanded] = useState(false); // New expand state
@@ -183,9 +181,7 @@ const UnifiedInsightsPanel = ({
 
         setMessages(prev => [...prev, aiMessage]);
 
-        if (speechEnabled && response.message) {
-          setTimeout(() => speakText(response.message), 500);
-        }
+
       } else {
         throw new Error('Invalid response from server');
       }
@@ -260,40 +256,7 @@ const UnifiedInsightsPanel = ({
     setSuggestionsOpen(!suggestionsOpen);
   };
 
-  // Text-to-Speech functionality
-  const speakText = (text) => {
-    if (!speechEnabled || !('speechSynthesis' in window)) return;
 
-    window.speechSynthesis.cancel();
-
-    const cleanText = text
-      .replace(/[👋🤖📊⚠️✅❌]/g, '')
-      .replace(/\*\*(.*?)\*\*/g, '$1')
-      .replace(/\*(.*?)\*/g, '$1')
-      .replace(/`(.*?)`/g, '$1')
-      .trim();
-
-    if (cleanText.length === 0) return;
-
-    const utterance = new SpeechSynthesisUtterance(cleanText);
-    utterance.rate = 0.9;
-    utterance.pitch = 1;
-    utterance.volume = 0.8;
-
-    utterance.onstart = () => setIsSpeaking(true);
-    utterance.onend = () => setIsSpeaking(false);
-    utterance.onerror = () => setIsSpeaking(false);
-
-    window.speechSynthesis.speak(utterance);
-  };
-
-  const toggleSpeech = () => {
-    if (isSpeaking) {
-      window.speechSynthesis.cancel();
-      setIsSpeaking(false);
-    }
-    setSpeechEnabled(!speechEnabled);
-  };
 
   const handleTabChange = (_, newValue) => {
     setActiveTab(newValue);
@@ -529,25 +492,7 @@ const UnifiedInsightsPanel = ({
           </Typography>
 
           <Box sx={{ display: 'flex', gap: 0.5 }}>
-            {/* Speech Toggle (only show when chat tab is active) */}
-            {activeTab === 1 && (
-              <Tooltip title={speechEnabled ? "Disable speech" : "Enable speech"}>
-                <IconButton
-                  onClick={toggleSpeech}
-                  size="small"
-                  sx={{
-                    color: 'white',
-                    bgcolor: speechEnabled ? 'rgba(76, 175, 80, 0.2)' : 'rgba(255,255,255,0.1)',
-                    border: speechEnabled ? '1px solid rgba(76, 175, 80, 0.3)' : 'none',
-                    '&:hover': {
-                      bgcolor: speechEnabled ? 'rgba(76, 175, 80, 0.3)' : 'rgba(255,255,255,0.2)'
-                    }
-                  }}
-                >
-                  {speechEnabled ? <SpeakerIcon fontSize="small" /> : <MuteIcon fontSize="small" />}
-                </IconButton>
-              </Tooltip>
-            )}
+
 
             {/* Download PDF (only show when AI insights tab is active and has insights) */}
             {activeTab === 0 && aiAnalysis?.insights && aiAnalysis.insights.length > 0 && (
@@ -992,7 +937,6 @@ const UnifiedInsightsPanel = ({
                       }}
                       onSuggestedAction={handleSuggestedAction}
                       onAddChartToDashboard={handleAddChartToDashboard}
-                      isSpeaking={isSpeaking}
                       isFullscreen={false}
                     />
                   </motion.div>
@@ -1010,7 +954,6 @@ const UnifiedInsightsPanel = ({
                       message={message}
                       onSuggestedAction={handleSuggestedAction}
                       onAddChartToDashboard={handleAddChartToDashboard}
-                      isSpeaking={isSpeaking}
                       isFullscreen={false}
                     />
                   </motion.div>
